@@ -7,7 +7,7 @@ const models = readFileSync(`${root}src/components/three/models.ts`, "utf8");
 const listed = new Set([...idx.matchAll(/"([^"]+)"/g), ...idx.matchAll(/\b([A-Z0-9/]+): "/g)].map((m) => m[1]));
 const generic = new Set(["spool", "roll", "sheet", "packer"]);
 const missing = Object.values(data.products).filter((p) => !p.sec && !generic.has(p.kind) && !listed.has(p.id));
-const notBuilt = [...listed].filter((id) => /^[A-Z]/.test(id) && !["ROD19", "AU025", "AU026", "AU025A", "AU026A", "AU055"].includes(id) && !models.includes(`"${id}":`) && !models.includes(`  ${id}:`));
+const notBuilt = [...listed].filter((id) => /^[A-Z]/.test(id) && !["RODC", "AU025", "AU026", "AU025A", "AU026A", "AU055"].includes(id) && !models.includes(`"${id}":`) && !models.includes(`  ${id}:`));
 if (missing.length || notBuilt.length) {
   console.error("No 3D model for:", missing.map((p) => p.id).join(", ") || "-");
   console.error("Listed but not built:", notBuilt.join(", ") || "-");

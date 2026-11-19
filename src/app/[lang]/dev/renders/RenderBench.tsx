@@ -9,9 +9,14 @@ export interface BenchItem {
   name: string;
   finish: string;
   view: ViewItem;
+  photo?: string;
+  handBuilt: boolean;
 }
 
-export function RenderBench({ items }: { items: BenchItem[] }) {
+export function RenderBench({ items: all }: { items: BenchItem[] }) {
+  // ?review shows only hand-built models, each next to its price list photo.
+  const review = typeof window !== "undefined" && window.location.search.includes("review");
+  const items = review ? all.filter((i) => i.handBuilt) : all;
   const [images, setImages] = useState<Record<string, string>>({});
   const [status, setStatus] = useState("idle");
 
@@ -45,7 +50,7 @@ export function RenderBench({ items }: { items: BenchItem[] }) {
         <button type="button" className="rounded border px-3 py-1" onClick={() => run(true)}>Render and save</button>
         <span id="bench-status">{status}</span>
       </div>
-      <div className="mt-6 grid grid-cols-6 gap-3">
+      <div className={`mt-6 grid gap-3 ${review ? "grid-cols-8" : "grid-cols-6"}`}>
         {items.map((it) => (
           <figure key={it.slug} className="rounded border bg-surface p-2" data-slug={it.slug}>
             {images[it.slug] ? (
@@ -54,6 +59,12 @@ export function RenderBench({ items }: { items: BenchItem[] }) {
             ) : (
               <div className="aspect-[4/3] bg-surface-2" />
             )}
+            {review && (it.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element -- dev tool
+              <img src={it.photo} alt="" className="mt-1 aspect-[4/3] w-full bg-white object-contain" />
+            ) : (
+              <div className="mt-1 grid aspect-[4/3] place-items-center bg-white text-[10px] text-muted">no photo</div>
+            ))}
             <figcaption className="mt-1 text-xs">
               <b className="font-mono">{it.code}</b> {it.name}
             </figcaption>

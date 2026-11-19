@@ -76,14 +76,15 @@ const data = raw as unknown as CatalogueData;
 
 export const RANGES = data.ranges;
 export const PRODUCTS = data.products;
-// Round tube used to draw the curtain rod (AU055), which has no sketch in the price list.
-function ringSection(od: number, wall: number): Section {
-  const circle = (r: number, n = 64): Point[] =>
-    Array.from({ length: n }, (_, i) => [r * Math.cos((i / n) * Math.PI * 2), r * Math.sin((i / n) * Math.PI * 2)] as Point);
-  return { w: od, h: od, shapes: [{ outer: circle(od / 2), holes: [circle(od / 2 - wall).reverse()] }] };
+// Rectangular channel with a slot underneath, used to draw the curtain rod (AU055), which has no
+// sketch in the price list. Shape taken from the price list photo; dimensions are indicative.
+function slottedChannel(w: number, h: number, wall: number, slot: number): Section {
+  const x = w / 2, y = h / 2, s = slot / 2, t = wall;
+  const outer: Point[] = [[-x, -y], [-s, -y], [-s, -y + t], [-x + t, -y + t], [-x + t, y - t], [x - t, y - t], [x - t, -y + t], [s, -y + t], [s, -y], [x, -y], [x, y], [-x, y]];
+  return { w, h, shapes: [{ outer, holes: [] }] };
 }
 
-export const SECTIONS: Record<string, Section> = { ...data.sections, ROD19: ringSection(19, 1.2) };
+export const SECTIONS: Record<string, Section> = { ...data.sections, RODC: slottedChannel(30, 20, 1.4, 8) };
 export const PHOTOS = data.photos;
 
 export const slugify = (s: string) =>

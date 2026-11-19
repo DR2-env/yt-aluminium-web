@@ -9,4 +9,4 @@ export const HAND_BUILT_MODELS = new Set([
 ]);
 
 /** Profiles with no sketch of their own, drawn with the closest section we have. */
-export const SECTION_STANDINS: Record<string, string> = { AU025A: "AU025", AU026A: "AU026", AU055: "ROD19" };
+export const SECTION_STANDINS: Record<string, string> = { AU025A: "AU025", AU026A: "AU026", AU055: "RODC" };
