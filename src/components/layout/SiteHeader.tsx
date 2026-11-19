@@ -71,7 +71,7 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
       </div>
 
       {open && (
-        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-4 lg:hidden">
+        <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-4rem)] overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-4 lg:hidden">
           <nav className="flex flex-col" aria-label="Mobile">
             {[...s.nav, { href: s.quote.href, label: s.quote.label, match: "/quote" }].map((n) => (
               <Link key={n.href} href={n.href} className="border-b border-line py-4 text-lg font-medium">

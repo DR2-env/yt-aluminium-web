@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Clock, EnvelopeSimple, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/ssr";
-import { SITE, fullAddress, whatsappLink } from "@/lib/site";
+import { ChatsCircle, Clock, DeviceMobile, EnvelopeSimple, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/ssr";
+import { SITE, fullAddress, whatsappDisplay, whatsappLink } from "@/lib/site";
 import { fmt, getDictionary, isLocale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
 
@@ -19,7 +19,9 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
   const c = d.contactPage;
   const channels = [
     { icon: Phone, label: c.office, value: SITE.phone, href: SITE.phoneHref, ltr: true },
-    { icon: WhatsappLogo, label: c.mobile, value: SITE.mobile, href: whatsappLink("Hi YT Aluminium, "), ltr: true },
+    { icon: DeviceMobile, label: c.mobile, value: SITE.mobile, href: SITE.mobileHref, ltr: true },
+    { icon: WhatsappLogo, label: c.whatsapp, value: whatsappDisplay() ?? c.pending, href: SITE.whatsapp ? whatsappLink("Hi YT Aluminium, ") : null, ltr: Boolean(SITE.whatsapp) },
+    { icon: ChatsCircle, label: c.wechat, value: SITE.wechatId || c.pending, href: null, ltr: Boolean(SITE.wechatId) },
     { icon: EnvelopeSimple, label: c.email, value: SITE.email, href: `mailto:${SITE.email}`, ltr: true },
     { icon: MapPin, label: c.address, value: fullAddress, href: SITE.mapsUrl, ltr: true },
     { icon: Clock, label: c.hours, value: d.site.hours, href: null, ltr: false },
@@ -50,15 +52,15 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
       <h1 className="text-3xl font-semibold md:text-4xl">{c.title}</h1>
       <p className="mt-3 max-w-[62ch] text-muted">{fmt(c.intro, { hours: d.site.hours })}</p>
-      <div className="mt-10 grid gap-6 lg:grid-cols-12">
+      <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
         <ul className="divide-y divide-line self-start rounded-md border border-line lg:col-span-5">
           {channels.map((ch) => {
             const body = (
               <>
                 <ch.icon size={20} className="mt-0.5 shrink-0 text-accent" />
-                <span className="min-w-0">
+                <span className="min-w-0 flex-1">
                   <span className="block text-sm text-muted">{ch.label}</span>
-                  <span className="block truncate font-medium" dir={ch.ltr ? "ltr" : undefined}>
+                  <span className="block break-words font-medium" dir={ch.ltr ? "ltr" : undefined}>
                     {ch.value}
                   </span>
                 </span>

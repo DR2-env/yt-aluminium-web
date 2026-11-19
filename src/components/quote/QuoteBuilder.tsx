@@ -76,9 +76,10 @@ interface Props {
   units: Record<string, string[]>;
   finishNames: Record<string, string>;
   productsHref: string;
+  wechatPending: string;
 }
 
-export function QuoteBuilder({ codes, q, units, finishNames, productsHref }: Props) {
+export function QuoteBuilder({ codes, q, units, finishNames, productsHref, wechatPending }: Props) {
   const lines = useQuote();
   const [details, setDetails] = useState<Details>(EMPTY_DETAILS);
   const [paste, setPaste] = useState("");
@@ -149,9 +150,7 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref }: Pro
               <WhatsappLogo size={18} />
               {q.photoButton}
             </a>
-            {SITE.wechatId && (
-              <span className="text-sm font-medium">{fill(q.wechat, { id: SITE.wechatId })}</span>
-            )}
+            <span className="text-sm font-medium">{fill(q.wechat, { id: SITE.wechatId || wechatPending })}</span>
           </div>
         </div>
         {lines.length === 0 ? (

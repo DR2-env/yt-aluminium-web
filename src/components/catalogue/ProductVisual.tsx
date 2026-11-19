@@ -29,6 +29,8 @@ export function ProductVisual({ item, sizes = "(min-width: 1024px) 22vw, 45vw", 
       height={720}
       sizes={sizes}
       priority={priority}
+      // Renders are already small, transparent webp files; re-encoding only adds delay and cost.
+      unoptimized
       className="h-full w-full object-contain"
     />
   );

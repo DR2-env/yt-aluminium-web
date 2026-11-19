@@ -7,9 +7,11 @@ export const SITE = {
   phoneHref: "tel:+61287392494",
   mobile: "0451 569 228",
   mobileHref: "tel:+61451569228",
-  whatsapp: "61451569228",
-  // WeChat ID shown on the quote and contact pages. Leave empty to hide until confirmed.
-  wechatId: "",
+  // PLACEHOLDERS: set NEXT_PUBLIC_WHATSAPP_NUMBER (international format, digits only,
+  // e.g. 61451569228) and NEXT_PUBLIC_WECHAT_ID in Vercel once confirmed. Until then the
+  // site shows "to be confirmed", and WhatsApp buttons open WhatsApp without a recipient.
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
+  wechatId: process.env.NEXT_PUBLIC_WECHAT_ID ?? "",
   email: "ytaluminium@gmail.com",
   address: {
     street: "3 Marigold Place",
@@ -28,6 +30,13 @@ export const fullAddress = `${SITE.address.street}, ${SITE.address.suburb} ${SIT
 
 export const whatsappLink = (text: string) =>
   `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
+
+/** WhatsApp number formatted for display (61451569228 -> +61 451 569 228), or null if not set. */
+export const whatsappDisplay = (): string | null => {
+  const n = SITE.whatsapp.replace(/\D/g, "");
+  if (!n) return null;
+  return n.startsWith("61") && n.length === 11 ? `+61 ${n.slice(2, 5)} ${n.slice(5, 8)} ${n.slice(8)}` : `+${n}`;
+};
 
 export const mailtoLink = (subject: string, body: string) =>
   `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

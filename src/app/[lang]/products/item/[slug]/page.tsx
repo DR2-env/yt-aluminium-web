@@ -126,6 +126,8 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/product
           product={toConfig(p, lang)}
           s={{
             ...d.product,
+            // Messages land with YT staff, so the pre-filled WhatsApp text is always in English.
+            askMessage: getDictionary("en").product.askMessage,
             tag: p.tag === "New" ? d.catalogue.new : p.tag === "Special" ? d.catalogue.special : undefined,
             units: d.units as Record<string, string[]>,
             finishNames: finishNameMap(lang),

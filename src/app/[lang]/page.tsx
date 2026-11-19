@@ -7,7 +7,10 @@ import { LinkButton } from "@/components/ui/Button";
 import { CODE_COUNT, PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, renderSrc, resolveItem } from "@/lib/catalogue";
 import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
 import { SITE, fullAddress, whatsappLink } from "@/lib/site";
-import { LOCALES, LOCALE_META, finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
+import { finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
+
+// Camera angle for the home page model: turned towards the end so the frame profile is visible.
+const HERO_VIEW: [number, number, number] = [1.1, 0.75, 1.5];
 
 function rangeCover(rangeId: string) {
   const range = RANGES.find((r) => r.id === rangeId);
@@ -30,24 +33,11 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <section className="border-b border-line">
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-4 py-8 md:px-8 md:py-14 lg:grid-cols-12 lg:items-center lg:gap-14">
           <div className="lg:col-span-6">
-            <p className="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-muted">
-              <span className="me-1">{d.home.languageBar}</span>
-              {LOCALES.map((l) => (
-                <Link
-                  key={l}
-                  href={localePath(l, "/")}
-                  lang={LOCALE_META[l].htmlLang}
-                  className={`rounded border px-2 py-0.5 ${l === lang ? "border-accent bg-accent-soft font-medium text-ink" : "border-line hover:border-line-strong"}`}
-                >
-                  {LOCALE_META[l].label}
-                </Link>
-              ))}
-            </p>
-            <h1 className="mt-5 text-3xl font-semibold leading-tight text-balance md:text-[2.6rem]">{d.home.heroTitle}</h1>
+            <h1 className="text-3xl font-semibold leading-tight text-balance md:text-[2.6rem]">{d.home.heroTitle}</h1>
             <p className="mt-4 max-w-[46ch] text-lg leading-relaxed text-muted">{d.home.heroText}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
-                href={whatsappLink(d.home.sendListMessage + " ")}
+                href={whatsappLink(getDictionary("en").home.sendListMessage + " ")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded bg-accent px-5 text-base font-medium text-accent-ink hover:bg-accent-hover"
@@ -74,9 +64,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </ul>
             <p className="mt-2 text-xs text-muted">{d.home.perksNote}</p>
           </div>
-          <div className="h-[340px] md:h-[460px] lg:col-span-6">
+          <div className="lg:col-span-6">
             <HeroViewer
-              item={{ id: hero.id, kind: hero.kind, section: SECTIONS[hero.sec ?? "AU014"] }}
+              item={{ id: hero.id, kind: hero.kind, section: SECTIONS[hero.sec ?? "AU014"], view: HERO_VIEW }}
               code={hero.code}
               name={tc(lang, hero.name)}
               dims={hero.dims}

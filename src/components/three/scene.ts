@@ -17,6 +17,8 @@ export interface ViewItem {
   h?: number;
   t?: number;
   section?: Section;
+  /** Camera direction override, e.g. to show a profile's end shape more clearly. */
+  view?: [number, number, number];
 }
 
 export interface Stage {
@@ -175,12 +177,13 @@ export function buildObject(c: ViewItem, fin: string): THREE.Group {
   const g = new THREE.Group();
   const view = (v: [number, number, number]) => (g.userData.view = v);
 
+  if (c.view) g.userData.view = c.view;
   if (c.section) {
     const S = c.section;
     const size = Math.max(S.w, S.h);
     const len = S.depth || (c.rubber ? size * 4 : Math.min(Math.max(size * 2.4, 70), 260));
     g.add(mesh(profileGeometry(S, len), makeMaterial(fin)));
-    view([1.55, 0.5, 1.0]);
+    if (!c.view) view([1.55, 0.5, 1.0]);
   } else if (c.kind === "spool") {
     const rubber = c.spool === "rubber";
     const Rf = 0.9, W = 0.9, Rw = 0.74;
