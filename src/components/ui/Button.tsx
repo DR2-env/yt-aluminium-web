@@ -1,15 +1,14 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary";
 
 const base =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-[background-color,color,border-color,transform] duration-200 active:translate-y-px disabled:pointer-events-none disabled:opacity-50";
-const sizes = { md: "h-11 px-5", sm: "h-9 px-3.5 text-[13px]", lg: "h-12 px-6 text-[15px]" };
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded text-sm font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50";
+const sizes = { md: "h-10 px-4", sm: "h-9 px-3", lg: "h-11 px-5" };
 const variants: Record<Variant, string> = {
   primary: "bg-accent text-accent-ink hover:bg-accent-hover",
-  secondary: "border border-line-strong bg-surface text-ink hover:border-ink",
-  ghost: "text-ink hover:bg-surface-2",
+  secondary: "border border-line-strong bg-surface text-ink hover:bg-surface-2",
 };
 
 export function buttonClass(variant: Variant = "primary", size: keyof typeof sizes = "md", extra = "") {

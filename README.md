@@ -24,6 +24,23 @@ The catalogue data comes from `yt-catalogue.html` (built from the 16/02/2026 pri
 node scripts/extract-catalogue.mjs "/path/to/yt-catalogue.html"
 ```
 
+## Languages
+
+English is served at bare paths (`/products`); Chinese, Korean and Arabic at `/zh`, `/ko` and `/ar` (Arabic is right to left). `src/proxy.ts` maps bare paths to the English route.
+
+- Interface text: `src/i18n/dictionaries/{en,zh,ko,ar}.ts`. English is the source; the others must provide every key (TypeScript enforces this).
+- Catalogue text (product names, ranges, finishes, pack sizes): `src/i18n/catalogue/{zh,ko,ar}.ts`, keyed by the English text.
+- `node scripts/check-translations.mjs` fails if any catalogue string is missing a translation.
+
+Translations were machine-drafted and should be reviewed by a native speaker familiar with the trade terms.
+
+## 3D models and product images
+
+- Profiles are extruded from the sections traced from the price list.
+- Hardware and accessories without a drawing (locks, hinges, rollers, corners, clips, brackets, curtain fittings) are representative parametric models in `src/components/three/models.ts`.
+- `node scripts/check-models.mjs` fails if any product has no 3D model.
+- Catalogue pictures in `public/renders/` are pre-rendered from those models. After changing a model or adding products, run `npm run dev`, open `/dev/renders` and click "Render and save" (development only).
+
 ## How quotes work
 
 The quote list is stored in the visitor's browser. Sending it opens WhatsApp or email with a numbered list in YT codes, or copies it for WeChat. Nothing is sent to a server.

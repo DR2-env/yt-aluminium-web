@@ -5,12 +5,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { List, Phone, X } from "@phosphor-icons/react";
 import { Logo } from "./Logo";
-import { NAV } from "./nav";
-import { QuoteCount } from "./QuoteCount";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { QuoteLink } from "./QuoteLink";
+import type { LayoutStrings } from "./types";
+import { stripLocale } from "@/i18n/config";
 import { SITE } from "@/lib/site";
 
-export function SiteHeader() {
+export function SiteHeader({ s }: { s: LayoutStrings }) {
   const pathname = usePathname();
+  const current = stripLocale(pathname);
   const [open, setOpen] = useState(false);
 
   // Close the mobile menu after navigating.
@@ -27,59 +30,58 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (match: string) => current === match || current.startsWith(`${match}/`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md supports-[backdrop-filter]:bg-bg/75">
-      <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-6 px-4 md:px-8">
-        <Logo />
+    <header className="sticky top-0 z-40 border-b border-line bg-bg">
+      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-6 px-4 md:px-8">
+        <Logo href={s.home} />
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
-          {NAV.map((n) => (
+          {s.nav.map((n) => (
             <Link
               key={n.href}
               href={n.href}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isActive(n.href) ? "text-ink" : "text-muted hover:text-ink"}`}
-              aria-current={isActive(n.href) ? "page" : undefined}
+              className={`rounded px-3 py-2 text-sm transition-colors ${isActive(n.match) ? "font-medium text-ink" : "text-muted hover:text-ink"}`}
+              aria-current={isActive(n.match) ? "page" : undefined}
             >
               {n.label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          <a href={SITE.phoneHref} className="hidden items-center gap-2 px-2 font-mono text-sm text-muted transition-colors hover:text-ink xl:flex">
+        <div className="flex items-center gap-1.5">
+          <a href={SITE.phoneHref} className="hidden items-center gap-1.5 px-2 text-sm text-muted hover:text-ink xl:flex" dir="ltr">
             <Phone size={16} aria-hidden />
             {SITE.phone}
           </a>
+          <LanguageSwitcher lang={s.lang} label={s.menu.language} />
           <div className="hidden sm:block">
-            <QuoteCount />
+            <QuoteLink href={s.quote.href} label={s.quote.label} />
           </div>
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-lg border border-line-strong lg:hidden"
+            className="grid size-9 place-items-center rounded border border-line-strong lg:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? s.menu.close : s.menu.open}
           >
-            {open ? <X size={20} /> : <List size={20} />}
+            {open ? <X size={18} /> : <List size={18} />}
           </button>
         </div>
       </div>
 
       {open && (
-        <div id="mobile-menu" className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-6 lg:hidden">
+        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-4 lg:hidden">
           <nav className="flex flex-col" aria-label="Mobile">
-            {[{ href: "/", label: "Home" }, ...NAV, { href: "/quote", label: "Quote list" }].map((n) => (
-              <Link key={n.href} href={n.href} className="border-b border-line py-4 text-2xl font-semibold tracking-tight">
+            {[...s.nav, { href: s.quote.href, label: s.quote.label, match: "/quote" }].map((n) => (
+              <Link key={n.href} href={n.href} className="border-b border-line py-4 text-lg font-medium">
                 {n.label}
               </Link>
             ))}
           </nav>
-          <div className="mt-8 space-y-1 text-sm text-muted">
-            <p>{SITE.hours}</p>
-            <p>
-              {SITE.address.street}, {SITE.address.suburb}
-            </p>
+          <div className="mt-6 space-y-1 text-sm text-muted">
+            <p>{s.hours}</p>
+            <p>{s.address}</p>
           </div>
         </div>
       )}

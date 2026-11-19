@@ -4,9 +4,11 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { finishOf } from "@/lib/finishes";
 import type { Section } from "@/lib/catalogue";
+import { buildHardware } from "./models";
 
 /** The subset of an item the 3D builders need. Kept small so pages pass little data to the client. */
 export interface ViewItem {
+  id?: string;
   kind: string;
   rubber?: boolean;
   spool?: string;
@@ -166,6 +168,10 @@ function mesh(geo: THREE.BufferGeometry, mat: THREE.Material, shadow = true) {
 }
 
 export function buildObject(c: ViewItem, fin: string): THREE.Group {
+  if (!c.section && c.id) {
+    const hw = buildHardware(c.id, fin);
+    if (hw) return hw;
+  }
   const g = new THREE.Group();
   const view = (v: [number, number, number]) => (g.userData.view = v);
 
@@ -313,9 +319,12 @@ export function placeObject(st: Stage, obj: THREE.Group) {
   }
   st.obj = obj;
   st.scene.add(obj);
-  const box = new THREE.Box3().setFromObject(obj);
+  // Nested model groups carry their own scale, so world matrices must be current before measuring.
+  obj.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(obj, true);
   obj.position.y -= box.min.y;
-  box.setFromObject(obj);
+  obj.updateMatrixWorld(true);
+  box.setFromObject(obj, true);
   const sph = box.getBoundingSphere(new THREE.Sphere());
   const r = sph.radius;
   const target = sph.center.clone();

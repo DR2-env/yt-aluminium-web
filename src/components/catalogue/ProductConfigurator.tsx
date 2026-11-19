@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ArrowCounterClockwise, Check, Cube, Minus, Plus, Polygon, Play, Pause } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, Check, Minus, Pause, Play, Plus } from "@phosphor-icons/react";
 import { LazyViewer } from "@/components/three/LazyViewer";
 import { SectionDrawing } from "./SectionDrawing";
 import { finishOf, swatchBackground } from "@/lib/finishes";
 import { quote, useQuote } from "@/lib/quote-store";
-import { unitLabel } from "@/lib/units";
 import type { Section } from "@/lib/catalogue";
 
 export interface ConfigVariant {
@@ -18,7 +17,6 @@ export interface ConfigVariant {
   sec?: string;
   dims?: [number, number];
   len: string;
-  pack: number;
   packText: string;
   w?: number;
   h?: number;
@@ -27,21 +25,53 @@ export interface ConfigVariant {
 
 export interface ConfigProduct {
   id: string;
+  /** English name, used in the quote message sent to YT. */
+  nameEn: string;
   name: string;
   kind: string;
   unit: string;
-  tag?: string;
   mesh?: string;
   spool?: string;
   rubber?: boolean;
   photo?: string;
+  note: "section" | "standin" | "model";
   variants: ConfigVariant[];
   sections: Record<string, Section>;
 }
 
-type Mode = "3d" | "section";
+export interface ConfigStrings {
+  view3d: string;
+  viewSection: string;
+  viewPhoto: string;
+  rotate: string;
+  pause: string;
+  reset: string;
+  suppliedAs: string;
+  soldIn: string;
+  size: string;
+  option: string;
+  finish: string;
+  quantity: string;
+  fewer: string;
+  more: string;
+  add: string;
+  added: string;
+  inQuote: string;
+  reviewQuote: string;
+  noteSection: string;
+  noteStandin: string;
+  noteModel: string;
+  noteColour: string;
+  tag?: string;
+  units: Record<string, string[]>;
+  finishNames: Record<string, string>;
+  quoteHref: string;
+}
 
-export function ProductConfigurator({ product }: { product: ConfigProduct }) {
+type Mode = "3d" | "section" | "photo";
+const fill = (t: string, vars: Record<string, string | number>) => t.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
+
+export function ProductConfigurator({ product, s }: { product: ConfigProduct; s: ConfigStrings }) {
   const params = useSearchParams();
   const initialIndex = Math.max(0, product.variants.findIndex((v) => v.code === params.get("size")));
   const [vi, setVi] = useState(initialIndex);
@@ -55,20 +85,26 @@ export function ProductConfigurator({ product }: { product: ConfigProduct }) {
   const [added, setAdded] = useState(false);
   const lines = useQuote();
 
+  const unit = (n: number) => (s.units[product.unit] ?? s.units.item)[n === 1 ? 0 : 1];
+  const fname = (code: string) => s.finishNames[code] ?? finishOf(code).name;
   const section = v.sec ? product.sections[v.sec] : undefined;
-  const can3D = Boolean(section) || ["spool", "roll", "sheet", "packer"].includes(product.kind);
   const viewItem = useMemo(
-    () => ({ kind: product.kind, rubber: product.rubber, spool: product.spool, mesh: product.mesh, w: v.w, h: v.h, t: v.t, section }),
-    [product.kind, product.rubber, product.spool, product.mesh, v.w, v.h, v.t, section],
+    () => ({ id: product.id, kind: product.kind, rubber: product.rubber, spool: product.spool, mesh: product.mesh, w: v.w, h: v.h, t: v.t, section }),
+    [product.id, product.kind, product.rubber, product.spool, product.mesh, v.w, v.h, v.t, section],
   );
   const showFinishPicker = !(v.fin.length === 1 && (v.fin[0] === "NA" || v.fin[0] === "RB"));
   const inQuote = lines.filter((l) => l.code === v.code).reduce((n, l) => n + l.qty, 0);
+  const views: { id: Mode; label: string }[] = [
+    { id: "3d", label: s.view3d },
+    ...(section ? [{ id: "section" as const, label: s.viewSection }] : []),
+    ...(product.photo ? [{ id: "photo" as const, label: s.viewPhoto }] : []),
+  ];
 
   const add = () => {
     quote.add({
       pid: product.id,
       code: v.code,
-      name: product.name,
+      name: product.nameEn,
       label: product.variants.length > 1 ? v.label : undefined,
       finish: activeFinish,
       finishName: finishOf(activeFinish).name,
@@ -76,107 +112,95 @@ export function ProductConfigurator({ product }: { product: ConfigProduct }) {
       unit: product.unit,
     });
     setAdded(true);
-    window.setTimeout(() => setAdded(false), 2200);
+    window.setTimeout(() => setAdded(false), 2000);
   };
 
-  const toggle = (active: boolean) =>
-    `inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold transition-colors ${active ? "bg-ink text-bg" : "text-muted hover:text-ink"}`;
+  const seg = (active: boolean) =>
+    `h-8 rounded-sm px-3 text-xs font-medium transition-colors ${active ? "bg-surface text-ink shadow-[0_1px_2px_rgb(0_0_0/0.08)]" : "text-muted hover:text-ink"}`;
+  const note = product.note === "section" ? s.noteSection : product.note === "standin" ? s.noteStandin : s.noteModel;
+
+  const specs: [string, string][] = [[s.suppliedAs, v.len], [s.soldIn, v.packText]];
+  if (v.dims) specs.push([s.size, `${v.dims[0]} × ${v.dims[1]} mm`]);
+  if (v.label && product.variants.length > 1) specs.push([s.option, v.label]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
-      {/* Viewer */}
       <div className="lg:col-span-7">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-[radial-gradient(ellipse_at_50%_35%,var(--surface)_0%,var(--surface-2)_100%)] lg:sticky lg:top-24">
-          {can3D && mode === "3d" ? (
-            <LazyViewer item={viewItem} finish={activeFinish} autoRotate={spin} resetKey={resetKey} onInteract={() => setSpin(false)} />
-          ) : section ? (
-            <div className="absolute inset-0 p-8 md:p-14">
-              <SectionDrawing section={section} finish={activeFinish} dims={v.dims} showDims className="h-full w-full text-ink" title={`${product.name} cross section`} />
-            </div>
-          ) : product.photo ? (
-            // eslint-disable-next-line @next/next/no-img-element -- small local cut-out, already optimised webp
-            <img src={product.photo} alt={product.name} className="absolute inset-0 h-full w-full object-contain p-10 mix-blend-multiply dark:mix-blend-normal" />
-          ) : (
-            <div className="absolute inset-0 grid place-items-center text-center">
-              <div>
-                <p className="font-mono text-3xl font-semibold">{v.code}</p>
-                <p className="mt-2 text-sm text-muted">Photo coming soon. Ask us for a picture.</p>
+        <div className="lg:sticky lg:top-24">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-line bg-surface-2">
+            {mode === "3d" && <LazyViewer item={viewItem} finish={activeFinish} autoRotate={spin} resetKey={resetKey} onInteract={() => setSpin(false)} />}
+            {mode === "section" && section && (
+              <div className="absolute inset-0 p-8 md:p-12">
+                <SectionDrawing section={section} finish={activeFinish} dims={v.dims} showDims className="h-full w-full text-ink" title={product.name} />
               </div>
-            </div>
-          )}
-
-          <div className="absolute left-3 top-3 flex items-center gap-2">
-            <span className="rounded-md bg-surface/90 px-2.5 py-1 font-mono text-xs font-semibold backdrop-blur">{v.code}</span>
-            {product.tag && <span className="rounded-md bg-accent px-2 py-1 text-[11px] font-semibold text-accent-ink">{product.tag}</span>}
+            )}
+            {mode === "photo" && product.photo && (
+              // eslint-disable-next-line @next/next/no-img-element -- small local cut-out, already optimised webp
+              <img src={product.photo} alt={product.name} className="absolute inset-0 h-full w-full object-contain p-10 mix-blend-multiply dark:mix-blend-normal" />
+            )}
+            <span className="absolute start-3 top-3 rounded-sm bg-surface px-2 py-0.5 font-mono text-xs" dir="ltr">
+              {v.code}
+            </span>
+            {s.tag && <span className="absolute end-3 top-3 rounded-sm bg-accent px-1.5 py-0.5 text-[11px] font-medium text-accent-ink">{s.tag}</span>}
           </div>
-
-          {(section || can3D) && (
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
-              {section ? (
-                <div className="flex rounded-lg border border-line bg-surface/90 p-0.5 backdrop-blur" role="group" aria-label="View">
-                  <button type="button" className={toggle(mode === "3d")} aria-pressed={mode === "3d"} onClick={() => setMode("3d")}>
-                    <Cube size={14} weight="bold" /> 3D
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            {views.length > 1 ? (
+              <div className="flex rounded bg-surface-2 p-0.5" role="group">
+                {views.map((x) => (
+                  <button key={x.id} type="button" className={seg(mode === x.id)} aria-pressed={mode === x.id} onClick={() => setMode(x.id)}>
+                    {x.label}
                   </button>
-                  <button type="button" className={toggle(mode === "section")} aria-pressed={mode === "section"} onClick={() => setMode("section")}>
-                    <Polygon size={14} weight="bold" /> Section
-                  </button>
-                </div>
-              ) : (
-                <span />
-              )}
-              {mode === "3d" && can3D && (
-                <div className="flex rounded-lg border border-line bg-surface/90 p-0.5 backdrop-blur">
-                  <button type="button" className={toggle(false)} aria-pressed={spin} onClick={() => setSpin((s) => !s)} aria-label={spin ? "Stop rotating" : "Rotate"}>
-                    {spin ? <Pause size={14} weight="bold" /> : <Play size={14} weight="bold" />}
-                  </button>
-                  <button type="button" className={toggle(false)} onClick={() => setResetKey((k) => k + 1)} aria-label="Reset view">
-                    <ArrowCounterClockwise size={14} weight="bold" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <span />
+            )}
+            {mode === "3d" && (
+              <div className="flex gap-1">
+                <button type="button" className="grid size-8 place-items-center rounded border border-line text-muted hover:text-ink" onClick={() => setSpin((x) => !x)} aria-label={spin ? s.pause : s.rotate} title={spin ? s.pause : s.rotate}>
+                  {spin ? <Pause size={14} /> : <Play size={14} />}
+                </button>
+                <button type="button" className="grid size-8 place-items-center rounded border border-line text-muted hover:text-ink" onClick={() => setResetKey((k) => k + 1)} aria-label={s.reset} title={s.reset}>
+                  <ArrowCounterClockwise size={14} />
+                </button>
+              </div>
+            )}
+          </div>
+          <p className="mt-3 text-xs leading-relaxed text-muted">
+            {note} {s.noteColour}
+          </p>
         </div>
-        <p className="mt-3 text-xs text-muted">
-          {section && !v.dims
-            ? "Drawn from our price list sketch. Ask us for the technical drawing."
-            : "Screen colours are a guide. Ask for a physical sample before you order."}
-        </p>
       </div>
 
-      {/* Options */}
       <div className="lg:col-span-5">
-        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">{product.name}</h1>
-        <p className="mt-2 font-mono text-sm text-muted">{v.code}</p>
+        <h1 className="text-2xl font-semibold leading-tight md:text-3xl">{product.name}</h1>
+        <p className="mt-1 font-mono text-sm text-muted" dir="ltr">
+          {v.code}
+        </p>
 
-        <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line">
-          {[
-            ["Supplied as", v.len],
-            ["Sold in", v.packText],
-            ...(v.dims ? [["Size", `${v.dims[0]} × ${v.dims[1]} mm`]] : []),
-            ...(v.label && product.variants.length > 1 ? [["Option", v.label]] : []),
-          ].map(([k, val], i, all) => (
-            <div key={k} className={`bg-surface p-4 ${all.length % 2 && i === all.length - 1 ? "col-span-2" : ""}`}>
-              <dt className="text-xs text-muted">{k}</dt>
-              <dd className="mt-1 text-sm font-medium">{val}</dd>
+        <dl className="mt-6 divide-y divide-line border-y border-line text-sm">
+          {specs.map(([k, val]) => (
+            <div key={k} className="flex justify-between gap-4 py-2.5">
+              <dt className="text-muted">{k}</dt>
+              <dd className="text-end font-medium">{val}</dd>
             </div>
           ))}
         </dl>
 
         {product.variants.length > 1 && (
-          <fieldset className="mt-8">
-            <legend className="text-sm font-semibold">Size</legend>
-            <div className="mt-3 flex flex-wrap gap-2">
+          <fieldset className="mt-6">
+            <legend className="text-sm font-medium">{s.size}</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
               {product.variants.map((x, i) => (
                 <button
                   key={x.code}
                   type="button"
                   onClick={() => setVi(i)}
                   aria-pressed={i === vi}
-                  className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${i === vi ? "border-ink bg-ink text-bg" : "border-line-strong bg-surface hover:border-ink"}`}
+                  className={`rounded border px-3 py-1.5 text-start text-sm transition-colors ${i === vi ? "border-accent bg-accent-soft" : "border-line-strong bg-surface hover:border-ink"}`}
                 >
-                  <span className="block font-medium">{x.label}</span>
-                  <span className={`block font-mono text-[11px] ${i === vi ? "text-bg/70" : "text-muted"}`}>{x.code}</span>
+                  <span className="block" dir="ltr">{x.label}</span>
+                  <span className="block font-mono text-[11px] text-muted" dir="ltr">{x.code}</span>
                 </button>
               ))}
             </div>
@@ -184,11 +208,11 @@ export function ProductConfigurator({ product }: { product: ConfigProduct }) {
         )}
 
         {showFinishPicker && (
-          <fieldset className="mt-8">
-            <legend className="text-sm font-semibold">
-              Finish <span className="font-normal text-muted">{finishOf(activeFinish).name}</span>
+          <fieldset className="mt-6">
+            <legend className="text-sm font-medium">
+              {s.finish}: <span className="font-normal text-muted">{fname(activeFinish)}</span>
             </legend>
-            <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Finish">
+            <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label={s.finish}>
               {v.fin.map((f) => (
                 <button
                   key={f}
@@ -196,54 +220,54 @@ export function ProductConfigurator({ product }: { product: ConfigProduct }) {
                   role="radio"
                   aria-checked={f === activeFinish}
                   onClick={() => setFinish(f)}
-                  title={finishOf(f).name}
-                  className={`flex items-center gap-2 rounded-lg border py-1.5 pl-1.5 pr-3 text-sm transition-colors ${f === activeFinish ? "border-ink bg-surface" : "border-line bg-surface hover:border-line-strong"}`}
+                  title={fname(f)}
+                  className={`flex items-center gap-2 rounded border py-1 pe-2.5 ps-1 text-sm transition-colors ${f === activeFinish ? "border-accent bg-accent-soft" : "border-line bg-surface hover:border-line-strong"}`}
                 >
-                  <span className="size-6 rounded-md ring-1 ring-inset ring-line-strong" style={{ background: swatchBackground(f) }} />
-                  <span className="font-medium">{finishOf(f).name}</span>
+                  <span className="size-6 rounded-sm ring-1 ring-inset ring-line-strong" style={{ background: swatchBackground(f) }} />
+                  <span>{fname(f)}</span>
                 </button>
               ))}
             </div>
           </fieldset>
         )}
 
-        <div className="mt-10 rounded-2xl border border-line bg-surface p-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex h-12 items-center rounded-lg border border-line-strong">
-              <button type="button" className="grid h-full w-11 place-items-center text-muted hover:text-ink" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Fewer">
-                <Minus size={16} weight="bold" />
-              </button>
-              <label className="sr-only" htmlFor="qty">Quantity</label>
-              <input
-                id="qty"
-                inputMode="numeric"
-                value={qty}
-                onChange={(e) => setQty(Math.max(1, parseInt(e.target.value.replace(/\D/g, ""), 10) || 1))}
-                className="h-full w-12 bg-transparent text-center font-mono text-base font-semibold focus:outline-none"
-              />
-              <button type="button" className="grid h-full w-11 place-items-center text-muted hover:text-ink" onClick={() => setQty((q) => q + 1)} aria-label="More">
-                <Plus size={16} weight="bold" />
-              </button>
-            </div>
-            <span className="text-sm text-muted">{unitLabel(product.unit, qty)}</span>
-            <button
-              type="button"
-              onClick={add}
-              className="ml-auto inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-6 text-[15px] font-semibold text-accent-ink transition-[background-color,transform] hover:bg-accent-hover active:translate-y-px sm:flex-none"
-            >
-              {added ? <Check size={18} weight="bold" /> : <Plus size={18} weight="bold" />}
-              {added ? "Added" : "Add to quote list"}
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="flex h-10 items-center rounded border border-line-strong">
+            <button type="button" className="grid h-full w-10 place-items-center text-muted hover:text-ink" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label={s.fewer}>
+              <Minus size={14} />
+            </button>
+            <label className="sr-only" htmlFor="qty">
+              {s.quantity}
+            </label>
+            <input
+              id="qty"
+              inputMode="numeric"
+              value={qty}
+              onChange={(e) => setQty(Math.max(1, parseInt(e.target.value.replace(/\D/g, ""), 10) || 1))}
+              className="h-full w-12 bg-transparent text-center font-mono text-sm focus:outline-none"
+            />
+            <button type="button" className="grid h-full w-10 place-items-center text-muted hover:text-ink" onClick={() => setQty((q) => q + 1)} aria-label={s.more}>
+              <Plus size={14} />
             </button>
           </div>
-          {inQuote > 0 && (
-            <p className="mt-3 text-sm text-muted">
-              {inQuote} {unitLabel(product.unit, inQuote)} of {v.code} in your list.{" "}
-              <Link href="/quote" className="font-semibold text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
-                Review and send
-              </Link>
-            </p>
-          )}
+          <span className="text-sm text-muted">{unit(qty)}</span>
+          <button
+            type="button"
+            onClick={add}
+            className="ms-auto inline-flex h-10 flex-1 items-center justify-center gap-2 rounded bg-accent px-5 text-sm font-medium text-accent-ink transition-colors hover:bg-accent-hover sm:flex-none"
+          >
+            {added ? <Check size={16} /> : <Plus size={16} />}
+            {added ? s.added : s.add}
+          </button>
         </div>
+        {inQuote > 0 && (
+          <p className="mt-3 text-sm text-muted">
+            {fill(s.inQuote, { n: inQuote, unit: unit(inQuote), code: v.code })}{" "}
+            <Link href={s.quoteHref} className="font-medium text-accent hover:underline">
+              {s.reviewQuote}
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   );

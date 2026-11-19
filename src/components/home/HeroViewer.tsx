@@ -5,56 +5,62 @@ import { useState } from "react";
 import { ArrowRight } from "@phosphor-icons/react";
 import { LazyViewer } from "@/components/three/LazyViewer";
 import type { ViewItem } from "@/components/three/scene";
-import { finishOf, swatchBackground } from "@/lib/finishes";
+import { swatchBackground } from "@/lib/finishes";
 
 interface Props {
   item: ViewItem;
   code: string;
   name: string;
   dims?: [number, number];
-  finishes: string[];
+  finishes: { code: string; name: string }[];
   href: string;
+  caption: string;
+  viewLabel: string;
 }
 
-// Live 3D render of a real YT profile. Visitors can recolour it with the finishes it comes in.
-export function HeroViewer({ item, code, name, dims, finishes, href }: Props) {
-  const [finish, setFinish] = useState(finishes.includes("MM") ? "MM" : finishes[0]);
+// Live 3D model of a stocked profile; visitors can preview it in the finishes it is sold in.
+export function HeroViewer({ item, code, name, dims, finishes, href, caption, viewLabel }: Props) {
+  const [finish, setFinish] = useState(finishes.some((f) => f.code === "MM") ? "MM" : finishes[0].code);
+  const current = finishes.find((f) => f.code === finish)?.name ?? finish;
   return (
-    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-panel">
-      <div className="relative min-h-[300px] flex-1 bg-[radial-gradient(ellipse_at_50%_35%,var(--surface)_0%,var(--surface-2)_100%)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-md border border-line">
+      <div className="relative min-h-[280px] flex-1 bg-surface-2">
         <LazyViewer item={item} finish={finish} />
-        <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-surface/90 px-2.5 py-1 font-mono text-xs font-semibold backdrop-blur">
+        <span className="pointer-events-none absolute start-3 top-3 rounded-sm bg-surface px-2 py-0.5 font-mono text-xs" dir="ltr">
           {code}
-        </div>
+        </span>
       </div>
-      <div className="flex flex-col gap-4 border-t border-line p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-t border-line bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-semibold">
+          <p className="text-sm font-medium">
             {name}
-            {dims && <span className="ml-2 font-mono text-xs font-normal text-muted">{dims[0]} × {dims[1]} mm</span>}
+            {dims && (
+              <span className="ms-2 font-mono text-xs font-normal text-muted" dir="ltr">
+                {dims[0]} × {dims[1]} mm
+              </span>
+            )}
           </p>
-          <p className="mt-0.5 text-xs text-muted">
-            Shown in <span className="text-ink">{finishOf(finish).name}</span>. Drag to rotate.
-          </p>
+          <p className="mt-0.5 text-xs text-muted">{caption.replace("{finish}", current)}</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1.5" role="radiogroup" aria-label="Preview finish">
+          <div className="flex gap-1.5" role="radiogroup" aria-label={name}>
             {finishes.map((f) => (
               <button
-                key={f}
+                key={f.code}
                 type="button"
                 role="radio"
-                aria-checked={finish === f}
-                aria-label={finishOf(f).name}
-                title={finishOf(f).name}
-                onClick={() => setFinish(f)}
-                className={`size-6 rounded-full ring-1 ring-inset ring-line-strong transition-transform hover:scale-110 ${finish === f ? "outline-2 outline-offset-2 outline-accent" : ""}`}
-                style={{ background: swatchBackground(f), outlineStyle: finish === f ? "solid" : "none" }}
+                aria-checked={finish === f.code}
+                aria-label={f.name}
+                title={f.name}
+                onClick={() => setFinish(f.code)}
+                className={`size-6 rounded-full ring-1 ring-inset ring-line-strong ${finish === f.code ? "outline outline-2 outline-offset-2 outline-accent" : ""}`}
+                style={{ background: swatchBackground(f.code) }}
               />
             ))}
           </div>
-          <Link href={href} className="grid size-9 shrink-0 place-items-center rounded-lg border border-line-strong hover:border-ink" aria-label={`View ${code} ${name}`}>
-            <ArrowRight size={16} weight="bold" />
+          <Link href={href} className="inline-flex h-8 shrink-0 items-center gap-1 rounded border border-line-strong px-2.5 text-xs font-medium hover:bg-surface-2">
+            {viewLabel}
+            <ArrowRight size={12} className="rtl:-scale-x-100" />
           </Link>
         </div>
       </div>

@@ -4,36 +4,40 @@
   Design tokens. One cool "anodised" neutral palette and one accent (signal orange, a nod to
   site hi-vis). Shape rule: controls (buttons, inputs, chips) are 8px, panels and cards are 16px.
 */
+/*
+  Design tokens. Neutral greys with one steel-blue accent.
+  Shape rule: controls (buttons, inputs, chips) use 4px corners, panels and cards 6px.
+*/
 :root {
-  --bg: #f3f4f5;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #e8eaec;
-  --ink: #121417;
-  --muted: #545c65;
-  --line: rgb(18 20 23 / 0.11);
-  --line-strong: rgb(18 20 23 / 0.22);
-  --accent: #c2410c;
-  --accent-hover: #a8380a;
+  --surface-2: #f2f3f5;
+  --ink: #16191d;
+  --muted: #5a626c;
+  --line: #e2e5e9;
+  --line-strong: #c9ced4;
+  --accent: #1f4a7a;
+  --accent-hover: #183c64;
   --accent-ink: #ffffff;
-  --accent-soft: rgb(194 65 12 / 0.09);
-  --shadow: 0 1px 2px rgb(18 20 23 / 0.04), 0 8px 24px -12px rgb(18 20 23 / 0.14);
+  --accent-soft: #e9eff6;
+  --shadow: 0 1px 2px rgb(22 25 29 / 0.06);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e1013;
-    --surface: #16191d;
-    --surface-2: #1f2328;
-    --ink: #eceef0;
-    --muted: #a0a8b1;
-    --line: rgb(255 255 255 / 0.09);
-    --line-strong: rgb(255 255 255 / 0.2);
-    --accent: #f26b2a;
-    --accent-hover: #ff7d3f;
-    --accent-ink: #160a03;
-    --accent-soft: rgb(242 107 42 / 0.12);
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -14px rgb(0 0 0 / 0.6);
+    --bg: #0f1114;
+    --surface: #15181c;
+    --surface-2: #1c2025;
+    --ink: #e9ecef;
+    --muted: #9aa3ad;
+    --line: #2a2f35;
+    --line-strong: #3b4249;
+    --accent: #7aa8d8;
+    --accent-hover: #93bae3;
+    --accent-ink: #0b1520;
+    --accent-soft: #1a2633;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
     color-scheme: dark;
   }
 }
@@ -51,7 +55,7 @@
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --shadow-panel: var(--shadow);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), var(--font-locale, ui-sans-serif), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
@@ -68,8 +72,8 @@ body {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--accent-soft);
+  color: var(--ink);
 }
 
 :focus-visible {

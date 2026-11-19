@@ -1,13 +1,11 @@
 import Link from "next/link";
 
-// Placeholder wordmark until YT's own logo file is supplied.
-export function Logo() {
+// Text wordmark until YT's own logo file is supplied.
+export function Logo({ href }: { href: string }) {
   return (
-    <Link href="/" className="group flex items-center gap-2.5" aria-label="YT Aluminium, home">
-      <span className="grid size-8 place-items-center rounded-lg bg-ink font-mono text-[13px] font-bold tracking-tight text-bg">
-        YT
-      </span>
-      <span className="text-[15px] font-semibold tracking-tight">Aluminium</span>
+    <Link href={href} className="flex items-center gap-2" aria-label="YT Aluminium">
+      <span className="grid h-7 w-9 place-items-center rounded bg-ink font-mono text-xs font-bold text-bg">YT</span>
+      <span className="text-[15px] font-semibold">YT Aluminium</span>
     </Link>
   );
 }
