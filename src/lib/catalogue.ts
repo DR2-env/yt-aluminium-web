@@ -1,0 +1,140 @@
+import raw from "@/data/catalogue.json";
+
+export type Kind = "profile" | "cap" | "flat" | "photo" | "none" | "spool" | "packer" | "roll" | "sheet";
+export type Point = [number, number];
+
+export interface Section {
+  w: number;
+  h: number;
+  depth?: number;
+  shapes: { outer: Point[]; holes: Point[][] }[];
+}
+
+export interface Variant {
+  code: string;
+  label: string;
+  t?: number;
+  len?: string;
+  w?: number;
+  h?: number;
+  sec?: string;
+  fin?: string[];
+  pack?: number;
+  dims?: [number, number];
+}
+
+export interface Product {
+  id: string;
+  code: string;
+  name: string;
+  kind: Kind;
+  grp?: string;
+  pack: number;
+  len: string;
+  unit: string;
+  fin: string[];
+  sec?: string;
+  dims?: [number, number];
+  ranges: string[];
+  note?: string;
+  suits?: string;
+  rubber?: boolean;
+  img?: string;
+  tag?: "New" | "Special";
+  packtext?: string;
+  spool?: string;
+  variants?: Variant[];
+  mesh?: string;
+  w?: number;
+  h?: number;
+  t?: number;
+}
+
+export interface Range {
+  id: string;
+  name: string;
+  blurb: string;
+  items: string[];
+}
+
+/** A product with one size variant merged in. This is what the viewer and quote list work with. */
+export interface Item extends Omit<Product, "variants"> {
+  label?: string;
+  variantIndex: number;
+  variantCount: number;
+}
+
+interface CatalogueData {
+  ranges: Range[];
+  products: Record<string, Product>;
+  sections: Record<string, Section>;
+  photos: Record<string, string>;
+}
+
+const data = raw as unknown as CatalogueData;
+
+export const RANGES = data.ranges;
+export const PRODUCTS = data.products;
+export const SECTIONS = data.sections;
+export const PHOTOS = data.photos;
+
+export const slugify = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+export const productSlug = (p: Pick<Product, "id">) => slugify(p.id);
+export const productHref = (p: Pick<Product, "id">) => `/products/item/${productSlug(p)}`;
+export const rangeHref = (r: Pick<Range, "id">) => `/products/${r.id}`;
+
+export const hasSection = (kind: Kind) => kind === "profile" || kind === "cap" || kind === "flat";
+export const is3D = (kind: Kind) => hasSection(kind) || ["spool", "roll", "sheet", "packer"].includes(kind);
+
+export function resolveItem(p: Product, variantIndex = 0): Item {
+  const v = p.variants?.[variantIndex] ?? p.variants?.[0];
+  const { variants, ...base } = p;
+  return {
+    ...base,
+    ...(v ?? {}),
+    name: p.name,
+    label: v?.label,
+    variantIndex: v ? Math.max(0, variantIndex) : 0,
+    variantCount: variants?.length ?? 0,
+  };
+}
+
+export function getProductBySlug(slug: string): Product | undefined {
+  return Object.values(PRODUCTS).find((p) => productSlug(p) === slug);
+}
+
+export function getRange(id: string): Range | undefined {
+  return RANGES.find((r) => r.id === id);
+}
+
+export function productsInRange(r: Range): Product[] {
+  return r.items.map((id) => PRODUCTS[id]).filter((p): p is Product => Boolean(p));
+}
+
+/** Total number of orderable codes, counting each size variant. */
+export const CODE_COUNT = Object.values(PRODUCTS).reduce((n, p) => n + (p.variants?.length || 1), 0);
+
+export { unitLabel } from "./units";
+import { unitLabel } from "./units";
+
+export function packText(c: Pick<Item, "packtext" | "unit" | "pack">): string {
+  if (c.packtext) return c.packtext;
+  if (c.unit === "length") return c.pack > 1 ? `Bundles of ${c.pack}` : "Single lengths";
+  if (c.unit === "pack" || c.pack > 1) return `Packs of ${c.pack}`;
+  return `Per ${unitLabel(c.unit, 1)}`;
+}
+
+export function defaultFinish(fin: string[], preferred = "MM"): string {
+  if (fin.includes(preferred)) return preferred;
+  if (fin.includes("MM")) return "MM";
+  return fin[0] ?? "NA";
+}
+
+/** Every searchable code (product and variant) pointing back to its product and size. */
+export const CODE_INDEX: { code: string; pid: string; variantIndex: number }[] = Object.values(PRODUCTS).flatMap((p) =>
+  p.variants?.length
+    ? p.variants.map((v, i) => ({ code: v.code, pid: p.id, variantIndex: i }))
+    : [{ code: p.code, pid: p.id, variantIndex: 0 }],
+);
