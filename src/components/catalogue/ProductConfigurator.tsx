@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ArrowCounterClockwise, Check, Minus, Pause, Play, Plus } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, Check, Minus, Pause, Play, Plus, WhatsappLogo } from "@phosphor-icons/react";
 import { LazyViewer } from "@/components/three/LazyViewer";
 import { SectionDrawing } from "./SectionDrawing";
 import { finishOf, swatchBackground } from "@/lib/finishes";
 import { quote, useQuote } from "@/lib/quote-store";
+import { whatsappLink } from "@/lib/site";
 import type { Section } from "@/lib/catalogue";
 
 export interface ConfigVariant {
@@ -34,6 +35,8 @@ export interface ConfigProduct {
   spool?: string;
   rubber?: boolean;
   photo?: string;
+  /** Pre-rendered picture shown until the live 3D model is ready. */
+  poster: string;
   note: "section" | "standin" | "model";
   variants: ConfigVariant[];
   sections: Record<string, Section>;
@@ -62,6 +65,9 @@ export interface ConfigStrings {
   noteStandin: string;
   noteModel: string;
   noteColour: string;
+  ask: string;
+  askMessage: string;
+  price: string;
   tag?: string;
   units: Record<string, string[]>;
   finishNames: Record<string, string>;
@@ -83,6 +89,7 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
   const [spin, setSpin] = useState(true);
   const [resetKey, setResetKey] = useState(0);
   const [added, setAdded] = useState(false);
+  const [ready, setReady] = useState(false);
   const lines = useQuote();
 
   const unit = (n: number) => (s.units[product.unit] ?? s.units.item)[n === 1 ? 0 : 1];
@@ -128,7 +135,11 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
       <div className="lg:col-span-7">
         <div className="lg:sticky lg:top-24">
           <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-line bg-surface-2">
-            {mode === "3d" && <LazyViewer item={viewItem} finish={activeFinish} autoRotate={spin} resetKey={resetKey} onInteract={() => setSpin(false)} />}
+            {mode === "3d" && !ready && (
+              // eslint-disable-next-line @next/next/no-img-element -- local pre-rendered placeholder
+              <img src={product.poster} alt={product.name} className="absolute inset-0 h-full w-full object-contain p-6" />
+            )}
+            {mode === "3d" && <LazyViewer item={viewItem} finish={activeFinish} autoRotate={spin} resetKey={resetKey} onInteract={() => setSpin(false)} onReady={() => setReady(true)} />}
             {mode === "section" && section && (
               <div className="absolute inset-0 p-8 md:p-12">
                 <SectionDrawing section={section} finish={activeFinish} dims={v.dims} showDims className="h-full w-full text-ink" title={product.name} />
@@ -187,6 +198,17 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           ))}
         </dl>
 
+        <p className="mt-4 rounded border border-line bg-surface-2 p-3 text-sm leading-relaxed">{s.price}</p>
+        <a
+          href={whatsappLink(fill(s.askMessage, { code: v.code, name: product.nameEn }))}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded border border-line-strong text-[15px] font-medium hover:bg-surface-2 sm:w-auto sm:px-4"
+        >
+          <WhatsappLogo size={18} />
+          {s.ask}
+        </a>
+
         {product.variants.length > 1 && (
           <fieldset className="mt-6">
             <legend className="text-sm font-medium">{s.size}</legend>
@@ -231,8 +253,8 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           </fieldset>
         )}
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <div className="flex h-10 items-center rounded border border-line-strong">
+        <div className="sticky bottom-[calc(3.6rem+env(safe-area-inset-bottom))] z-10 -mx-4 mt-8 flex flex-wrap items-center gap-3 border-t border-line bg-bg px-4 py-3 sm:static sm:mx-0 sm:border-0 sm:p-0">
+          <div className="flex h-11 items-center rounded border border-line-strong">
             <button type="button" className="grid h-full w-10 place-items-center text-muted hover:text-ink" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label={s.fewer}>
               <Minus size={14} />
             </button>
@@ -254,7 +276,7 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           <button
             type="button"
             onClick={add}
-            className="ms-auto inline-flex h-10 flex-1 items-center justify-center gap-2 rounded bg-accent px-5 text-sm font-medium text-accent-ink transition-colors hover:bg-accent-hover sm:flex-none"
+            className="ms-auto inline-flex h-11 flex-1 items-center justify-center gap-2 rounded bg-accent px-5 text-[15px] font-medium text-accent-ink transition-colors hover:bg-accent-hover sm:flex-none"
           >
             {added ? <Check size={16} /> : <Plus size={16} />}
             {added ? s.added : s.add}

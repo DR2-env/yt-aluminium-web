@@ -13,7 +13,7 @@
   --surface: #ffffff;
   --surface-2: #f2f3f5;
   --ink: #16191d;
-  --muted: #5a626c;
+  --muted: #474f58;
   --line: #e2e5e9;
   --line-strong: #c9ced4;
   --accent: #1f4a7a;
@@ -30,7 +30,7 @@
     --surface: #15181c;
     --surface-2: #1c2025;
     --ink: #e9ecef;
-    --muted: #9aa3ad;
+    --muted: #aeb6bf;
     --line: #2a2f35;
     --line-strong: #3b4249;
     --accent: #7aa8d8;
@@ -61,6 +61,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* 17px base: easier reading on phones for all four scripts. */
+  font-size: 106.25%;
 }
 
 body {

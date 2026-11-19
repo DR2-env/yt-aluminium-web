@@ -8,6 +8,8 @@ export const SITE = {
   mobile: "0451 569 228",
   mobileHref: "tel:+61451569228",
   whatsapp: "61451569228",
+  // WeChat ID shown on the quote and contact pages. Leave empty to hide until confirmed.
+  wechatId: "",
   email: "ytaluminium@gmail.com",
   address: {
     street: "3 Marigold Place",

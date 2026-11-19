@@ -136,6 +136,24 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref }: Pro
   return (
     <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
       <div className="lg:col-span-7">
+        <div className="mb-6 rounded-md border border-accent/30 bg-accent-soft p-5">
+          <p className="text-lg font-semibold">{q.photoTitle}</p>
+          <p className="mt-1 leading-relaxed">{q.photoText}</p>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+            <a
+              href={whatsappLink(q.photoMessage + " ")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded bg-accent px-4 text-[15px] font-medium text-accent-ink hover:bg-accent-hover"
+            >
+              <WhatsappLogo size={18} />
+              {q.photoButton}
+            </a>
+            {SITE.wechatId && (
+              <span className="text-sm font-medium">{fill(q.wechat, { id: SITE.wechatId })}</span>
+            )}
+          </div>
+        </div>
         {lines.length === 0 ? (
           <div className="rounded-md border border-line bg-surface-2 p-10 text-center">
             <p className="font-medium">{q.empty}</p>
@@ -149,7 +167,7 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref }: Pro
             {lines.map((l) => (
               <li key={`${l.code}|${l.finish}`} className="flex flex-wrap items-center gap-4 p-4">
                 <span className="size-8 shrink-0 rounded-sm ring-1 ring-inset ring-line-strong" style={{ background: swatchBackground(l.finish) }} aria-hidden />
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-48">
                   <p className="text-sm font-medium leading-snug">
                     <span className="font-mono" dir="ltr">{l.code}</span> {localName.get(l.code) ?? l.name}
                     {l.label && <span className="text-muted" dir="ltr"> {l.label}</span>}

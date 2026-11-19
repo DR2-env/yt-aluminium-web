@@ -5,6 +5,7 @@ import "../globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileActionBar } from "@/components/layout/MobileActionBar";
+import { LanguageSuggest } from "@/components/layout/LanguageSuggest";
 import type { LayoutStrings } from "@/components/layout/types";
 import { LOCALES, LOCALE_META, getDictionary, isLocale, localePath, type Locale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
@@ -70,6 +71,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded focus:bg-surface focus:px-4 focus:py-2">
           {d.nav.skip}
         </a>
+        <LanguageSuggest lang={lang} texts={Object.fromEntries(LOCALES.map((l) => [l, getDictionary(l).suggest.text])) as Record<Locale, string>} />
         <SiteHeader s={strings} />
         <main id="main">{children}</main>
         <SiteFooter lang={lang} />

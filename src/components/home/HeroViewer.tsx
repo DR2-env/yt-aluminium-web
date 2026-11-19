@@ -16,16 +16,23 @@ interface Props {
   href: string;
   caption: string;
   viewLabel: string;
+  /** Pre-rendered picture shown until the live 3D model is ready. */
+  poster: string;
 }
 
 // Live 3D model of a stocked profile; visitors can preview it in the finishes it is sold in.
-export function HeroViewer({ item, code, name, dims, finishes, href, caption, viewLabel }: Props) {
+export function HeroViewer({ item, code, name, dims, finishes, href, caption, viewLabel, poster }: Props) {
   const [finish, setFinish] = useState(finishes.some((f) => f.code === "MM") ? "MM" : finishes[0].code);
+  const [ready, setReady] = useState(false);
   const current = finishes.find((f) => f.code === finish)?.name ?? finish;
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md border border-line">
-      <div className="relative min-h-[280px] flex-1 bg-surface-2">
-        <LazyViewer item={item} finish={finish} />
+      <div className="relative min-h-[240px] flex-1 bg-surface-2">
+        {!ready && (
+          // eslint-disable-next-line @next/next/no-img-element -- local pre-rendered placeholder
+          <img src={poster} alt={name} className="absolute inset-0 h-full w-full object-contain p-4" />
+        )}
+        <LazyViewer item={item} finish={finish} onReady={() => setReady(true)} />
         <span className="pointer-events-none absolute start-3 top-3 rounded-sm bg-surface px-2 py-0.5 font-mono text-xs" dir="ltr">
           {code}
         </span>
@@ -53,12 +60,12 @@ export function HeroViewer({ item, code, name, dims, finishes, href, caption, vi
                 aria-label={f.name}
                 title={f.name}
                 onClick={() => setFinish(f.code)}
-                className={`size-6 rounded-full ring-1 ring-inset ring-line-strong ${finish === f.code ? "outline outline-2 outline-offset-2 outline-accent" : ""}`}
+                className={`size-7 rounded-full ring-1 ring-inset ring-line-strong ${finish === f.code ? "outline outline-2 outline-offset-2 outline-accent" : ""}`}
                 style={{ background: swatchBackground(f.code) }}
               />
             ))}
           </div>
-          <Link href={href} className="inline-flex h-8 shrink-0 items-center gap-1 rounded border border-line-strong px-2.5 text-xs font-medium hover:bg-surface-2">
+          <Link href={href} className="inline-flex h-9 shrink-0 items-center gap-1 rounded border border-line-strong px-2.5 text-xs font-medium hover:bg-surface-2">
             {viewLabel}
             <ArrowRight size={12} className="rtl:-scale-x-100" />
           </Link>

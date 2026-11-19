@@ -12,16 +12,20 @@ interface Props {
   /** Bump to re-frame the camera (used by a "reset view" button). */
   resetKey?: number;
   onInteract?: () => void;
+  /** Called once the model has been drawn, so a placeholder image can be removed. */
+  onReady?: () => void;
 }
 
-export default function Viewer3D({ item, finish, autoRotate = true, resetKey = 0, onInteract }: Props) {
+export default function Viewer3D({ item, finish, autoRotate = true, resetKey = 0, onInteract, onReady }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageRef = useRef<Stage | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const onInteractRef = useRef(onInteract);
+  const onReadyRef = useRef(onReady);
   useEffect(() => {
     onInteractRef.current = onInteract;
+    onReadyRef.current = onReady;
   });
 
   // One renderer per mounted viewer; render loop pauses when off screen or tab hidden.
@@ -68,11 +72,16 @@ export default function Viewer3D({ item, finish, autoRotate = true, resetKey = 0
     io.observe(wrap);
 
     let raf = 0;
+    let readySent = false;
     const loop = () => {
       raf = requestAnimationFrame(loop);
       if (!visible || document.hidden) return;
       controls.update();
       stage.renderer.render(stage.scene, stage.camera);
+      if (!readySent && stage.obj) {
+        readySent = true;
+        onReadyRef.current?.();
+      }
     };
     loop();
 

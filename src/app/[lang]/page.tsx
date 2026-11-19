@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, MapPin } from "@phosphor-icons/react/ssr";
+import { ArrowRight, CheckCircle, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { HeroViewer } from "@/components/home/HeroViewer";
 import { ProductVisual } from "@/components/catalogue/ProductVisual";
 import { LinkButton } from "@/components/ui/Button";
-import { CODE_COUNT, PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
+import { CODE_COUNT, PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, renderSrc, resolveItem } from "@/lib/catalogue";
 import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
-import { SITE, fullAddress } from "@/lib/site";
-import { finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
+import { SITE, fullAddress, whatsappLink } from "@/lib/site";
+import { LOCALES, LOCALE_META, finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
 
 function rangeCover(rangeId: string) {
   const range = RANGES.find((r) => r.id === rangeId);
@@ -28,20 +28,53 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
     <>
       {/* Hero */}
       <section className="border-b border-line">
-        <div className="mx-auto grid max-w-[1280px] gap-10 px-4 py-12 md:px-8 md:py-16 lg:grid-cols-12 lg:items-center lg:gap-14">
-          <div className="lg:col-span-5">
-            <h1 className="text-3xl font-semibold leading-tight text-balance md:text-[2.6rem]">{d.home.heroTitle}</h1>
-            <p className="mt-5 max-w-[46ch] text-base leading-relaxed text-muted md:text-lg">{d.home.heroText}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <LinkButton href={p("/products")} size="lg">
+        <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-4 py-8 md:px-8 md:py-14 lg:grid-cols-12 lg:items-center lg:gap-14">
+          <div className="lg:col-span-6">
+            <p className="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-muted">
+              <span className="me-1">{d.home.languageBar}</span>
+              {LOCALES.map((l) => (
+                <Link
+                  key={l}
+                  href={localePath(l, "/")}
+                  lang={LOCALE_META[l].htmlLang}
+                  className={`rounded border px-2 py-0.5 ${l === lang ? "border-accent bg-accent-soft font-medium text-ink" : "border-line hover:border-line-strong"}`}
+                >
+                  {LOCALE_META[l].label}
+                </Link>
+              ))}
+            </p>
+            <h1 className="mt-5 text-3xl font-semibold leading-tight text-balance md:text-[2.6rem]">{d.home.heroTitle}</h1>
+            <p className="mt-4 max-w-[46ch] text-lg leading-relaxed text-muted">{d.home.heroText}</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a
+                href={whatsappLink(d.home.sendListMessage + " ")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded bg-accent px-5 text-base font-medium text-accent-ink hover:bg-accent-hover"
+              >
+                <WhatsappLogo size={20} />
+                {d.home.sendList}
+              </a>
+              <LinkButton href={p("/products")} variant="secondary" size="lg" className="h-12 text-base">
                 {d.home.viewProducts}
               </LinkButton>
-              <LinkButton href={p("/quote")} variant="secondary" size="lg">
-                {d.home.requestQuote}
-              </LinkButton>
             </div>
+            <a href={SITE.phoneHref} className="mt-4 inline-flex items-center gap-2 text-base font-medium hover:text-accent">
+              <Phone size={18} />
+              <span>{fmt(d.home.callUs, { phone: "" })}</span>
+              <span dir="ltr">{SITE.phone}</span>
+            </a>
+            <ul className="mt-6 grid grid-cols-2 gap-2 [&>li]:min-w-0">
+              {d.home.perks.map((perk) => (
+                <li key={perk} className="flex items-start gap-2 rounded border border-line bg-surface-2 px-3 py-2 text-sm font-medium">
+                  <CheckCircle size={18} weight="fill" className="mt-0.5 shrink-0 text-accent" />
+                  {perk}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs text-muted">{d.home.perksNote}</p>
           </div>
-          <div className="h-[400px] md:h-[480px] lg:col-span-7">
+          <div className="h-[340px] md:h-[460px] lg:col-span-6">
             <HeroViewer
               item={{ id: hero.id, kind: hero.kind, section: SECTIONS[hero.sec ?? "AU014"] }}
               code={hero.code}
@@ -51,8 +84,25 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               href={p(productHref(hero))}
               caption={d.home.heroCaption}
               viewLabel={d.home.viewProduct}
+              poster={renderSrc(hero)}
             />
           </div>
+        </div>
+      </section>
+
+      {/* How to order */}
+      <section className="border-y border-line bg-surface-2">
+        <div className="mx-auto max-w-[1280px] px-4 py-14 md:px-8 md:py-20">
+          <h2 className="text-2xl font-semibold md:text-3xl">{d.home.orderTitle}</h2>
+          <ol className="mt-8 grid gap-8 md:grid-cols-3 md:gap-10">
+            {d.home.orderSteps.map((step, i) => (
+              <li key={step.title} className="border-t-2 border-accent pt-5">
+                <span className="font-mono text-sm text-muted">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
+                <p className="mt-2 leading-relaxed text-muted">{step.text}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -82,22 +132,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               </Link>
             );
           })}
-        </div>
-      </section>
-
-      {/* How to order */}
-      <section className="border-y border-line bg-surface-2">
-        <div className="mx-auto max-w-[1280px] px-4 py-14 md:px-8 md:py-20">
-          <h2 className="text-2xl font-semibold md:text-3xl">{d.home.orderTitle}</h2>
-          <ol className="mt-8 grid gap-8 md:grid-cols-3 md:gap-10">
-            {d.home.orderSteps.map((step, i) => (
-              <li key={step.title} className="border-t-2 border-accent pt-5">
-                <span className="font-mono text-sm text-muted">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
-                <p className="mt-2 leading-relaxed text-muted">{step.text}</p>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 
