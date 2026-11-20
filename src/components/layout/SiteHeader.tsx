@@ -37,11 +37,12 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
   const quoteButton = (extra = "") => (
     <Link
       href={s.quote.href}
-      className={`inline-flex h-9 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors ${quoteActive ? "border-ink bg-ink text-white" : "border-line-strong hover:border-ink"} ${extra}`}
+      aria-current={quoteActive ? "page" : undefined}
+      className={`inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-white transition-opacity hover:opacity-90 ${extra}`}
     >
       {s.quote.label}
       {lines.length > 0 && (
-        <span className={`grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] leading-5 tabular-nums ${quoteActive ? "bg-white text-ink" : "bg-ink text-white"}`}>
+        <span className="grid min-w-5 place-items-center rounded-full bg-white px-1.5 text-[11px] leading-5 text-ink tabular-nums">
           {lines.length}
         </span>
       )}

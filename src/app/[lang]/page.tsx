@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { ProductVisual } from "@/components/catalogue/ProductVisual";
 import { SectionDrawing } from "@/components/catalogue/SectionDrawing";
-import { LinkButton } from "@/components/ui/Button";
+import { HeroRequest } from "@/components/quote/HeroRequest";
 import { PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
 import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
 import { whatsappLink } from "@/lib/site";
@@ -30,20 +30,22 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   // Pre-filled text stays in English so staff can read it.
   const sendListHref = whatsappLink(getDictionary("en").home.sendListMessage + " ");
 
+  // Closing call to action: the quote form first, WhatsApp for people who prefer it.
   const actions = (
     <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <Link href={p("/quote")} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+        {d.nav.quoteCta}
+        <ArrowRight size={16} className="rtl:-scale-x-100" />
+      </Link>
       <a
         href={sendListHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 text-[15px] font-medium"
+        className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-[15px] font-medium hover:border-ink"
       >
         <WhatsappLogo size={18} />
         {d.home.sendList}
       </a>
-      <LinkButton href={p("/products")} variant="secondary" size="lg" className="h-12 bg-transparent px-6 text-[15px]">
-        {d.home.viewProducts}
-      </LinkButton>
     </div>
   );
 
@@ -54,7 +56,21 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           <div className="lg:col-span-7">
             <h1 className="display text-balance text-[2.5rem] sm:text-6xl lg:text-[4.25rem]">{d.home.heroTitle}</h1>
             <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
-            <div className="mt-10">{actions}</div>
+            <div className="mt-10 max-w-[560px]">
+              <HeroRequest
+                quoteHref={p("/quote")}
+                label={d.home.askLabel}
+                placeholder={d.home.askPlaceholder}
+                button={d.home.askButton}
+                photo={d.home.askPhoto}
+                photoHint={d.home.askPhotoHint}
+                photoTooBig={d.quote.photoTooBig}
+              />
+              <Link href={p("/products")} className="mt-5 inline-flex items-center gap-1.5 text-[15px] text-muted hover:text-ink">
+                {d.home.viewProducts}
+                <ArrowRight size={14} className="rtl:-scale-x-100" />
+              </Link>
+            </div>
           </div>
 
           <Link href={p(productHref(hero))} className="group block lg:col-span-5" aria-label={`${hero.code} ${tc(lang, hero.name)}`}>

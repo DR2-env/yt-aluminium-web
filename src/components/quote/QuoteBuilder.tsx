@@ -1,26 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Check, Copy, EnvelopeSimple, Minus, Plus, Trash, WhatsappLogo } from "@phosphor-icons/react";
-import { lineText, quote, useQuote, type QuoteLine } from "@/lib/quote-store";
-import { finishOf, swatchBackground } from "@/lib/finishes";
-import { SITE, mailtoLink, whatsappLink } from "@/lib/site";
+import { useRef, useState } from "react";
+import { Camera, CheckCircle, Minus, Plus, Trash, WhatsappLogo, X } from "@phosphor-icons/react";
+import { lineText, quote, useQuote } from "@/lib/quote-store";
+import { clearDraft, prepareFile, takeDraft, type DraftPhoto } from "@/lib/quote-draft";
+import type { QuoteRequest } from "@/lib/quote-request";
+import { swatchBackground } from "@/lib/finishes";
+import { SITE, whatsappLink } from "@/lib/site";
 import type { Dictionary } from "@/i18n/dictionaries/en";
-
-/** Lookup the page passes in so the paste box can recognise codes. */
-export interface CodeEntry {
-  code: string;
-  pid: string;
-  /** English name: the message to YT always uses English so it maps to MYOB. */
-  name: string;
-  /** Name in the page language, for display. */
-  localName: string;
-  label?: string;
-  fin: string[];
-  unit: string;
-  multi: boolean;
-}
+import type { Locale } from "@/i18n/config";
 
 interface Details {
   name: string;
@@ -29,232 +18,247 @@ interface Details {
   suburb: string;
   delivery: "deliver" | "collect";
   notes: string;
+  website: string; // honeypot
 }
 
-const EMPTY_DETAILS: Details = { name: "", company: "", phone: "", suburb: "", delivery: "deliver", notes: "" };
+const EMPTY: Details = { name: "", company: "", phone: "", suburb: "", delivery: "deliver", notes: "", website: "" };
 const fill = (t: string, vars: Record<string, string | number>) => t.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
-// Turns "AU014 x4 MM", "4 x au014", "AU014 - 4 lengths" into quote lines.
-function parseList(text: string, codes: CodeEntry[]) {
-  const byCode = new Map(codes.map((c) => [c.code.toUpperCase().replace(/\s+/g, ""), c]));
-  const sorted = [...byCode.keys()].sort((a, b) => b.length - a.length);
-  const found: QuoteLine[] = [];
-  const missed: string[] = [];
-  for (const rawLine of text.split(/\n|;/)) {
-    const line = rawLine.trim();
-    if (!line) continue;
-    const compact = line.toUpperCase().replace(/\s+/g, "");
-    const key = sorted.find((k) => compact.includes(k));
-    const entry = key ? byCode.get(key) : undefined;
-    if (!key || !entry) {
-      missed.push(line);
-      continue;
-    }
-    const codePattern = key.replace(/[/.]/g, "\\$&").split("").join("\\s*");
-    const rest = line.toUpperCase().replace(new RegExp(codePattern, "i"), " ");
-    const qtyMatch = /(?:X\s*|QTY\s*|^|\s)(\d{1,4})(?:\s*X)?(?=\s|$|[A-Z])/.exec(rest);
-    const qty = qtyMatch ? parseInt(qtyMatch[1], 10) : 1;
-    const finCode = entry.fin.find((f) => new RegExp(`\\b${f}\\b`).test(rest) || rest.includes(finishOf(f).name.toUpperCase()));
-    const finish = finCode ?? (entry.fin.includes("MM") ? "MM" : entry.fin[0]);
-    found.push({
-      pid: entry.pid,
-      code: entry.code,
-      name: entry.name,
-      label: entry.multi ? entry.label : undefined,
-      finish,
-      finishName: finishOf(finish).name,
-      qty: Math.max(1, qty),
-      unit: entry.unit,
-    });
-  }
-  return { found, missed };
-}
+type Status = "idle" | "sending" | "sent" | "failed" | "not_ready";
 
 interface Props {
-  codes: CodeEntry[];
+  lang: Locale;
   q: Dictionary["quote"];
   units: Record<string, string[]>;
   finishNames: Record<string, string>;
+  /** Product code to name in the page language, for display only. */
+  localNames: Record<string, string>;
   productsHref: string;
-  wechatPending: string;
 }
 
-export function QuoteBuilder({ codes, q, units, finishNames, productsHref, wechatPending }: Props) {
+// One simple flow: what you need (catalogue items, typed list or a photo), your details, Send.
+// The request is emailed to YT by /api/quote; WhatsApp is offered only if sending is unavailable.
+export function QuoteBuilder({ lang, q, units, finishNames, localNames, productsHref }: Props) {
   const lines = useQuote();
-  const [details, setDetails] = useState<Details>(EMPTY_DETAILS);
-  const [paste, setPaste] = useState("");
-  const [pasteResult, setPasteResult] = useState<{ added: number; missed: string[] } | null>(null);
-  const [copied, setCopied] = useState(false);
+  // Rendered on the client only (see the page), so reading the hand-off from the home page here is safe.
+  const [draft] = useState(takeDraft);
+  const [list, setList] = useState(draft.list ?? "");
+  const [photo, setPhoto] = useState<DraftPhoto | null>(draft.photo ?? null);
+  const [photoError, setPhotoError] = useState(false);
+  const [details, setDetails] = useState<Details>(EMPTY);
   const [touched, setTouched] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [sentName, setSentName] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const localName = new Map(codes.map((c) => [c.code, c.localName]));
   const unit = (u: string, n: number) => (units[u] ?? units.item)[n === 1 ? 0 : 1];
   const set = <K extends keyof Details>(k: K, v: Details[K]) => setDetails((d) => ({ ...d, [k]: v }));
   const missingName = !details.name.trim();
   const missingPhone = !details.phone.trim();
+  const empty = !lines.length && !list.trim() && !photo;
 
-  const contactLines = [
+  const pickFile = async (file: File | undefined) => {
+    if (!file) return;
+    setPhotoError(false);
+    const prepared = await prepareFile(file);
+    if (prepared) setPhoto(prepared);
+    else setPhotoError(true);
+  };
+
+  // Plain-text version for WhatsApp, used only when sending from the website is unavailable.
+  const fallbackText = [
+    "Quote request from ytaluminium.com",
+    "",
+    ...lines.map(lineText),
+    ...(list.trim() ? ["", list.trim()] : []),
+    "",
     `Name: ${details.name}`,
-    details.company ? `Company: ${details.company}` : null,
     `Phone: ${details.phone}`,
     details.delivery === "collect" ? "Pick up from Milperra" : `Deliver to: ${details.suburb || "(suburb to confirm)"}`,
-    details.notes ? `Notes: ${details.notes}` : null,
-  ].filter((l): l is string => l !== null);
-  const message = ["Quote request from ytaluminium.com", "", ...lines.map(lineText), "", ...contactLines].join("\n");
+  ].join("\n");
 
-  const guard = (e: React.MouseEvent) => {
+  const send = async (e: React.FormEvent) => {
+    e.preventDefault();
     setTouched(true);
-    if (missingName || missingPhone || !lines.length) {
-      e.preventDefault();
-      document.getElementById(missingName ? "q-name" : "q-phone")?.focus();
-      return false;
-    }
-    return true;
-  };
-
-  const copy = async (e: React.MouseEvent) => {
-    if (!guard(e)) return;
+    if (missingName || missingPhone || empty) return;
+    setStatus("sending");
+    const payload: QuoteRequest = {
+      name: details.name,
+      company: details.company,
+      phone: details.phone,
+      delivery: details.delivery,
+      suburb: details.suburb,
+      notes: details.notes,
+      list,
+      lines: lines.map(lineText),
+      photo: photo ?? undefined,
+      lang,
+      website: details.website,
+    };
     try {
-      await navigator.clipboard.writeText(message);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2500);
+      const res = await fetch("/api/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (res.ok) {
+        setSentName(details.name.trim());
+        setStatus("sent");
+        quote.clear();
+        clearDraft();
+        setList("");
+        setPhoto(null);
+        setDetails(EMPTY);
+        setTouched(false);
+        return;
+      }
+      setStatus(res.status === 503 ? "not_ready" : "failed");
     } catch {
-      setCopied(false);
+      setStatus("failed");
     }
   };
 
-  const addPasted = () => {
-    const { found, missed } = parseList(paste, codes);
-    found.forEach((l) => quote.add(l));
-    setPasteResult({ added: found.length, missed });
-    if (found.length && !missed.length) setPaste("");
-  };
+  if (status === "sent") {
+    return (
+      <div className="mx-auto max-w-xl rounded-lg border border-line bg-surface p-8 text-center md:p-12">
+        <CheckCircle size={44} weight="light" className="mx-auto text-ink" />
+        <h2 className="mt-4 text-2xl font-medium">{q.sentTitle}</h2>
+        <p className="mt-2 text-muted">{fill(q.sentText, { name: sentName })}</p>
+        <button type="button" onClick={() => setStatus("idle")} className="mt-8 inline-flex h-11 items-center rounded-full border border-line-strong px-5 text-[15px] hover:border-ink">
+          {q.sentAgain}
+        </button>
+      </div>
+    );
+  }
 
-  const input =
-    "h-10 w-full rounded border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none aria-[invalid=true]:border-red-600";
+  const input = "h-12 w-full rounded-lg border border-line-strong bg-surface px-4 text-[15px] text-ink placeholder:text-muted focus:border-ink focus:outline-none aria-[invalid=true]:border-red-600";
   const label = "text-sm font-medium";
 
   return (
-    <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-      <div className="lg:col-span-7">
-        <div className="mb-6 rounded-md border border-accent/30 bg-accent-soft p-5">
-          <p className="text-lg font-semibold">{q.photoTitle}</p>
-          <p className="mt-1 leading-relaxed">{q.photoText}</p>
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <a
-              href={whatsappLink(q.photoMessage + " ")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-brand px-4 text-[15px] font-medium text-accent-ink"
-            >
-              <WhatsappLogo size={18} />
-              {q.photoButton}
-            </a>
-            <span className="text-sm font-medium">{fill(q.wechat, { id: SITE.wechatId || wechatPending })}</span>
+    <form onSubmit={send} noValidate className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+      {/* 1. What you need */}
+      <div className="space-y-8 lg:col-span-7">
+        <section>
+          <h2 className="text-xl font-medium">{q.listTitle}</h2>
+
+          {lines.length > 0 && (
+            <div className="mt-4">
+              <p className="text-sm text-muted">{q.fromCatalogue}</p>
+              <ul className="mt-2 divide-y divide-line rounded-lg border border-line bg-surface">
+                {lines.map((l) => (
+                  <li key={`${l.code}|${l.finish}`} className="flex flex-wrap items-center gap-4 p-4">
+                    <span className="size-8 shrink-0 rounded ring-1 ring-inset ring-black/10" style={{ background: swatchBackground(l.finish) }} aria-hidden />
+                    <div className="min-w-0 flex-1 basis-48">
+                      <p className="text-sm font-medium leading-snug">
+                        <span className="font-mono" dir="ltr">{l.code}</span> {localNames[l.code] ?? l.name}
+                        {l.label && <span className="text-muted" dir="ltr"> {l.label}</span>}
+                      </p>
+                      <p className="text-sm text-muted">{finishNames[l.finish] ?? l.finishName}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-9 items-center rounded-full border border-line-strong">
+                        <button type="button" className="grid h-full w-8 place-items-center text-muted hover:text-ink" onClick={() => quote.setQty(l, l.qty - 1)} aria-label={fill(q.qtyOf, { code: l.code })}>
+                          <Minus size={12} />
+                        </button>
+                        <input
+                          inputMode="numeric"
+                          aria-label={l.code}
+                          value={l.qty}
+                          onChange={(e) => quote.setQty(l, parseInt(e.target.value.replace(/\D/g, ""), 10) || 1)}
+                          className="h-full w-9 bg-transparent text-center font-mono text-sm focus:outline-none"
+                        />
+                        <button type="button" className="grid h-full w-8 place-items-center text-muted hover:text-ink" onClick={() => quote.setQty(l, l.qty + 1)} aria-label={fill(q.qtyOf, { code: l.code })}>
+                          <Plus size={12} />
+                        </button>
+                      </div>
+                      <span className="w-16 text-sm text-muted">{unit(l.unit, l.qty)}</span>
+                      <button type="button" onClick={() => quote.remove(l)} className="grid size-9 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-ink" aria-label={fill(q.remove, { code: l.code })}>
+                        <Trash size={16} />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-6 flex flex-col gap-2">
+            <label htmlFor="q-list" className={label}>
+              {q.typeLabel}
+            </label>
+            <p id="q-list-help" className="text-sm text-muted">
+              {q.typeHelp}
+            </p>
+            <textarea
+              id="q-list"
+              aria-describedby="q-list-help"
+              rows={5}
+              value={list}
+              onChange={(e) => setList(e.target.value)}
+              placeholder={q.typePlaceholder}
+              className="w-full rounded-lg border border-line-strong bg-surface p-4 text-[15px] text-ink placeholder:text-muted focus:border-ink focus:outline-none"
+            />
           </div>
-        </div>
-        {lines.length === 0 ? (
-          <div className="rounded-md border border-line bg-surface-2 p-10 text-center">
-            <p className="font-medium">{q.empty}</p>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-muted">{q.emptyText}</p>
-            <Link href={productsHref} className="mt-5 inline-flex h-10 items-center rounded-full bg-brand px-4 text-sm font-medium text-accent-ink">
+
+          <div className="mt-4">
+            {photo ? (
+              <div className="flex items-center gap-4 rounded-lg border border-line bg-surface p-3">
+                {photo.type.startsWith("image/") ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- local preview of the chosen photo
+                  <img src={photo.dataUrl} alt="" className="size-16 rounded object-cover" />
+                ) : (
+                  <span className="grid size-16 place-items-center rounded bg-tile font-mono text-xs">PDF</span>
+                )}
+                <span className="min-w-0 flex-1 truncate text-sm">{photo.name}</span>
+                <button type="button" onClick={() => setPhoto(null)} className="grid size-9 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-ink" aria-label={q.photoRemove}>
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="flex w-full items-center gap-3 rounded-lg border border-dashed border-line-strong bg-surface px-4 py-4 text-start hover:border-ink"
+              >
+                <Camera size={22} className="shrink-0" />
+                <span>
+                  <span className="block text-[15px] font-medium">{q.photoAdd}</span>
+                  <span className="block text-sm text-muted">{q.photoHint}</span>
+                </span>
+              </button>
+            )}
+            <input ref={fileRef} type="file" accept="image/*,application/pdf" className="sr-only" tabIndex={-1} onChange={(e) => pickFile(e.target.files?.[0])} />
+            {photoError && <p className="mt-2 text-sm text-red-700">{q.photoTooBig}</p>}
+          </div>
+
+          {touched && empty && <p className="mt-3 text-sm text-red-700">{q.needSomething}</p>}
+          {!lines.length && (
+            <Link href={productsHref} className="mt-4 inline-block text-sm text-muted underline underline-offset-4 hover:text-ink">
               {q.browse}
             </Link>
-          </div>
-        ) : (
-          <ul className="divide-y divide-line rounded-md border border-line bg-surface">
-            {lines.map((l) => (
-              <li key={`${l.code}|${l.finish}`} className="flex flex-wrap items-center gap-4 p-4">
-                <span className="size-8 shrink-0 rounded-sm ring-1 ring-inset ring-line-strong" style={{ background: swatchBackground(l.finish) }} aria-hidden />
-                <div className="min-w-0 flex-1 basis-48">
-                  <p className="text-sm font-medium leading-snug">
-                    <span className="font-mono" dir="ltr">{l.code}</span> {localName.get(l.code) ?? l.name}
-                    {l.label && <span className="text-muted" dir="ltr"> {l.label}</span>}
-                  </p>
-                  <p className="text-sm text-muted">{finishNames[l.finish] ?? l.finishName}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-9 items-center rounded border border-line-strong">
-                    <button type="button" className="grid h-full w-8 place-items-center text-muted hover:text-ink" onClick={() => quote.setQty(l, l.qty - 1)} aria-label={fill(q.qtyOf, { code: l.code })}>
-                      <Minus size={12} />
-                    </button>
-                    <input
-                      inputMode="numeric"
-                      aria-label={fill(q.qtyOf, { code: l.code })}
-                      value={l.qty}
-                      onChange={(e) => quote.setQty(l, parseInt(e.target.value.replace(/\D/g, ""), 10) || 1)}
-                      className="h-full w-10 bg-transparent text-center font-mono text-sm focus:outline-none"
-                    />
-                    <button type="button" className="grid h-full w-8 place-items-center text-muted hover:text-ink" onClick={() => quote.setQty(l, l.qty + 1)} aria-label={fill(q.qtyOf, { code: l.code })}>
-                      <Plus size={12} />
-                    </button>
-                  </div>
-                  <span className="w-16 text-sm text-muted">{unit(l.unit, l.qty)}</span>
-                  <button type="button" onClick={() => quote.remove(l)} className="grid size-9 place-items-center rounded text-muted hover:bg-surface-2 hover:text-ink" aria-label={fill(q.remove, { code: l.code })}>
-                    <Trash size={16} />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className="mt-8 rounded-md border border-line p-5">
-          <label htmlFor="paste" className={label}>
-            {q.pasteLabel}
-          </label>
-          <p id="paste-help" className="mt-1 text-sm text-muted">
-            {q.pasteHelp}
-          </p>
-          <textarea
-            id="paste"
-            aria-describedby="paste-help"
-            value={paste}
-            onChange={(e) => setPaste(e.target.value)}
-            rows={4}
-            dir="ltr"
-            placeholder={"AU014 x4 MM\nAU045 x2 BK\nFM9150 x1"}
-            className="mt-3 w-full rounded border border-line-strong bg-surface p-3 font-mono text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none"
-          />
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <button type="button" onClick={addPasted} disabled={!paste.trim()} className="inline-flex h-9 items-center rounded border border-line-strong px-3 text-sm font-medium hover:bg-surface-2 disabled:opacity-50">
-              {q.pasteButton}
-            </button>
-            {pasteResult && (
-              <p className="text-sm text-muted" aria-live="polite">
-                {fill(q.pasteAdded, { n: pasteResult.added })}
-                {pasteResult.missed.length > 0 && <span className="text-red-700 dark:text-red-400"> {fill(q.pasteMissed, { list: pasteResult.missed.join(", ") })}</span>}
-              </p>
-            )}
-          </div>
-        </div>
+          )}
+        </section>
       </div>
 
+      {/* 2. Your details and Send */}
       <div className="lg:col-span-5">
-        <form className="rounded-md border border-line p-5 lg:sticky lg:top-24" onSubmit={(e) => e.preventDefault()} noValidate>
-          <h2 className="text-base font-semibold">{q.details}</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <section className="rounded-lg border border-line bg-surface p-5 md:p-7 lg:sticky lg:top-24">
+          <h2 className="text-xl font-medium">{q.details}</h2>
+          <div className="mt-5 grid gap-4">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="q-name" className={label}>{q.name}</label>
               <input id="q-name" className={input} value={details.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" aria-invalid={touched && missingName} />
-              {touched && missingName && <p className="text-xs text-red-700 dark:text-red-400">{q.nameError}</p>}
+              {touched && missingName && <p className="text-sm text-red-700">{q.nameError}</p>}
             </div>
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="q-company" className={label}>
-                {q.company} <span className="font-normal text-muted">({q.optional})</span>
-              </label>
-              <input id="q-company" className={input} value={details.company} onChange={(e) => set("company", e.target.value)} autoComplete="organization" />
-            </div>
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
               <label htmlFor="q-phone" className={label}>{q.phone}</label>
               <input id="q-phone" type="tel" dir="ltr" className={input} value={details.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" aria-invalid={touched && missingPhone} />
-              {touched && missingPhone && <p className="text-xs text-red-700 dark:text-red-400">{q.phoneError}</p>}
+              {touched && missingPhone && <p className="text-sm text-red-700">{q.phoneError}</p>}
             </div>
-            <fieldset className="sm:col-span-2">
+            <fieldset>
               <legend className={label}>{q.delivery}</legend>
               <div className="mt-1.5 grid grid-cols-2 gap-2">
                 {(["deliver", "collect"] as const).map((opt) => (
-                  <label key={opt} className={`flex h-10 cursor-pointer items-center justify-center rounded border px-2 text-center text-sm ${details.delivery === opt ? "border-accent bg-accent-soft font-medium" : "border-line-strong hover:bg-surface-2"}`}>
+                  <label
+                    key={opt}
+                    className={`flex h-12 cursor-pointer items-center justify-center rounded-full border px-3 text-center text-sm ${details.delivery === opt ? "border-ink bg-ink text-white" : "border-line-strong hover:border-ink"}`}
+                  >
                     <input type="radio" name="delivery" value={opt} className="sr-only" checked={details.delivery === opt} onChange={() => set("delivery", opt)} />
                     {opt === "deliver" ? q.deliver : q.collect}
                   </label>
@@ -262,55 +266,48 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref, wecha
               </div>
             </fieldset>
             {details.delivery === "deliver" && (
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <div className="flex flex-col gap-1.5">
                 <label htmlFor="q-suburb" className={label}>{q.suburb}</label>
                 <input id="q-suburb" className={input} value={details.suburb} onChange={(e) => set("suburb", e.target.value)} autoComplete="address-level2" />
               </div>
             )}
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="q-company" className={label}>
+                {q.company} <span className="font-normal text-muted">({q.optional})</span>
+              </label>
+              <input id="q-company" className={input} value={details.company} onChange={(e) => set("company", e.target.value)} autoComplete="organization" />
+            </div>
+            <div className="flex flex-col gap-1.5">
               <label htmlFor="q-notes" className={label}>
                 {q.notes} <span className="font-normal text-muted">({q.optional})</span>
               </label>
-              <textarea id="q-notes" rows={3} className={`${input} h-auto py-2`} value={details.notes} onChange={(e) => set("notes", e.target.value)} placeholder={q.notesPlaceholder} />
+              <textarea id="q-notes" rows={2} className={`${input} h-auto py-3`} value={details.notes} onChange={(e) => set("notes", e.target.value)} placeholder={q.notesPlaceholder} />
             </div>
+            {/* Honeypot: hidden from people, filled in by bots. */}
+            <input type="text" name="website" value={details.website} onChange={(e) => set("website", e.target.value)} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
           </div>
 
-          <div className="mt-5 grid gap-2">
-            <a
-              href={whatsappLink(message)}
-              onClick={guard}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!lines.length}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-brand text-sm font-medium text-accent-ink aria-disabled:opacity-50"
-            >
-              <WhatsappLogo size={18} />
-              {q.sendWhatsapp}
-            </a>
-            <div className="grid grid-cols-2 gap-2">
-              <a
-                href={mailtoLink(`Quote request${details.company ? `, ${details.company}` : ""}`, message)}
-                onClick={guard}
-                aria-disabled={!lines.length}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded border border-line-strong text-sm font-medium hover:bg-surface-2 aria-disabled:opacity-50"
-              >
-                <EnvelopeSimple size={16} />
-                {q.sendEmail}
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-ink text-[15px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          >
+            {status === "sending" ? q.sending : q.send}
+          </button>
+
+          {(status === "failed" || status === "not_ready") && (
+            <div className="mt-4 rounded-lg bg-surface-2 p-4 text-sm" role="alert">
+              <p>{status === "not_ready" ? q.notReady : q.sendFailed}</p>
+              <a href={whatsappLink(fallbackText)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 font-medium underline underline-offset-4">
+                <WhatsappLogo size={16} />
+                {q.whatsappFallback}
               </a>
-              <button type="button" onClick={copy} disabled={!lines.length} className="inline-flex h-10 items-center justify-center gap-2 rounded border border-line-strong text-sm font-medium hover:bg-surface-2 disabled:opacity-50">
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-                {copied ? q.copied : q.copy}
-              </button>
             </div>
-          </div>
-          <p className="mt-4 text-xs leading-relaxed text-muted">{fill(q.footnote, { phone: SITE.phone })}</p>
-          {lines.length > 0 && (
-            <button type="button" onClick={() => quote.clear()} className="mt-3 text-xs text-muted underline underline-offset-4 hover:text-ink">
-              {q.clear}
-            </button>
           )}
-        </form>
+
+          <p className="mt-4 text-xs leading-relaxed text-muted">{fill(q.footnote, { phone: SITE.phone })}</p>
+        </section>
       </div>
-    </div>
+    </form>
   );
 }

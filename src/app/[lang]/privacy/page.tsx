@@ -10,9 +10,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/privacy">)
   return { title: getDictionary(lang).privacyPage.title, alternates: alternatesFor(lang, "/privacy") };
 }
 
-// Plain-language policy written from how this site actually handles data: no server-side
-// storage, quote lists kept in the visitor's browser, messages sent from the visitor's own
-// WhatsApp, email or WeChat. Update it if the site starts collecting data any other way.
+// Plain-language policy written from how this site actually handles data: quote requests are
+// emailed to YT through Resend and not stored by the website; quote lists stay in the visitor's
+// browser. Update it if the site starts collecting data any other way.
 const UPDATED = "20 November 2026";
 
 export default async function PrivacyPage({ params }: PageProps<"/[lang]/privacy">) {
@@ -25,8 +25,8 @@ export default async function PrivacyPage({ params }: PageProps<"/[lang]/privacy
     [
       "What we collect",
       [
-        "When you send a quote request, you choose to send us your product list and the details you enter, such as your name, company, phone number, delivery suburb and notes.",
-        "These are sent from your own WhatsApp, email or WeChat. This website does not store them on a server.",
+        "When you send a quote request, you choose to send us your product list, any photo or file of your list, and the details you enter, such as your name, company, phone number, delivery suburb and notes.",
+        "Requests sent from the quote form are delivered to us by email through our email provider, Resend. The website itself does not keep a copy. If you send your list by WhatsApp, email or WeChat instead, it goes from your own account.",
         "If you contact us by phone, email or message, we keep the details you give us so we can reply and handle your order.",
       ],
     ],
@@ -40,6 +40,7 @@ export default async function PrivacyPage({ params }: PageProps<"/[lang]/privacy
       "Other services",
       [
         "The website is hosted by Vercel, which keeps standard technical logs such as IP address and browser type.",
+        "Quote requests are sent to us by Resend, an email delivery service, which handles the message to deliver it.",
         "The map on the contact page is provided by Google Maps, which has its own privacy policy.",
       ],
     ],

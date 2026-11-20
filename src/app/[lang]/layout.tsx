@@ -58,7 +58,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       { href: p("/faq"), label: d.footer.faq, match: "/faq" },
       { href: p("/contact"), label: d.nav.contact, match: "/contact" },
     ],
-    quote: { href: p("/quote"), label: d.nav.quote },
+    quote: { href: p("/quote"), label: d.nav.quoteCta },
     menu: { open: d.nav.openMenu, close: d.nav.closeMenu, language: d.nav.language },
     call: d.nav.call,
     whatsapp: d.nav.whatsapp,
