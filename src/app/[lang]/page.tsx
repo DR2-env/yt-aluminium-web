@@ -31,7 +31,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
     <>
       {/* Hero: very large thin headline on soft blue glows, with a technical drawing sheet. */}
       <section className="ambient border-b border-line">
-        <div className={`${wrap} grid grid-cols-1 gap-12 pb-16 pt-14 md:pb-24 md:pt-24 lg:grid-cols-12 lg:items-center lg:gap-10`}>
+        <div className={`${wrap} grid grid-cols-1 gap-12 pb-20 pt-16 md:pb-32 md:pt-28 lg:grid-cols-12 lg:items-center lg:gap-10`}>
           <div className="lg:col-span-7">
             <h1 className="display text-balance text-[2.9rem] sm:text-6xl lg:text-[5.6rem]">{d.home.heroTitle}</h1>
             <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
@@ -127,7 +127,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       {/* Facts band. */}
       <section className={`${wrap} pb-20 md:pb-28`}>
-        <div className="grid grid-cols-2 gap-y-10 rounded-md bg-[var(--band)] px-6 py-10 text-[var(--band-ink)] md:grid-cols-4 md:px-10 md:py-14">
+        <div className="band grid grid-cols-2 gap-y-10 rounded-md px-6 py-10 md:grid-cols-4 md:px-10 md:py-14">
           {[
             [String(RANGES.length), d.home.facts.ranges],
             [String(CODE_COUNT), d.home.facts.codes],
@@ -200,9 +200,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       </section>
 
       {/* Closing call to action on ink, flowing into the dark footer. */}
-      <section className="bg-[#0a0f1a] text-white">
+      <section className="ink-glow">
         <div className={`${wrap} pb-12 pt-20 md:pt-28`}>
-          <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="display inline-block text-balance text-5xl hover:text-[#93c5fd] md:text-8xl">
+          <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="display inline-block text-balance text-5xl hover:text-[#aab4ff] md:text-8xl">
             {d.home.requestQuote}
                 {lang === "en" ? "." : ""}
           </a>
@@ -221,7 +221,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </div>
             <div>
               <p className="eyebrow text-white/50">{d.contactPage.office}</p>
-              <a href={SITE.phoneHref} className="mt-2 block hover:text-[#93c5fd]" dir="ltr">
+              <a href={SITE.phoneHref} className="mt-2 block hover:text-[#aab4ff]" dir="ltr">
                 {SITE.phone}
               </a>
             </div>
