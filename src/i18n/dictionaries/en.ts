@@ -3,7 +3,7 @@ const en = {
   meta: {
     title: "YT Aluminium | Aluminium extrusions, mesh and hardware, Sydney",
     description:
-      "Wholesale supplier of aluminium extrusions, door and window systems, flyscreen and security mesh, hardware and locks to the building trade. Trade counter in Milperra NSW.",
+      "Aluminium extrusions, door and window systems, flyscreen and security mesh, hardware and locks for trade and the public. Shop in Milperra NSW, pick up or delivery across Sydney.",
     productsTitle: "Products",
     productsDescription: "The full YT Aluminium range by product code: shopfront, doors, security, flyscreen, mesh, partitions, blinds, hardware and locks.",
     finishesTitle: "Finishes",
@@ -13,7 +13,7 @@ const en = {
     contactTitle: "Contact",
     contactDescription: "Trade counter address, opening hours, phone, WhatsApp and email for YT Aluminium.",
     quoteTitle: "Quote request",
-    quoteDescription: "Prepare a list of YT Aluminium product codes and send it for trade pricing.",
+    quoteDescription: "Prepare a list of YT Aluminium product codes and send it for pricing.",
   },
   nav: {
     home: "Home",
@@ -32,13 +32,13 @@ const en = {
   },
   home: {
     heroTitle: "Aluminium for windows, doors and screens",
-    heroText: "Trade supplier in Milperra, Sydney. Send us your list and we reply with prices, usually the same day.",
+    heroText: "Aluminium supplier in Milperra, Sydney. Trade and public welcome. Send us your list and we reply with prices, usually the same day.",
     viewProducts: "See products",
     requestQuote: "Request a quote",
     sendList: "Send your list on WhatsApp",
     sendListMessage: "Hi YT Aluminium, here is my list:",
     callUs: "Call {phone}",
-    perks: ["Trade prices", "No minimum order", "Same-day delivery in Sydney", "Free delivery over $500*"],
+    perks: ["Competitive prices", "No minimum order", "Same-day delivery in Sydney", "Free Sydney delivery over $500*"],
     perksNote: "*Conditions apply. Ask us for details.",
     heroCaption: "Shown in {finish}. Drag to rotate.",
     viewProduct: "View product",
@@ -56,13 +56,13 @@ const en = {
     finishesLink: "Finish availability",
     aboutTitle: "About YT Aluminium",
     aboutText:
-      "YT Aluminium supplies aluminium extrusions, accessories, mesh, hardware and locks to installers, fabricators, glaziers and builders. Stock is held in Milperra for collection or delivery across the Sydney area.",
+      "YT Aluminium supplies aluminium extrusions, accessories, mesh, hardware and locks to installers, fabricators, glaziers, builders and homeowners. Stock is held in Milperra for collection or delivery across the Sydney area.",
     facts: { ranges: "Product ranges", codes: "Product codes", finishes: "Finishes", delivery: "Same day delivery available in Sydney" },
     visitTitle: "Trade counter",
     directions: "Get directions",
   },
   catalogue: {
-    intro: "{codes} product codes from the price list dated {date}. Add items to a quote request to receive trade pricing.",
+    intro: "{codes} product codes from the price list dated {date}. Add items to a quote request to get pricing.",
     searchLabel: "Search by code or name",
     searchPlaceholder: "Search by code or name, for example AU014",
     clearSearch: "Clear search",
@@ -102,7 +102,7 @@ const en = {
     added: "Added",
     inQuote: "{n} {unit} of {code} in your quote request.",
     reviewQuote: "Review quote",
-    noteSection: "Section traced from the price list. Technical drawings are available on request.",
+    noteSection: "Section traced from the price list.",
     noteStandin: "Representative section. Contact us for the exact profile.",
     noteModel: "Representative 3D model. Contact us for exact specifications.",
     noteColour: "Colours on screen are indicative. Request a sample before ordering.",
@@ -180,7 +180,7 @@ const en = {
   aboutPage: {
     title: "About YT Aluminium",
     paragraphs: [
-      "YT Aluminium supplies aluminium extrusions, accessories, mesh, hardware and locks to installers, fabricators, glaziers and builders.",
+      "YT Aluminium supplies aluminium extrusions, accessories, mesh, hardware and locks to installers, fabricators, glaziers, builders and homeowners.",
       "Stock covers commercial shopfront, hinged door and awning, bifold, double glazed, security door and window, flyscreen, partition, blind and curtain systems, in the finishes most commonly specified by the trade.",
       "Orders of any size are accepted. Goods can be collected from the Milperra trade counter or delivered across the Sydney area.",
     ],
@@ -200,14 +200,38 @@ const en = {
     map: "Map showing {address}",
   },
   footer: {
-    about: "Aluminium extrusions, mesh, hardware and locks for the building trade.",
+    about: "Aluminium extrusions, mesh, hardware and locks for trade and home projects.",
     ranges: "Ranges",
     counter: "Trade counter",
+    faq: "FAQ",
+    privacy: "Privacy",
   },
   notFound: {
     title: "Page not found",
     text: "The page may have moved. Search the catalogue by product code or contact us.",
     search: "Search products",
+  },
+  faqPage: {
+    title: "Common questions",
+    intro: "Can't find your answer? Call us on {phone}.",
+    items: [
+      { q: "How do I get a price?", a: "Send us a list of product codes, quantities and colours by WhatsApp, WeChat or email, or build it on the quote page. We usually reply with prices the same day." },
+      { q: "Do you sell to the public?", a: "Yes. Trade customers and the public are both welcome." },
+      { q: "Is there a minimum order?", a: "No. Orders of any size are welcome." },
+      { q: "Can I pick up?", a: "Yes, from our shop at {address}, {hours}." },
+      { q: "Do you deliver?", a: "Yes, across Sydney, with same day delivery available. Delivery is free on orders over $500 (conditions apply, ask us for details)." },
+      { q: "Can I see a colour sample?", a: "Yes, ask us for a sample. Colours on screen are only a guide." },
+      { q: "Which colours does a product come in?", a: "Each product page lists the colours we stock for that item. Not every product comes in every colour." },
+      { q: "What lengths do profiles come in?", a: "It depends on the profile, from 2.8 m to 6.5 m. Each product page shows how it is supplied." },
+    ],
+  },
+  privacyPage: {
+    title: "Privacy policy",
+    englishNote: "",
+  },
+  closure: {
+    title: "Christmas closure",
+    text: "We are closed from {from} and reopen on {to}. Please order early.",
   },
   site: {
     hours: "Monday to Friday, 8:30am to 4:30pm",

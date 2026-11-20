@@ -4,18 +4,18 @@ import type { Dictionary } from "./en";
 // short, direct, mainland usage (门店, 报价, 免运费), with English suburb names kept as is.
 const zh: Dictionary = {
   meta: {
-    title: "YT Aluminium | 悉尼铝材批发：门窗型材、纱网、五金配件",
-    description: "悉尼铝材批发，专供装修和建筑行业：门窗铝型材、纱窗网、防盗网、五金配件和门锁。门店在 Milperra，可自提或送货。",
+    title: "YT Aluminium | 悉尼铝材批发零售：门窗型材、纱网、五金配件",
+    description: "悉尼铝材批发零售：门窗铝型材、纱窗网、防盗网、五金配件和门锁，行内客户和散客都欢迎。门店在 Milperra，可自提或送货到悉尼各区。",
     productsTitle: "产品",
     productsDescription: "YT Aluminium 全部产品，按编号查找：商铺门面、门窗、防盗门窗、纱窗、网材、隔断、窗帘、五金和门锁。",
     finishesTitle: "颜色",
     finishesDescription: "粉末喷涂、阳极氧化、原色和木纹等颜色，各产品可选颜色不同。",
     aboutTitle: "关于我们",
-    aboutDescription: "YT Aluminium 是悉尼 Milperra 的铝材批发商，供应铝型材、纱网、五金和门锁。",
+    aboutDescription: "YT Aluminium 是悉尼 Milperra 的铝材供应商，批发零售都做，供应铝型材、纱网、五金和门锁。",
     contactTitle: "联系我们",
     contactDescription: "YT Aluminium 门店地址、营业时间、电话、WhatsApp、微信和邮箱。",
     quoteTitle: "询价",
-    quoteDescription: "把要的产品编号列成清单发给我们，拿批发价。",
+    quoteDescription: "把要的产品编号列成清单发给我们，拿报价。",
   },
   nav: {
     home: "首页",
@@ -34,13 +34,13 @@ const zh: Dictionary = {
   },
   home: {
     heroTitle: "门窗、纱窗铝材，悉尼批发",
-    heroText: "门店在 Milperra。清单发过来，一般当天就给您报价。",
+    heroText: "门店在 Milperra，行内客户和散客都欢迎。清单发过来，一般当天就给您报价。",
     viewProducts: "看产品",
     requestQuote: "要报价",
     sendList: "WhatsApp 发清单",
     sendListMessage: "您好 YT Aluminium，这是我的清单：",
     callUs: "电话 {phone}",
-    perks: ["批发价", "不限起订量", "悉尼当天送货", "满 $500 免运费*"],
+    perks: ["价格实惠", "不限起订量", "悉尼当天送货", "悉尼满 $500 免运费*"],
     perksNote: "*有条件，具体请问我们。",
     heroCaption: "颜色：{finish}。拖动可以转动查看。",
     viewProduct: "看这个产品",
@@ -58,13 +58,13 @@ const zh: Dictionary = {
     finishesLink: "看各产品有哪些颜色",
     aboutTitle: "关于 YT Aluminium",
     aboutText:
-      "我们给门窗安装师傅、门窗加工厂、玻璃店和建筑商供应铝型材、配件、纱网、五金和门锁。Milperra 门店有现货，可以自提，也可以送货到悉尼各区。",
+      "我们给门窗安装师傅、门窗加工厂、玻璃店、建筑商和自己装修的业主供应铝型材、配件、纱网、五金和门锁。Milperra 门店有现货，可以自提，也可以送货到悉尼各区。",
     facts: { ranges: "产品系列", codes: "产品编号", finishes: "种颜色", delivery: "悉尼可当天送货" },
     visitTitle: "门店",
     directions: "导航过去",
   },
   catalogue: {
-    intro: "共 {codes} 个产品编号，按 {date} 价目表。加到询价单里，我们给您报批发价。",
+    intro: "共 {codes} 个产品编号，按 {date} 价目表。加到询价单里，我们给您报价。",
     searchLabel: "搜编号或名称",
     searchPlaceholder: "搜编号或名称，比如 AU014",
     clearSearch: "清除",
@@ -104,7 +104,7 @@ const zh: Dictionary = {
     added: "已加入",
     inQuote: "询价单里已有 {code} {n} {unit}。",
     reviewQuote: "查看询价单",
-    noteSection: "截面按价目表上的图画的。需要技术图纸请找我们要。",
+    noteSection: "截面按价目表上的图画的。",
     noteStandin: "截面仅供参考，准确型材请问我们。",
     noteModel: "3D 模型仅供参考，准确规格请问我们。",
     noteColour: "屏幕颜色有色差，下单前可以先要色板。",
@@ -182,7 +182,7 @@ const zh: Dictionary = {
   aboutPage: {
     title: "关于 YT Aluminium",
     paragraphs: [
-      "我们给门窗安装师傅、门窗加工厂、玻璃店和建筑商供应铝型材、配件、纱网、五金和门锁。",
+      "我们给门窗安装师傅、门窗加工厂、玻璃店、建筑商和自己装修的业主供应铝型材、配件、纱网、五金和门锁。",
       "现货包括商铺门面、平开门和上悬窗、折叠门、双层玻璃、防盗门窗、纱窗、隔断、百叶帘和窗帘系统，都是行内最常用的颜色。",
       "订单不论大小都接。货可以到 Milperra 门店自提，也可以送到悉尼各区。",
     ],
@@ -202,14 +202,38 @@ const zh: Dictionary = {
     map: "{address} 地图",
   },
   footer: {
-    about: "铝型材、纱网、五金和门锁，专供建筑装修行业。",
+    about: "铝型材、纱网、五金和门锁，行内和家装都适用。",
     ranges: "产品系列",
     counter: "门店",
+    faq: "常见问题",
+    privacy: "隐私政策",
   },
   notFound: {
     title: "找不到这个页面",
     text: "页面可能换了地址。可以按编号搜产品，或者直接联系我们。",
     search: "搜产品",
+  },
+  faqPage: {
+    title: "常见问题",
+    intro: "没找到答案？请打 {phone}。",
+    items: [
+      { q: "怎么拿报价？", a: "把产品编号、数量和颜色通过 WhatsApp、微信或邮件发给我们，或者在询价单页面列好。一般当天回复报价。" },
+      { q: "散客可以买吗？", a: "可以，行内客户和散客都欢迎。" },
+      { q: "有起订量吗？", a: "没有，订单不论大小都接。" },
+      { q: "可以自提吗？", a: "可以，到门店自提：{address}，{hours}。" },
+      { q: "送货吗？", a: "送，悉尼各区都送，可以当天送货。满 $500 免运费（有条件，具体请问我们）。" },
+      { q: "可以看色板吗？", a: "可以，找我们要色板。屏幕颜色仅供参考。" },
+      { q: "产品有哪些颜色？", a: "每个产品页都写了有现货的颜色，不是每个产品都有全部颜色。" },
+      { q: "型材多长？", a: "看型材，从 2.8 米到 6.5 米不等，具体看各产品页。" },
+    ],
+  },
+  privacyPage: {
+    title: "隐私政策",
+    englishNote: "本隐私政策以英文提供。",
+  },
+  closure: {
+    title: "圣诞假期停业",
+    text: "{from} 起停业，{to} 恢复营业，请提前下单。",
   },
   site: {
     hours: "周一至周五，上午 8:30 到下午 4:30",

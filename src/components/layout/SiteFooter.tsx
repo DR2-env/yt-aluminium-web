@@ -12,6 +12,8 @@ export function SiteFooter({ lang }: { lang: Locale }) {
     { href: "/about", label: d.nav.about },
     { href: "/contact", label: d.nav.contact },
     { href: "/quote", label: d.nav.quote },
+    { href: "/faq", label: d.footer.faq },
+    { href: "/privacy", label: d.footer.privacy },
   ];
   return (
     <footer className="border-t border-line bg-surface pb-20 sm:pb-0">
@@ -52,7 +54,9 @@ export function SiteFooter({ lang }: { lang: Locale }) {
       </div>
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-4 py-5 text-xs text-muted md:flex-row md:items-center md:justify-between md:px-8">
-          <p>{SITE.legalName}</p>
+          <p>
+            {SITE.legalName} <span dir="ltr">· ABN {SITE.abn}</span>
+          </p>
           <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
             {nav.map((n) => (
               <Link key={n.href} href={localePath(lang, n.href)} className="hover:text-ink">

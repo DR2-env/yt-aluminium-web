@@ -2,6 +2,7 @@
 export const SITE = {
   name: "YT Aluminium",
   legalName: "YT Aluminium Australia Pty Ltd",
+  abn: "60 166 410 037",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ytaluminium.com",
   phone: "02 8739 2494",
   phoneHref: "tel:+61287392494",
@@ -24,6 +25,9 @@ export const SITE = {
   mapsUrl: "https://maps.google.com/?q=3+Marigold+Place+Milperra+NSW+2214",
   mapsEmbed: "https://maps.google.com/maps?q=3%20Marigold%20Place%2C%20Milperra%20NSW%202214&z=15&output=embed",
   priceListDate: "16 February 2026",
+  // Christmas closure, as ISO dates (e.g. "2026-12-24"). Leave empty to hide the notice.
+  // When set, a notice shows at the top of every page.
+  closure: { from: "", to: "" },
 } as const;
 
 export const fullAddress = `${SITE.address.street}, ${SITE.address.suburb} ${SITE.address.state} ${SITE.address.postcode}`;

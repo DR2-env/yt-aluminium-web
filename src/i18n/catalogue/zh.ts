@@ -20,16 +20,16 @@ const zh: Record<string, string> = {
   Hardware: "五金配件",
   Locks: "门锁",
   // Range descriptions
-  "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories in 6.5 m lengths.":
-    "101.6 × 45 毫米中置玻璃系统，适用于单层玻璃商铺门面及入口。框材、下框、转接件、压条及配件，长度 6.5 米。",
+  "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories, mostly in 6.5 m lengths.":
+    "101.6 × 45 毫米中置玻璃系统，适用于单层玻璃商铺门面及入口。框材、下框、转接件、压条及配件，大部分长度 6.5 米。",
   "Stiles, rails, beads and thresholds for commercial hinged doors, plus the full awning window sash system with hinges, stops and corners.":
     "商用平开门的竖梃、横档、压条及门槛，以及包含铰链、止口和角码的完整上悬窗扇系统。",
   "Bifold door section: lock stile, slotted and reversible sills, jamb and a 60 mm head track. Black, white, Monument or mill.":
     "折叠门型材：锁侧竖梃、开槽及可翻转下槛、边框及 60 毫米顶轨。颜色有黑色、白色、Monument 或原色。",
   "Double glazed commercial suite: main frame, sill, adaptor and bead. Black, white, Monument, clear anodised or mill.":
     "商用双层玻璃系统：主框、下框、转接件及压条。颜色有黑色、白色、Monument、银色阳极氧化或原色。",
-  "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. Our widest colour range, with Western Red Cedar on selected frames.":
-    "平开及推拉防盗门窗的框材、轨道、接收件、扣合件及压条。颜色选择最多，部分框材提供 Western Red Cedar 木纹。",
+  "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. All 19 colours across the range, with Western Red Cedar on selected frames.":
+    "平开及推拉防盗门窗的框材、轨道、接收件、扣合件及压条。整个系列涵盖全部 19 种颜色，部分框材提供 Western Red Cedar 木纹。",
   "Corners for security door and window frames, jamb adaptor corners and frame packers from 1 mm to 10 mm.":
     "防盗门窗框角码、边框转接角码及 1 至 10 毫米框架垫片。",
   "Flyscreen frames, tracks, corners, springs and clips, with rubber and foam spline on 300 to 500 m spools.":

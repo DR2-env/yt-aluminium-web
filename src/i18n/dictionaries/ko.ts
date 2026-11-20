@@ -4,18 +4,18 @@ import type { Dictionary } from "./en";
 // Trade words follow how 교민 installers talk: 샷시, 방충망, 방범창, 픽업, 견적.
 const ko: Dictionary = {
   meta: {
-    title: "YT Aluminium | 시드니 알루미늄 샷시 자재, 방충망, 철물 도매",
-    description: "시드니 알루미늄 자재 도매. 샷시 프로파일, 도어·창호 시스템, 방충망, 방범망, 철물, 도어락을 업체에 공급합니다. 매장은 Milperra에 있습니다.",
+    title: "YT Aluminium | 시드니 알루미늄 샷시 자재, 방충망, 철물 도·소매",
+    description: "시드니 알루미늄 자재 공급. 샷시 프로파일, 도어·창호 시스템, 방충망, 방범망, 철물, 도어락. 업체와 개인 고객 모두 환영합니다. 매장은 Milperra에 있습니다.",
     productsTitle: "제품",
     productsDescription: "YT Aluminium 전 제품을 코드로 찾아보세요. 상가 샷시, 도어, 방범창, 방충망, 망, 파티션, 블라인드, 철물, 도어락.",
     finishesTitle: "색상",
     finishesDescription: "분체 도장, 아노다이징, 무도장, 우드 무늬 색상. 제품마다 가능한 색상이 다릅니다.",
     aboutTitle: "회사 소개",
-    aboutDescription: "YT Aluminium은 시드니 Milperra의 알루미늄 자재 도매 업체입니다. 샷시 자재, 망, 철물, 도어락을 공급합니다.",
+    aboutDescription: "YT Aluminium은 시드니 Milperra의 알루미늄 자재 도·소매 업체입니다. 샷시 자재, 망, 철물, 도어락을 공급합니다.",
     contactTitle: "연락처",
     contactDescription: "YT Aluminium 매장 주소, 영업시간, 전화, WhatsApp, 이메일.",
     quoteTitle: "견적 요청",
-    quoteDescription: "필요한 제품 코드를 목록으로 보내 주시면 도매 견적을 드립니다.",
+    quoteDescription: "필요한 제품 코드를 목록으로 보내 주시면 견적을 드립니다.",
   },
   nav: {
     home: "홈",
@@ -34,13 +34,13 @@ const ko: Dictionary = {
   },
   home: {
     heroTitle: "창호·도어·방충망용 알루미늄 자재",
-    heroText: "시드니 Milperra 도매 매장입니다. 목록만 보내 주시면 보통 당일에 견적 드려요.",
+    heroText: "시드니 Milperra 매장입니다. 업체와 개인 고객 모두 환영합니다. 목록만 보내 주시면 보통 당일에 견적 드려요.",
     viewProducts: "제품 보기",
     requestQuote: "견적 받기",
     sendList: "WhatsApp으로 목록 보내기",
     sendListMessage: "안녕하세요 YT Aluminium, 목록 보내드립니다:",
     callUs: "전화 {phone}",
-    perks: ["도매가", "최소 주문 수량 없음", "시드니 당일 배송", "$500 이상 무료 배송*"],
+    perks: ["합리적인 가격", "최소 주문 수량 없음", "시드니 당일 배송", "시드니 $500 이상 무료 배송*"],
     perksNote: "*조건이 있습니다. 자세한 내용은 문의 주세요.",
     heroCaption: "색상: {finish}. 드래그하면 돌려 볼 수 있어요.",
     viewProduct: "제품 보기",
@@ -58,13 +58,13 @@ const ko: Dictionary = {
     finishesLink: "제품별 가능 색상 보기",
     aboutTitle: "YT Aluminium 소개",
     aboutText:
-      "샷시 시공 업체, 창호 제작소, 유리 업체, 건축 업체에 알루미늄 프로파일, 부속, 방충망, 철물, 도어락을 공급합니다. Milperra 매장에 재고가 있어 바로 픽업하시거나 시드니 전 지역으로 배송받으실 수 있습니다.",
+      "샷시 시공 업체, 창호 제작소, 유리 업체, 건축 업체와 직접 공사하시는 개인 고객께 알루미늄 프로파일, 부속, 방충망, 철물, 도어락을 공급합니다. Milperra 매장에 재고가 있어 바로 픽업하시거나 시드니 전 지역으로 배송받으실 수 있습니다.",
     facts: { ranges: "제품군", codes: "제품 코드", finishes: "색상", delivery: "시드니 당일 배송 가능" },
     visitTitle: "매장",
     directions: "길 찾기",
   },
   catalogue: {
-    intro: "{date} 가격표 기준 제품 코드 {codes}개. 견적 목록에 담아 보내 주시면 도매가를 알려 드려요.",
+    intro: "{date} 가격표 기준 제품 코드 {codes}개. 견적 목록에 담아 보내 주시면 가격을 알려 드려요.",
     searchLabel: "코드나 제품명으로 검색",
     searchPlaceholder: "코드나 제품명 검색 (예: AU014)",
     clearSearch: "검색어 지우기",
@@ -104,7 +104,7 @@ const ko: Dictionary = {
     added: "담았어요",
     inQuote: "견적 목록에 {code} {n}{unit} 담겨 있어요.",
     reviewQuote: "견적 목록 보기",
-    noteSection: "가격표 도면을 보고 그린 단면입니다. 기술 도면이 필요하시면 요청해 주세요.",
+    noteSection: "가격표 도면을 보고 그린 단면입니다.",
     noteStandin: "참고용 단면입니다. 정확한 프로파일은 문의 주세요.",
     noteModel: "참고용 3D 모델입니다. 정확한 사양은 문의 주세요.",
     noteColour: "화면 색상은 실제와 다를 수 있어요. 주문 전에 샘플을 요청해 주세요.",
@@ -182,7 +182,7 @@ const ko: Dictionary = {
   aboutPage: {
     title: "YT Aluminium 소개",
     paragraphs: [
-      "샷시 시공 업체, 창호 제작소, 유리 업체, 건축 업체에 알루미늄 프로파일, 부속, 방충망, 철물, 도어락을 공급합니다.",
+      "샷시 시공 업체, 창호 제작소, 유리 업체, 건축 업체와 직접 공사하시는 개인 고객께 알루미늄 프로파일, 부속, 방충망, 철물, 도어락을 공급합니다.",
       "상가 샷시, 여닫이 도어와 어닝창, 폴딩 도어, 복층 유리, 방범 도어·방범창, 방충망, 파티션, 블라인드, 커튼 시스템까지, 현장에서 가장 많이 쓰는 색상으로 재고를 갖추고 있습니다.",
       "주문 수량에 상관없이 받습니다. Milperra 매장에서 픽업하시거나 시드니 전 지역으로 배송받으실 수 있습니다.",
     ],
@@ -202,14 +202,38 @@ const ko: Dictionary = {
     map: "{address} 지도",
   },
   footer: {
-    about: "알루미늄 샷시 자재, 방충망, 철물, 도어락 도매.",
+    about: "업체와 개인 고객을 위한 알루미늄 샷시 자재, 방충망, 철물, 도어락.",
     ranges: "제품군",
     counter: "매장",
+    faq: "자주 묻는 질문",
+    privacy: "개인정보 처리방침",
   },
   notFound: {
     title: "페이지를 찾을 수 없어요",
     text: "주소가 바뀌었을 수 있어요. 제품 코드로 검색하시거나 문의 주세요.",
     search: "제품 검색",
+  },
+  faqPage: {
+    title: "자주 묻는 질문",
+    intro: "원하시는 답이 없나요? {phone}로 전화 주세요.",
+    items: [
+      { q: "견적은 어떻게 받나요?", a: "제품 코드, 수량, 색상을 WhatsApp, WeChat, 이메일로 보내 주시거나 견적 페이지에서 목록을 만들어 주세요. 보통 당일에 견적 드려요." },
+      { q: "개인도 구매할 수 있나요?", a: "네, 업체와 개인 고객 모두 환영합니다." },
+      { q: "최소 주문 수량이 있나요?", a: "없습니다. 주문 수량에 상관없이 받습니다." },
+      { q: "직접 픽업할 수 있나요?", a: "네, 매장에서 픽업하실 수 있어요: {address}, {hours}." },
+      { q: "배송되나요?", a: "네, 시드니 전 지역 배송되며 당일 배송도 가능해요. $500 이상 주문은 무료 배송입니다(조건 있음, 문의 주세요)." },
+      { q: "색상 샘플을 볼 수 있나요?", a: "네, 샘플을 요청해 주세요. 화면 색상은 참고용입니다." },
+      { q: "제품별 색상은 어떻게 확인하나요?", a: "제품 페이지마다 재고 있는 색상이 나와 있어요. 모든 제품이 전 색상으로 나오지는 않아요." },
+      { q: "프로파일 길이는 어떻게 되나요?", a: "프로파일마다 2.8 m부터 6.5 m까지 다릅니다. 제품 페이지에서 확인하실 수 있어요." },
+    ],
+  },
+  privacyPage: {
+    title: "개인정보 처리방침",
+    englishNote: "이 개인정보 처리방침은 영어로 제공됩니다.",
+  },
+  closure: {
+    title: "연말 휴무 안내",
+    text: "{from}부터 휴무이며 {to}에 영업을 재개합니다. 미리 주문해 주세요.",
   },
   site: {
     hours: "월요일부터 금요일, 오전 8시 30분부터 오후 4시 30분까지",

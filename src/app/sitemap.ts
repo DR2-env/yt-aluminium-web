@@ -4,7 +4,7 @@ import { SITE } from "@/lib/site";
 import { LOCALES, LOCALE_META, localePath } from "@/i18n/config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ["/", "/products", "/finishes", "/about", "/contact", "/quote", ...RANGES.map(rangeHref), ...Object.values(PRODUCTS).map(productHref)];
+  const paths = ["/", "/products", "/finishes", "/about", "/contact", "/quote", "/faq", "/privacy", ...RANGES.map(rangeHref), ...Object.values(PRODUCTS).map(productHref)];
   return paths.flatMap((path) =>
     LOCALES.map((lang) => ({
       url: `${SITE.url}${localePath(lang, path)}`,

@@ -20,16 +20,16 @@ const ar: Record<string, string> = {
   Hardware: "الإكسسوارات المعدنية",
   Locks: "الأقفال",
   // Range descriptions
-  "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories in 6.5 m lengths.":
-    "نظام بتزجيج مركزي مقاس 101.6 × 45 مم لواجهات المحلات والمداخل ذات الزجاج المفرد. إطارات وعتبات ومحولات وكشوف وملحقات بطول 6.5 م.",
+  "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories, mostly in 6.5 m lengths.":
+    "نظام بتزجيج مركزي مقاس 101.6 × 45 مم لواجهات المحلات والمداخل ذات الزجاج المفرد. إطارات وعتبات ومحولات وكشوف وملحقات، أغلبها بطول 6.5 م.",
   "Stiles, rails, beads and thresholds for commercial hinged doors, plus the full awning window sash system with hinges, stops and corners.":
     "قوائم وعوارض وكشوف وعتبات للأبواب المفصلية التجارية، إضافة إلى نظام ضلف النوافذ العلوية الكامل مع المفصلات والمصدات والزوايا.",
   "Bifold door section: lock stile, slotted and reversible sills, jamb and a 60 mm head track. Black, white, Monument or mill.":
     "قطاعات الأبواب القابلة للطي: قائم القفل، وعتبات مشقوقة وقابلة للقلب، وحلق، ومسار علوي 60 مم. أسود أو أبيض أو Monument أو خام.",
   "Double glazed commercial suite: main frame, sill, adaptor and bead. Black, white, Monument, clear anodised or mill.":
     "نظام زجاج مزدوج تجاري: إطار رئيسي وعتبة ومحول وكشف. أسود أو أبيض أو Monument أو أنودايز فضي أو خام.",
-  "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. Our widest colour range, with Western Red Cedar on selected frames.":
-    "إطارات ومسارات ومستقبلات وقطع تعشيق وكشوف للأبواب والنوافذ الأمنية المفصلية والمنزلقة. أوسع تشكيلة ألوان لدينا، مع نقشة Western Red Cedar لبعض الإطارات.",
+  "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. All 19 colours across the range, with Western Red Cedar on selected frames.":
+    "إطارات ومسارات ومستقبلات وقطع تعشيق وكشوف للأبواب والنوافذ الأمنية المفصلية والمنزلقة. تتوفر المجموعة بكل الألوان الـ19، مع نقشة Western Red Cedar لبعض الإطارات.",
   "Corners for security door and window frames, jamb adaptor corners and frame packers from 1 mm to 10 mm.":
     "زوايا لإطارات الأبواب والنوافذ الأمنية، وزوايا محولات الحلق، وحشوات إطارات من 1 إلى 10 مم.",
   "Flyscreen frames, tracks, corners, springs and clips, with rubber and foam spline on 300 to 500 m spools.":

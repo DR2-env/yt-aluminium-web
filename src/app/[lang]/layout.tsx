@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { LanguageSuggest } from "@/components/layout/LanguageSuggest";
+import { ClosureNotice } from "@/components/layout/ClosureNotice";
 import type { LayoutStrings } from "@/components/layout/types";
 import { LOCALES, LOCALE_META, getDictionary, isLocale, localePath, type Locale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
@@ -70,6 +71,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           {d.nav.skip}
         </a>
         <LanguageSuggest lang={lang} texts={Object.fromEntries(LOCALES.map((l) => [l, getDictionary(l).suggest.text])) as Record<Locale, string>} />
+        <ClosureNotice lang={lang} />
         <SiteHeader s={strings} />
         <main id="main">{children}</main>
         <SiteFooter lang={lang} />

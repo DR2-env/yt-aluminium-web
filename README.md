@@ -24,6 +24,8 @@ The catalogue data comes from `yt-catalogue.html` (built from the 16/02/2026 pri
 node scripts/extract-catalogue.mjs "/path/to/yt-catalogue.html"
 ```
 
+Two range descriptions were corrected by hand in `catalogue.json` (Security: "All 19 colours across the range"; Shopfront: "mostly in 6.5 m lengths"). Make the same change in `yt-catalogue.html` before regenerating, or they will revert.
+
 ## Languages
 
 English is served at bare paths (`/products`); Chinese, Korean and Arabic at `/zh`, `/ko` and `/ar` (Arabic is right to left). `src/proxy.ts` maps bare paths to the English route.

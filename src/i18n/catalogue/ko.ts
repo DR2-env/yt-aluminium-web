@@ -20,16 +20,16 @@ const ko: Record<string, string> = {
   Hardware: "철물",
   Locks: "도어락·잠금장치",
   // Range descriptions
-  "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories in 6.5 m lengths.":
-    "단판 유리 상가 전면 및 출입구용 101.6 × 45 mm 센터 글레이징 시스템. 프레임, 하부 프레임, 어댑터, 비드 및 부속품, 6.5 m 길이.",
+  "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories, mostly in 6.5 m lengths.":
+    "단판 유리 상가 전면 및 출입구용 101.6 × 45 mm 센터 글레이징 시스템. 프레임, 하부 프레임, 어댑터, 비드 및 부속품, 대부분 6.5 m 길이.",
   "Stiles, rails, beads and thresholds for commercial hinged doors, plus the full awning window sash system with hinges, stops and corners.":
     "상업용 여닫이 도어의 스타일, 레일, 비드 및 문턱과 힌지, 스톱, 코너를 포함한 어닝 창 새시 시스템 일체.",
   "Bifold door section: lock stile, slotted and reversible sills, jamb and a 60 mm head track. Black, white, Monument or mill.":
     "폴딩 도어 프로파일: 잠금 스타일, 슬롯형 및 양면 하부 프레임, 문틀 및 60 mm 상부 레일. 블랙, 화이트, Monument 또는 무도장.",
   "Double glazed commercial suite: main frame, sill, adaptor and bead. Black, white, Monument, clear anodised or mill.":
     "상업용 복층 유리 시스템: 메인 프레임, 하부 프레임, 어댑터 및 비드. 블랙, 화이트, Monument, 실버 아노다이징 또는 무도장.",
-  "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. Our widest colour range, with Western Red Cedar on selected frames.":
-    "여닫이 및 미닫이 방범 도어와 창호용 프레임, 레일, 리시버, 인터록 및 비드. 가장 다양한 색상을 제공하며 일부 프레임은 Western Red Cedar 무늬도 가능합니다.",
+  "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. All 19 colours across the range, with Western Red Cedar on selected frames.":
+    "여닫이 및 미닫이 방범 도어와 창호용 프레임, 레일, 리시버, 인터록 및 비드. 제품군 전체로 19가지 색상을 모두 갖추고 있으며 일부 프레임은 Western Red Cedar 무늬도 가능합니다.",
   "Corners for security door and window frames, jamb adaptor corners and frame packers from 1 mm to 10 mm.":
     "방범 도어 및 창호 프레임 코너, 문틀 어댑터 코너, 1~10 mm 프레임 패커.",
   "Flyscreen frames, tracks, corners, springs and clips, with rubber and foam spline on 300 to 500 m spools.":
