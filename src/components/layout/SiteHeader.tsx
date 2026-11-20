@@ -10,7 +10,7 @@ import { useQuote } from "@/lib/quote-store";
 import type { LayoutStrings } from "./types";
 import { stripLocale } from "@/i18n/config";
 
-// Header: logo, navigation (Quote last, with item count) and the four languages. Nothing else.
+// Logo left, navigation centred, languages and the Quote button right. Nothing else.
 export function SiteHeader({ s }: { s: LayoutStrings }) {
   const pathname = usePathname();
   const current = stripLocale(pathname);
@@ -31,57 +31,78 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
     };
   }, [open]);
 
-  const isActive = (match: string) => current === match || current.startsWith(`${match}/`);
-  const links = [...s.nav, { href: s.quote.href, label: s.quote.label, match: "/quote" }];
-  const count = (match: string) =>
-    match === "/quote" && lines.length > 0 ? (
-      <span className="ms-1.5 rounded-sm bg-brand px-1.5 font-mono text-[11px] leading-5 text-accent-ink tabular-nums">{lines.length}</span>
-    ) : null;
+  const isActive = (match: string) => (match === "/" ? current === "/" : current === match || current.startsWith(`${match}/`));
+  const quoteActive = isActive("/quote");
+
+  const quoteButton = (extra = "") => (
+    <Link
+      href={s.quote.href}
+      className={`inline-flex h-9 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors ${quoteActive ? "border-ink bg-ink text-white" : "border-line-strong hover:border-ink"} ${extra}`}
+    >
+      {s.quote.label}
+      {lines.length > 0 && (
+        <span className={`grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] leading-5 tabular-nums ${quoteActive ? "bg-white text-ink" : "bg-ink text-white"}`}>
+          {lines.length}
+        </span>
+      )}
+    </Link>
+  );
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-6 px-4 md:px-8">
+      <div className="mx-auto grid h-16 max-w-[1280px] grid-cols-[1fr_auto] items-center gap-6 px-4 md:px-8 xl:grid-cols-[1fr_auto_1fr]">
         <Logo href={s.home} />
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
-          {links.map((n) => (
+
+        <nav className="hidden items-center gap-7 xl:flex" aria-label="Main">
+          {s.nav.map((n) => (
             <Link
               key={n.href}
               href={n.href}
-              className={`inline-flex items-center rounded px-3 py-2 text-sm transition-colors ${isActive(n.match) ? "font-medium text-ink" : "text-muted hover:text-ink"}`}
               aria-current={isActive(n.match) ? "page" : undefined}
+              className={`relative py-1 text-[15px] transition-colors after:absolute after:inset-x-0 after:-bottom-[1px] after:h-px after:bg-ink after:transition-opacity ${
+                isActive(n.match) ? "text-ink after:opacity-100" : "text-muted after:opacity-0 hover:text-ink"
+              }`}
             >
               {n.label}
-              {count(n.match)}
             </Link>
           ))}
         </nav>
-        <LanguageLinks lang={s.lang} label={s.menu.language} className="hidden lg:flex" />
-        <button
-          type="button"
-          className="relative grid size-10 place-items-center rounded border border-line-strong lg:hidden"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? s.menu.close : s.menu.open}
-        >
-          {open ? <X size={18} /> : <List size={18} />}
-          {!open && lines.length > 0 && (
-            <span className="absolute -end-1.5 -top-1.5 min-w-5 rounded-sm bg-brand px-1 text-center font-mono text-[11px] leading-5 text-accent-ink">{lines.length}</span>
-          )}
-        </button>
+
+        <div className="flex items-center justify-end gap-4">
+          <LanguageLinks lang={s.lang} label={s.menu.language} className="hidden xl:flex" />
+          <div className="hidden sm:block">{quoteButton()}</div>
+          <button
+            type="button"
+            className="relative grid size-10 place-items-center rounded-full border border-line-strong xl:hidden"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? s.menu.close : s.menu.open}
+          >
+            {open ? <X size={18} /> : <List size={18} />}
+          </button>
+        </div>
       </div>
-      {/* Phones and tablets: languages always visible in their own row. */}
-      <div className="border-t border-line lg:hidden">
-        <LanguageLinks lang={s.lang} label={s.menu.language} className="mx-auto max-w-[1280px] justify-center px-4 py-1.5 md:px-8" />
+
+      {/* Below desktop width: languages stay visible in their own quiet row. */}
+      <div className="border-t border-line xl:hidden">
+        <LanguageLinks lang={s.lang} label={s.menu.language} className="mx-auto max-w-[1280px] justify-center px-4 py-2 md:px-8" />
       </div>
 
       {open && (
-        <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-6.5rem)] overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-2 lg:hidden">
+        <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-6.5rem)] overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-2 xl:hidden">
           <nav className="flex flex-col" aria-label="Mobile">
-            {links.map((n) => (
-              <Link key={n.href} href={n.href} className="flex items-center border-b border-line py-4 text-lg font-medium">
+            {[...s.nav, { href: s.quote.href, label: s.quote.label, match: "/quote" }].map((n) => (
+              <Link
+                key={n.href}
+                href={n.href}
+                aria-current={isActive(n.match) ? "page" : undefined}
+                className={`flex items-center justify-between border-b border-line py-4 text-lg ${isActive(n.match) ? "font-semibold" : ""}`}
+              >
                 {n.label}
-                {count(n.match)}
+                {n.match === "/quote" && lines.length > 0 && (
+                  <span className="grid min-w-6 place-items-center rounded-full bg-ink px-2 text-xs leading-6 text-white">{lines.length}</span>
+                )}
               </Link>
             ))}
           </nav>

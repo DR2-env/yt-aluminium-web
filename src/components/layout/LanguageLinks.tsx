@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LOCALES, LOCALE_META, localePath, stripLocale, type Locale } from "@/i18n/config";
 
-/** All four languages shown as plain links (no dropdown), each written in its own script. */
+/** The four languages as short, plain links (no dropdown), each in its own script. */
 export function LanguageLinks({ lang, label, className = "" }: { lang: Locale; label: string; className?: string }) {
   const base = stripLocale(usePathname());
   const remember = () => {
@@ -16,19 +16,20 @@ export function LanguageLinks({ lang, label, className = "" }: { lang: Locale; l
     }
   };
   return (
-    <nav aria-label={label} className={`flex items-center gap-1 ${className}`}>
-      {LOCALES.map((l) => (
+    <nav aria-label={label} className={`flex items-center ${className}`}>
+      {LOCALES.map((l, i) => (
         <Link
           key={l}
           href={localePath(l, base)}
           hrefLang={LOCALE_META[l].htmlLang}
           lang={LOCALE_META[l].htmlLang}
+          title={LOCALE_META[l].label}
           prefetch={false}
           onClick={remember}
           aria-current={l === lang ? "true" : undefined}
-          className={`rounded px-2 py-1 text-sm transition-colors ${l === lang ? "bg-surface-2 font-semibold text-ink" : "text-muted hover:text-ink"}`}
+          className={`px-2 text-[13px] transition-colors ${i > 0 ? "border-s border-line-strong" : ""} ${l === lang ? "font-semibold text-ink" : "text-muted hover:text-ink"}`}
         >
-          {LOCALE_META[l].label}
+          {LOCALE_META[l].short}
         </Link>
       ))}
     </nav>

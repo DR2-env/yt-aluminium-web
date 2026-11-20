@@ -36,7 +36,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         href={sendListHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex h-12 items-center justify-center gap-2 rounded bg-brand px-6 text-[15px] font-medium"
+        className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 text-[15px] font-medium"
       >
         <WhatsappLogo size={18} />
         {d.home.sendList}

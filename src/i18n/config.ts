@@ -2,11 +2,11 @@ export const LOCALES = ["en", "zh", "ko", "ar"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 
-export const LOCALE_META: Record<Locale, { label: string; htmlLang: string; dir: "ltr" | "rtl"; ogLocale: string }> = {
-  en: { label: "English", htmlLang: "en-AU", dir: "ltr", ogLocale: "en_AU" },
-  zh: { label: "中文", htmlLang: "zh-Hans", dir: "ltr", ogLocale: "zh_CN" },
-  ko: { label: "한국어", htmlLang: "ko", dir: "ltr", ogLocale: "ko_KR" },
-  ar: { label: "العربية", htmlLang: "ar", dir: "rtl", ogLocale: "ar_AR" },
+export const LOCALE_META: Record<Locale, { label: string; short: string; htmlLang: string; dir: "ltr" | "rtl"; ogLocale: string }> = {
+  en: { label: "English", short: "EN", htmlLang: "en-AU", dir: "ltr", ogLocale: "en_AU" },
+  zh: { label: "中文", short: "中文", htmlLang: "zh-Hans", dir: "ltr", ogLocale: "zh_CN" },
+  ko: { label: "한국어", short: "한국어", htmlLang: "ko", dir: "ltr", ogLocale: "ko_KR" },
+  ar: { label: "العربية", short: "عربي", htmlLang: "ar", dir: "rtl", ogLocale: "ar_AR" },
 };
 
 export const isLocale = (s: string): s is Locale => (LOCALES as readonly string[]).includes(s);
