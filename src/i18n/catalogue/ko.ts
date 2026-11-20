@@ -18,16 +18,16 @@ const ko: Record<string, string> = {
   "Grills and Security Mesh": "그릴 및 방범망",
   "Pile and Glazing Wedge": "모헤어 및 글레이징 웨지",
   Hardware: "철물",
-  Locks: "잠금장치",
+  Locks: "도어락·잠금장치",
   // Range descriptions
   "101.6 × 45 mm centre glazed suite for single glazed shopfronts and entries. Frames, sills, adaptors, beads and accessories in 6.5 m lengths.":
     "단판 유리 상가 전면 및 출입구용 101.6 × 45 mm 센터 글레이징 시스템. 프레임, 하부 프레임, 어댑터, 비드 및 부속품, 6.5 m 길이.",
   "Stiles, rails, beads and thresholds for commercial hinged doors, plus the full awning window sash system with hinges, stops and corners.":
     "상업용 여닫이 도어의 스타일, 레일, 비드 및 문턱과 힌지, 스톱, 코너를 포함한 어닝 창 새시 시스템 일체.",
   "Bifold door section: lock stile, slotted and reversible sills, jamb and a 60 mm head track. Black, white, Monument or mill.":
-    "폴딩 도어 프로파일: 잠금 스타일, 슬롯형 및 양면 하부 프레임, 문틀 및 60 mm 상부 레일. 블랙, 화이트, Monument 또는 무처리.",
+    "폴딩 도어 프로파일: 잠금 스타일, 슬롯형 및 양면 하부 프레임, 문틀 및 60 mm 상부 레일. 블랙, 화이트, Monument 또는 무도장.",
   "Double glazed commercial suite: main frame, sill, adaptor and bead. Black, white, Monument, clear anodised or mill.":
-    "상업용 복층 유리 시스템: 메인 프레임, 하부 프레임, 어댑터 및 비드. 블랙, 화이트, Monument, 실버 아노다이징 또는 무처리.",
+    "상업용 복층 유리 시스템: 메인 프레임, 하부 프레임, 어댑터 및 비드. 블랙, 화이트, Monument, 실버 아노다이징 또는 무도장.",
   "Frames, tracks, receivers, interlocks and beads for hinged and sliding security doors and windows. Our widest colour range, with Western Red Cedar on selected frames.":
     "여닫이 및 미닫이 방범 도어와 창호용 프레임, 레일, 리시버, 인터록 및 비드. 가장 다양한 색상을 제공하며 일부 프레임은 Western Red Cedar 무늬도 가능합니다.",
   "Corners for security door and window frames, jamb adaptor corners and frame packers from 1 mm to 10 mm.":
@@ -43,7 +43,7 @@ const ko: Record<string, string> = {
   "Curtain rods and commercial and style curtain tracks, with wheels, carriers, end caps and wall and ceiling brackets.":
     "커튼 봉, 상업용 및 스타일 커튼 레일과 휠, 캐리어, 엔드 캡, 벽 및 천장 브래킷.",
   "Unequal and equal aluminium angles from 12 × 12 to 50 × 50 mm in 6.5 m lengths, available in almost every finish we offer.":
-    "12 × 12~50 × 50 mm 등변 및 부등변 알루미늄 앵글, 6.5 m 길이, 대부분의 마감으로 제공.",
+    "12 × 12~50 × 50 mm 등변 및 부등변 알루미늄 앵글, 6.5 m 길이, 대부분의 색상으로 제공.",
   "0.8 mm Grade 316 stainless steel security mesh in cut sheets up to 1500 × 2800 mm, and Grade 304 mesh in 30 m rolls.":
     "최대 1500 × 2800 mm 재단 시트 0.8 mm 316 등급 스테인리스 방범망과 30 m 롤 304 등급 망.",
   "7 mm single diamond grill, one way mesh, 2.5 mm security one way mesh and 1.8 mm perforated mesh in standard door and window sizes.":
@@ -278,14 +278,14 @@ const ko: Record<string, string> = {
   "Packs of 60": "60개 팩",
 
   // Notes
-  "Supplied in mill finish only.": "무처리 마감으로만 공급됩니다.",
+  "Supplied in mill finish only.": "무도장으로만 공급됩니다.",
   "Colour to suit your sub sill. Confirm the colour with us when ordering.": "보조 하부 프레임 색상에 맞춥니다. 주문 시 색상을 확인해 주십시오.",
   "Black only.": "블랙만 가능.",
   "0.8 mm wire. White is available in 1200 × 2400 only.": "0.8 mm 와이어. 화이트는 1200 × 2400 규격만 가능합니다.",
   "Replaces the top RL01.": "RL01 상부 부품을 대체합니다.",
 
   // Finishes
-  Mill: "무처리",
+  Mill: "무도장",
   "Clear Anodised": "실버 아노다이징",
   "Pearl White": "펄 화이트",
   Surfmist: "Surfmist",
@@ -303,17 +303,17 @@ const ko: Record<string, string> = {
   Black: "블랙",
   "Dune Matte": "듄 무광",
   "Notre Dame": "Notre Dame",
-  "Western Red Cedar": "Western Red Cedar 목재 무늬",
+  "Western Red Cedar": "Western Red Cedar 우드 무늬",
   "Black rubber": "블랙 고무",
   Standard: "표준",
-  "Mill finish": "무처리",
+  "Mill finish": "무도장",
   Anodised: "아노다이징",
   "Powder coat": "분체 도장",
   "Pearl powder coat": "펄 분체 도장",
   "Matt powder coat": "무광 분체 도장",
-  "Timber finish": "목재 무늬",
+  "Timber finish": "우드 무늬",
   Rubber: "고무",
-  "Standard finish": "표준 마감",
+  "Standard finish": "기본 색상",
 };
 
 export default ko;

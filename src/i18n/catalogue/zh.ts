@@ -313,7 +313,7 @@ const zh: Record<string, string> = {
   "Matt powder coat": "哑光粉末喷涂",
   "Timber finish": "木纹",
   Rubber: "橡胶",
-  "Standard finish": "标准表面",
+  "Standard finish": "标准色",
 };
 
 export default zh;
