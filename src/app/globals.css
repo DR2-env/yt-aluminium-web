@@ -1,51 +1,53 @@
 @import "tailwindcss";
 
 /*
-  Design tokens. Cool "anodised" neutrals with a navy to steel-blue accent.
-  Primary buttons and the home hero use a navy to steel-blue gradient (bg-brand, hero-fade).
-  Shape rule: controls (buttons, inputs, chips) use 4px corners, panels and cards 6px.
+  Design tokens. Light, airy industrial look: off-white page, near-black ink, very thin display
+  type, small monospace labels, and soft blue "ambient" glows behind the home hero.
+  Primary buttons are solid ink (bg-brand). Shape rule: controls 4px corners, panels 6px.
 */
 :root {
-  --bg: #ffffff;
+  --bg: #f5f6f8;
   --surface: #ffffff;
-  --surface-2: #f2f5f9;
-  --ink: #0e2240;
-  --muted: #45566d;
-  --line: #dde5ef;
-  --line-strong: #c3d1e2;
-  --accent: #14427a;
-  --accent-hover: #0b2447;
+  --surface-2: #eef1f5;
+  --ink: #0a0f1a;
+  --muted: #525a68;
+  --line: #e2e6ec;
+  --line-strong: #c8cfd9;
+  --accent: #1d4ed8;
+  --accent-hover: #1e40af;
   --accent-ink: #ffffff;
-  --accent-soft: #e8f0fa;
-  --brand-from: #0b2447;
-  --brand-to: #1f5aa0;
-  --hero-from: #ffffff;
-  --hero-mid: #eef4fb;
-  --hero-to: #cfe0f3;
-  --hero-ink-to: #1f5aa0;
-  --shadow: 0 1px 2px rgb(22 25 29 / 0.06);
+  --accent-soft: #e6eefc;
+  --brand-bg: #0a0f1a;
+  --brand-bg-hover: #1f2937;
+  --band: #dbe8fb;
+  --band-ink: #12357a;
+  --glow-1: rgb(96 165 250 / 0.55);
+  --glow-2: rgb(125 211 252 / 0.45);
+  --glow-3: rgb(165 180 252 / 0.45);
+  --shadow: 0 1px 2px rgb(10 15 26 / 0.06);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1114;
-    --surface: #15181c;
-    --surface-2: #1c2025;
-    --ink: #e9ecef;
-    --muted: #aeb6bf;
-    --line: #2a2f35;
-    --line-strong: #3b4249;
-    --accent: #7aa8d8;
-    --accent-hover: #93bae3;
-    --accent-ink: #0b1520;
-    --accent-soft: #1a2633;
-    --brand-from: #1f5aa0;
-    --brand-to: #3a78c2;
-    --hero-from: #0f1114;
-    --hero-mid: #121a26;
-    --hero-to: #16294a;
-    --hero-ink-to: #93bae3;
+    --bg: #0b0d11;
+    --surface: #12151b;
+    --surface-2: #181c23;
+    --ink: #eef1f5;
+    --muted: #a7afbc;
+    --line: #262b33;
+    --line-strong: #39404a;
+    --accent: #8db4f5;
+    --accent-hover: #a9c6f8;
+    --accent-ink: #0b0d11;
+    --accent-soft: #17223a;
+    --brand-bg: #eef1f5;
+    --brand-bg-hover: #ffffff;
+    --band: #142443;
+    --band-ink: #bcd3fa;
+    --glow-1: rgb(37 99 235 / 0.35);
+    --glow-2: rgb(14 165 233 / 0.22);
+    --glow-3: rgb(99 102 241 / 0.25);
     --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
     color-scheme: dark;
   }
@@ -64,8 +66,8 @@
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --shadow-panel: var(--shadow);
-  --font-sans: var(--font-plex-sans), var(--font-locale, ui-sans-serif), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-inter-tight), var(--font-locale, ui-sans-serif), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 html {
@@ -113,35 +115,65 @@ body {
   display: none;
 }
 
-/* Navy to steel-blue gradient for primary buttons. */
+/* Primary buttons: solid ink, white text. */
 @utility bg-brand {
-  background-color: var(--accent);
-  background-image: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+  background-color: var(--brand-bg);
+  color: var(--accent-ink);
+  &:hover {
+    background-color: var(--brand-bg-hover);
+  }
 }
 
-/* Home hero: white fading down to pale steel blue. */
-@utility hero-fade {
-  background-image: linear-gradient(180deg, var(--hero-from) 0%, var(--hero-mid) 45%, var(--hero-to) 100%);
+/* Home hero: soft blurred blue glows on the page colour. */
+@utility ambient {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(55% 60% at 18% 20%, var(--glow-1) 0%, transparent 70%),
+    radial-gradient(45% 55% at 85% 70%, var(--glow-2) 0%, transparent 70%),
+    radial-gradient(40% 45% at 60% 15%, var(--glow-3) 0%, transparent 70%);
 }
 
-/* Heading text that fades from ink to steel blue. */
-@utility text-fade {
-  background-image: linear-gradient(90deg, var(--ink) 0%, var(--hero-ink-to) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  /* Room for descenders, which background-clip would otherwise cut off. */
-  padding-bottom: 0.12em;
+/* Very large, very thin headings. */
+@utility display {
+  font-weight: 200;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
 }
 
-/* Right to left: fade from the start of the line, which is on the right. */
-[dir="rtl"] .text-fade {
-  background-image: linear-gradient(270deg, var(--ink) 0%, var(--hero-ink-to) 100%);
+/* Small uppercase monospace labels. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-/* Arabic, Chinese and Korean need more line height than the tight Latin heading. */
-:lang(ar) .text-fade,
-:lang(zh) .text-fade,
-:lang(ko) .text-fade {
-  line-height: 1.35;
+/* Arabic, Chinese and Korean: no negative tracking, uppercase or thin weights, more line height. */
+:lang(ar) .display,
+:lang(zh) .display,
+:lang(ko) .display {
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+:lang(ar) .eyebrow,
+:lang(zh) .eyebrow,
+:lang(ko) .eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+}
+
+/* Dark band (footer): re-maps the tokens so every component inside reads light on ink. */
+.on-ink {
+  --bg: #0a0f1a;
+  --surface: #0a0f1a;
+  --surface-2: #0a0f1a;
+  --ink: #f5f6f8;
+  --muted: #9aa3b2;
+  --line: rgb(255 255 255 / 0.12);
+  --line-strong: rgb(255 255 255 / 0.2);
+  --accent: #93c5fd;
+  background-color: #0a0f1a;
+  color: var(--ink);
 }

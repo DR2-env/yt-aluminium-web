@@ -276,7 +276,7 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           <button
             type="button"
             onClick={add}
-            className="ms-auto inline-flex h-11 flex-1 items-center justify-center gap-2 rounded bg-brand px-5 text-[15px] font-medium text-accent-ink transition-colors hover:brightness-110 sm:flex-none"
+            className="ms-auto inline-flex h-11 flex-1 items-center justify-center gap-2 rounded bg-brand px-5 text-[15px] font-medium text-accent-ink transition-colors sm:flex-none"
           >
             {added ? <Check size={16} /> : <Plus size={16} />}
             {added ? s.added : s.add}

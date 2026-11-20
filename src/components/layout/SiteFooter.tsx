@@ -14,15 +14,15 @@ export function SiteFooter({ lang }: { lang: Locale }) {
     { href: "/quote", label: d.nav.quote },
   ];
   return (
-    <footer className="border-t border-line bg-surface-2 pb-20 sm:pb-0">
+    <footer className="on-ink pb-20 sm:pb-0">
       <div className="mx-auto grid max-w-[1280px] gap-10 px-4 py-12 md:grid-cols-12 md:px-8">
         <div className="md:col-span-4">
           <Logo href={localePath(lang, "/")} />
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted">{d.footer.about}</p>
         </div>
         <div className="md:col-span-5">
-          <h2 className="text-sm font-semibold">{d.footer.ranges}</h2>
-          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm text-muted">
+          <h2 className="eyebrow text-muted">{d.footer.ranges}</h2>
+          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm text-ink/80">
             {RANGES.map((r) => (
               <li key={r.id}>
                 <Link href={localePath(lang, rangeHref(r))} className="hover:text-ink">
@@ -34,7 +34,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
         </div>
         <div className="space-y-6 md:col-span-3">
           <div>
-            <h2 className="text-sm font-semibold">{d.footer.counter}</h2>
+            <h2 className="eyebrow text-muted">{d.footer.counter}</h2>
             <address className="mt-3 space-y-1 text-sm not-italic text-muted">
               <p>{SITE.address.street}</p>
               <p>

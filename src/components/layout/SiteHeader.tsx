@@ -33,7 +33,7 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
   const isActive = (match: string) => current === match || current.startsWith(`${match}/`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-6 px-4 md:px-8">
         <Logo href={s.home} />
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
