@@ -62,6 +62,16 @@ const en = {
     visitTitle: "Trade counter",
     directions: "Get directions",
   },
+  edge: {
+    title: "Why customers choose YT",
+    items: [
+      { title: "Everything in one place", text: "222 product codes, from shopfront frames to locks and mesh." },
+      { title: "No minimum order", text: "Buy one length or a full bundle." },
+      { title: "Same-day delivery", text: "Across Sydney. Free on orders over $500, conditions apply." },
+      { title: "Prices the same day", text: "Send your list or a photo of it. We usually reply the same day." },
+    ],
+    trust: ["20+ years in aluminium", "Around 200 regular customers", "Trade counter in Milperra"],
+  },
   catalogue: {
     intro: "{codes} product codes from the price list dated {date}. Add items to a quote request to get pricing.",
     searchLabel: "Search by code or name",

@@ -64,6 +64,16 @@ const ko: Dictionary = {
     visitTitle: "매장",
     directions: "길 찾기",
   },
+  edge: {
+    title: "YT를 선택하는 이유",
+    items: [
+      { title: "한곳에서 모두", text: "샷시 프레임부터 잠금장치, 방충망까지 222개 제품 코드." },
+      { title: "최소 주문 없음", text: "한 본도, 한 묶음도 주문할 수 있어요." },
+      { title: "시드니 당일 배송", text: "500달러 이상 주문 시 무료 배송(조건 적용)." },
+      { title: "당일 견적", text: "목록이나 목록 사진을 보내 주세요. 보통 당일에 답변드려요." },
+    ],
+    trust: ["알루미늄 20년 이상", "약 200곳의 단골 고객", "Milperra 매장"],
+  },
   catalogue: {
     intro: "{date} 가격표 기준 제품 코드 {codes}개. 견적 목록에 담아 보내 주시면 가격을 알려 드려요.",
     searchLabel: "코드나 제품명으로 검색",

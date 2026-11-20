@@ -5,8 +5,9 @@ import { ProductVisual } from "@/components/catalogue/ProductVisual";
 import { SectionDrawing } from "@/components/catalogue/SectionDrawing";
 import { LinkButton } from "@/components/ui/Button";
 import { PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
+import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
 import { whatsappLink } from "@/lib/site";
-import { getDictionary, isLocale, localePath, tc } from "@/i18n";
+import { finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
 
 function rangeCover(rangeId: string) {
   const range = RANGES.find((r) => r.id === rangeId);
@@ -17,8 +18,8 @@ function rangeCover(rangeId: string) {
 
 const wrap = "mx-auto max-w-[1280px] px-4 md:px-8";
 
-// Deliberately sparse: headline, two actions, the ranges, one closing call to action.
-// Details (how to order, finishes, contact) live on their own pages and in the footer.
+// Sparse on purpose: hero, ranges, why customers choose YT, colours, one closing call to action.
+// Detail (how to order, contact) lives on its own pages and in the footer.
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -28,8 +29,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const heroSection = SECTIONS[hero.sec ?? "AU014"];
   // Pre-filled text stays in English so staff can read it.
   const sendListHref = whatsappLink(getDictionary("en").home.sendListMessage + " ");
-  // The first three selling points, quietly under the buttons (the fourth needs a footnote).
-  const perks = d.home.perks.slice(0, 3);
 
   const actions = (
     <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -56,7 +55,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             <h1 className="display text-balance text-[2.75rem] sm:text-6xl lg:text-[5rem]">{d.home.heroTitle}</h1>
             <p className="mt-6 max-w-[40ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
             <div className="mt-10">{actions}</div>
-            <p className="mt-8 text-sm text-muted">{perks.join("   ·   ")}</p>
           </div>
 
           <Link href={p(productHref(hero))} className="group block lg:col-span-5" aria-label={`${hero.code} ${tc(lang, hero.name)}`}>
@@ -102,6 +100,56 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                 <ArrowRight size={16} className="rtl:-scale-x-100" />
               </span>
             </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* Why customers choose YT: four plain promises and a short line of facts. */}
+      <section className="border-t border-line">
+        <div className={`${wrap} py-24 md:py-32`}>
+          <h2 className="display text-4xl md:text-6xl">{d.edge.title}</h2>
+          <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {d.edge.items.map((item) => (
+              <div key={item.title} className="border-t border-ink pt-6">
+                <h3 className="text-xl font-medium">{item.title}</h3>
+                <p className="mt-3 leading-relaxed text-muted">{item.text}</p>
+              </div>
+            ))}
+          </div>
+          <ul className="mt-16 flex flex-wrap gap-y-2 text-[15px] text-muted">
+            {d.edge.trust.map((fact, i) => (
+              <li key={fact} className={i > 0 ? "border-s border-line-strong ps-5 ms-5" : ""}>
+                {fact}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Colours. */}
+      <section className="border-t border-line">
+        <div className={`${wrap} py-24 md:py-32`}>
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <h2 className="display text-4xl md:text-6xl">{d.home.finishesTitle}</h2>
+              <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">{fmt(d.home.finishesText, { n: COLOUR_CODES.length })}</p>
+            </div>
+            <Link href={p("/finishes")} className="mb-1 hidden shrink-0 items-center gap-1.5 text-[15px] text-muted hover:text-ink sm:inline-flex">
+              {d.home.finishesLink}
+              <ArrowRight size={14} className="rtl:-scale-x-100" />
+            </Link>
+          </div>
+          <div className="mt-12 grid grid-cols-3 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-10">
+            {COLOUR_CODES.map((code) => (
+              <div key={code}>
+                <div className="aspect-square rounded-md ring-1 ring-inset ring-black/10" style={{ background: swatchBackground(code) }} />
+                <p className="mt-2 text-xs leading-snug text-muted">{finishName(lang, code)}</p>
+              </div>
+            ))}
+          </div>
+          <Link href={p("/finishes")} className="mt-8 inline-flex items-center gap-1.5 text-[15px] text-muted hover:text-ink sm:hidden">
+            {d.home.finishesLink}
+            <ArrowRight size={14} className="rtl:-scale-x-100" />
           </Link>
         </div>
       </section>

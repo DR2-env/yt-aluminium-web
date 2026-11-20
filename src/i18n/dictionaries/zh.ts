@@ -64,6 +64,16 @@ const zh: Dictionary = {
     visitTitle: "门店",
     directions: "导航过去",
   },
+  edge: {
+    title: "客户为什么选择 YT",
+    items: [
+      { title: "一站购齐", text: "222 个产品编号，从门面框材到门锁、纱网。" },
+      { title: "不设最低订量", text: "买一支或整捆都可以。" },
+      { title: "悉尼当天送货", text: "满 500 澳元免运费，条款适用。" },
+      { title: "当天报价", text: "把清单或清单照片发给我们，一般当天回复。" },
+    ],
+    trust: ["20 多年铝材经验", "约 200 位老客户", "Milperra 门店"],
+  },
   catalogue: {
     intro: "共 {codes} 个产品编号，按 {date} 价目表。加到询价单里，我们给您报价。",
     searchLabel: "搜编号或名称",
