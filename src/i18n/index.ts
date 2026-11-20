@@ -37,7 +37,16 @@ export function packLabel(lang: Locale, dict: Dictionary, c: { packtext?: string
   return fmt(dict.pack.per, { unit: unitName(dict, c.unit, 1) });
 }
 
-export const finishName = (lang: Locale, code: string) => tc(lang, finishOf(code).name);
+/**
+ * Colour name as shown to customers. The English name always appears, because it is what YT
+ * uses on the price list and in MYOB; other languages add their translation in brackets.
+ */
+export function finishName(lang: Locale, code: string): string {
+  const en = finishOf(code).name;
+  const local = tc(lang, en);
+  if (lang === "en" || local === en) return en;
+  return local.includes(en) ? local : `${en} (${local})`;
+}
 export const finishType = (lang: Locale, code: string) => tc(lang, finishOf(code).type);
 
 import { FINISHES } from "@/lib/finishes";
