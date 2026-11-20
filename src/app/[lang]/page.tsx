@@ -52,8 +52,8 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <section className="ambient">
         <div className={`${wrap} grid grid-cols-1 items-center gap-14 pb-24 pt-16 md:pb-32 md:pt-28 lg:grid-cols-12 lg:gap-10`}>
           <div className="lg:col-span-7">
-            <h1 className="display text-balance text-[2.75rem] sm:text-6xl lg:text-[5rem]">{d.home.heroTitle}</h1>
-            <p className="mt-6 max-w-[40ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
+            <h1 className="display text-balance text-[2.5rem] sm:text-6xl lg:text-[4.25rem]">{d.home.heroTitle}</h1>
+            <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
             <div className="mt-10">{actions}</div>
           </div>
 

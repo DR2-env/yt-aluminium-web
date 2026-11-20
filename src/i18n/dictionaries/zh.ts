@@ -33,8 +33,8 @@ const zh: Dictionary = {
     whatsapp: "WhatsApp",
   },
   home: {
-    heroTitle: "门窗、纱窗铝材，悉尼批发",
-    heroText: "门店在 Milperra，行内客户和散客都欢迎。清单发过来，一般当天就给您报价。",
+    heroTitle: "门窗铝材，一站购齐。",
+    heroText: "型材、纱网、五金、门锁，Milperra 门店共 222 个产品编号。把清单发给我们，一般当天回复报价。",
     viewProducts: "看产品",
     requestQuote: "要报价",
     buildQuote: "在网站上列报价清单",

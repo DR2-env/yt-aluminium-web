@@ -31,8 +31,8 @@ const en = {
     whatsapp: "WhatsApp",
   },
   home: {
-    heroTitle: "Aluminium for windows, doors and screens",
-    heroText: "Aluminium supplier in Milperra, Sydney. Trade and public welcome. Send us your list and we reply with prices, usually the same day.",
+    heroTitle: "Everything for aluminium windows and doors. One supplier.",
+    heroText: "Profiles, mesh, hardware and locks, 222 codes from our Milperra trade counter. Send us your list and we reply with prices, usually the same day.",
     viewProducts: "See products",
     requestQuote: "Request a quote",
     buildQuote: "Build a quote list",

@@ -33,8 +33,8 @@ const ko: Dictionary = {
     whatsapp: "WhatsApp",
   },
   home: {
-    heroTitle: "창호·도어·방충망용 알루미늄 자재",
-    heroText: "시드니 Milperra 매장입니다. 업체와 개인 고객 모두 환영합니다. 목록만 보내 주시면 보통 당일에 견적 드려요.",
+    heroTitle: "창문·문 알루미늄 자재, 한곳에서.",
+    heroText: "프로파일, 방충망, 철물, 잠금장치까지 Milperra 매장에서 222개 제품 코드. 목록을 보내 주시면 보통 당일에 가격을 알려 드려요.",
     viewProducts: "제품 보기",
     requestQuote: "견적 받기",
     buildQuote: "견적 목록 만들기",
