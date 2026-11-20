@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/ssr";
+import { ArrowRight, CheckCircle, ClipboardText, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { ProductVisual } from "@/components/catalogue/ProductVisual";
 import { SectionDrawing } from "@/components/catalogue/SectionDrawing";
 import { LinkButton } from "@/components/ui/Button";
@@ -29,7 +29,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      {/* Hero: very large thin headline on soft blue glows, with a technical drawing sheet. */}
+      {/* Hero: large headline on soft blue glows, with a technical drawing sheet. */}
       <section className="ambient border-b border-line">
         <div className={`${wrap} grid grid-cols-1 gap-12 pb-20 pt-16 md:pb-32 md:pt-28 lg:grid-cols-12 lg:items-center lg:gap-10`}>
           <div className="lg:col-span-7">
@@ -49,10 +49,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               <span>{fmt(d.home.callUs, { phone: "" })}</span>
               <span dir="ltr">{SITE.phone}</span>
             </a>
-            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-muted">
+            <ul className="mt-8 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
               {d.home.perks.map((perk) => (
-                <li key={perk} className="eyebrow flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-accent" aria-hidden />
+                <li key={perk} className="flex items-center gap-2.5 text-base font-medium">
+                  <CheckCircle size={22} weight="fill" className="shrink-0 text-accent" aria-hidden />
                   {perk}
                 </li>
               ))}
@@ -90,60 +90,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
-      {/* Strip: a few range names, like a "who we serve" row. */}
-      <section className="border-b border-line bg-surface">
-        <div className={`${wrap} flex flex-col gap-3 py-5 md:flex-row md:items-center md:justify-between`}>
-          <p className="eyebrow text-muted">{d.home.rangesTitle}</p>
-          <ul className="flex flex-wrap gap-x-8 gap-y-2 text-[15px]">
-            {RANGES.slice(0, 5).map((r) => (
-              <li key={r.id}>
-                <Link href={p(rangeHref(r))} className="hover:text-accent">
-                  {tc(lang, r.name)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* How to order: large heading, then giant thin step numbers. */}
-      <section className={`${wrap} py-20 md:py-28`}>
-        <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
-          <h2 className="display text-5xl md:text-7xl">{d.home.orderTitle}</h2>
-          <p className="max-w-[48ch] text-lg leading-relaxed text-muted">{d.home.heroText}</p>
-        </div>
-        <ol className="mt-16 grid gap-12 md:grid-cols-3 md:gap-10">
-          {d.home.orderSteps.map((step, i) => (
-            <li key={step.title}>
-              <span className="display block text-7xl md:text-[7.5rem]" dir="ltr">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="mt-6 text-2xl font-light">{step.title}</h3>
-              <p className="mt-3 max-w-[38ch] leading-relaxed text-muted">{step.text}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Facts band. */}
-      <section className={`${wrap} pb-20 md:pb-28`}>
-        <div className="band grid grid-cols-2 gap-y-10 rounded-md px-6 py-10 md:grid-cols-4 md:px-10 md:py-14">
-          {[
-            [String(RANGES.length), d.home.facts.ranges],
-            [String(CODE_COUNT), d.home.facts.codes],
-            [String(COLOUR_CODES.length), d.home.facts.finishes],
-          ].map(([n, l]) => (
-            <div key={l}>
-              <p className="display text-6xl md:text-7xl">{n}</p>
-              <p className="mt-2 text-[15px]">{l}</p>
-            </div>
-          ))}
-          <div className="col-span-2 self-end md:col-span-1">
-            <p className="text-xl font-light leading-snug md:text-2xl">{d.home.facts.delivery}</p>
-          </div>
-        </div>
-      </section>
-
       {/* Ranges. */}
       <section className="border-t border-line bg-surface">
         <div className={`${wrap} py-20 md:py-28`}>
@@ -163,7 +109,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               const codes = productsInRange(r).reduce((n, x) => n + (x.variants?.length || 1), 0);
               return (
                 <Link key={r.id} href={p(rangeHref(r))} className="group border-b border-e border-line bg-surface transition-colors hover:bg-bg">
-                  <div className="aspect-[4/3] p-4">{cover && <ProductVisual item={{ ...cover, name: tc(lang, r.name) }} />}</div>
+                  <div className="aspect-[4/3] bg-tile p-4">{cover && <ProductVisual item={{ ...cover, name: tc(lang, r.name) }} />}</div>
                   <div className="px-4 pb-4">
                     <h3 className="text-[15px] group-hover:text-accent">{tc(lang, r.name)}</h3>
                     <p className="eyebrow mt-1 text-muted">{fmt(d.home.codes, { n: codes })}</p>
@@ -172,6 +118,38 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* How to order: large heading, then giant thin step numbers. */}
+      <section className={`${wrap} py-20 md:py-28`}>
+        <h2 className="display text-5xl md:text-7xl">{d.home.orderTitle}</h2>
+        <ol className="mt-16 grid gap-12 md:grid-cols-3 md:gap-10">
+          {d.home.orderSteps.map((step, i) => (
+            <li key={step.title}>
+              <span className="display block text-7xl md:text-[7.5rem]" dir="ltr">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-6 text-2xl font-medium">{step.title}</h3>
+              <p className="mt-3 max-w-[38ch] leading-relaxed text-muted">{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Facts band. */}
+      <section className={`${wrap} pb-20 md:pb-28`}>
+        <div className="band grid grid-cols-3 gap-y-10 rounded-md px-6 py-10 md:px-10 md:py-14">
+          {[
+            [String(RANGES.length), d.home.facts.ranges],
+            [String(CODE_COUNT), d.home.facts.codes],
+            [String(COLOUR_CODES.length), d.home.facts.finishes],
+          ].map(([n, l]) => (
+            <div key={l}>
+              <p className="display text-6xl md:text-7xl">{n}</p>
+              <p className="mt-2 text-[15px]">{l}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -202,10 +180,17 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       {/* Closing call to action on ink, flowing into the dark footer. */}
       <section className="ambient-end border-t border-line">
         <div className={`${wrap} pb-12 pt-20 md:pt-28`}>
-          <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="display inline-block text-balance text-5xl hover:text-accent md:text-8xl">
-            {d.home.requestQuote}
-                {lang === "en" ? "." : ""}
-          </a>
+          <h2 className="display text-balance text-5xl md:text-7xl">{d.home.requestQuote}</h2>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center justify-center gap-2 rounded bg-brand px-5 text-[15px] font-medium">
+              <WhatsappLogo size={18} />
+              {d.home.sendList}
+            </a>
+            <LinkButton href={p("/quote")} variant="secondary" size="lg" className="h-12 bg-surface text-[15px]">
+              <ClipboardText size={18} />
+              {d.home.buildQuote}
+            </LinkButton>
+          </div>
           <div className="mt-14 grid gap-8 border-t border-line-strong pt-8 text-sm sm:grid-cols-3">
             <div>
               <p className="eyebrow text-muted">{d.home.visitTitle}</p>

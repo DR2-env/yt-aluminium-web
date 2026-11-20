@@ -37,6 +37,7 @@ const ko: Dictionary = {
     heroText: "시드니 Milperra 매장입니다. 업체와 개인 고객 모두 환영합니다. 목록만 보내 주시면 보통 당일에 견적 드려요.",
     viewProducts: "제품 보기",
     requestQuote: "견적 받기",
+    buildQuote: "견적 목록 만들기",
     sendList: "WhatsApp으로 목록 보내기",
     sendListMessage: "안녕하세요 YT Aluminium, 목록 보내드립니다:",
     callUs: "전화 {phone}",

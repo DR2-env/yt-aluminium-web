@@ -24,6 +24,7 @@ import {
   type Section,
 } from "@/lib/catalogue";
 import { SITE } from "@/lib/site";
+import { SIZES } from "@/data/sizes";
 import { finishNameMap, fmt, getDictionary, isLocale, localePath, packLabel, tc, type Locale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
 
@@ -81,6 +82,7 @@ function toConfig(p: Product, lang: Locale): ConfigProduct {
     spool: p.spool,
     rubber: p.rubber,
     photo: p.kind === "photo" && p.img ? PHOTOS[p.img] : undefined,
+    sizeText: SIZES[p.id] || undefined,
     poster: renderSrc(p),
     note: isStandinSection(base) ? "standin" : hasHandBuiltModel(p.id) ? "model" : base.sec ? "section" : "model",
     variants,

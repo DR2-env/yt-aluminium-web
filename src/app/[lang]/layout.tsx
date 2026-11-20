@@ -54,6 +54,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       { href: p("/products"), label: d.nav.products, match: "/products" },
       { href: p("/finishes"), label: d.nav.finishes, match: "/finishes" },
       { href: p("/about"), label: d.nav.about, match: "/about" },
+      { href: p("/faq"), label: d.footer.faq, match: "/faq" },
       { href: p("/contact"), label: d.nav.contact, match: "/contact" },
     ],
     quote: { href: p("/quote"), label: d.nav.quote },

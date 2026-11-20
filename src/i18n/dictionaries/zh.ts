@@ -37,6 +37,7 @@ const zh: Dictionary = {
     heroText: "门店在 Milperra，行内客户和散客都欢迎。清单发过来，一般当天就给您报价。",
     viewProducts: "看产品",
     requestQuote: "要报价",
+    buildQuote: "在网站上列报价清单",
     sendList: "WhatsApp 发清单",
     sendListMessage: "您好 YT Aluminium，这是我的清单：",
     callUs: "电话 {phone}",

@@ -39,6 +39,7 @@ const ar: Dictionary = {
     heroText: "محل ألمنيوم في ميلبيرا، سيدني، نخدم أصحاب المهنة والأفراد. أرسل لنا قائمتك ونرد عليك بالأسعار، عادةً في نفس اليوم.",
     viewProducts: "تصفح المنتجات",
     requestQuote: "اطلب تسعيرة",
+    buildQuote: "جهّز قائمة التسعيرة على الموقع",
     sendList: "أرسل قائمتك على واتساب",
     sendListMessage: "مرحبا YT Aluminium، هذه قائمتي:",
     callUs: "اتصل على {phone}",

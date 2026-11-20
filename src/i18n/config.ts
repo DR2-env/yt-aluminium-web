@@ -18,10 +18,13 @@ export function localePath(lang: Locale, path: string): string {
   return clean === "/" ? `/${lang}` : `/${lang}${clean}`;
 }
 
-/** Strip a language prefix from a browser path, returning the path as English would see it. */
+/**
+ * Strip a language prefix from a path, returning the path as English would see it.
+ * Handles /en/... too: on the server, English pages see their internal (rewritten) address.
+ */
 export function stripLocale(pathname: string): string {
   const seg = pathname.split("/")[1] ?? "";
-  if (isLocale(seg) && seg !== DEFAULT_LOCALE) {
+  if (isLocale(seg)) {
     const rest = pathname.slice(seg.length + 1);
     return rest || "/";
   }

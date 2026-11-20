@@ -35,6 +35,7 @@ const en = {
     heroText: "Aluminium supplier in Milperra, Sydney. Trade and public welcome. Send us your list and we reply with prices, usually the same day.",
     viewProducts: "See products",
     requestQuote: "Request a quote",
+    buildQuote: "Build a quote list",
     sendList: "Send your list on WhatsApp",
     sendListMessage: "Hi YT Aluminium, here is my list:",
     callUs: "Call {phone}",

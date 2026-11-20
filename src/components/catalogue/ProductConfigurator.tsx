@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowCounterClockwise, Check, Minus, Pause, Play, Plus, WhatsappLogo } from "@phosphor-icons/react";
 import { LazyViewer } from "@/components/three/LazyViewer";
 import { SectionDrawing } from "./SectionDrawing";
@@ -35,6 +35,8 @@ export interface ConfigProduct {
   spool?: string;
   rubber?: boolean;
   photo?: string;
+  /** Size from src/data/sizes.ts, for items the price list gives no dimensions for. */
+  sizeText?: string;
   /** Pre-rendered picture shown until the live 3D model is ready. */
   poster: string;
   note: "section" | "standin" | "model";
@@ -90,6 +92,13 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
   const [resetKey, setResetKey] = useState(0);
   const [added, setAdded] = useState(false);
   const [ready, setReady] = useState(false);
+  const [toast, setToast] = useState<{ code: string; qty: number } | null>(null);
+  // Hide the confirmation after a few seconds; a new add restarts the timer.
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), 4500);
+    return () => window.clearTimeout(t);
+  }, [toast]);
   const lines = useQuote();
 
   const unit = (n: number) => (s.units[product.unit] ?? s.units.item)[n === 1 ? 0 : 1];
@@ -119,6 +128,7 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
       unit: product.unit,
     });
     setAdded(true);
+    setToast({ code: v.code, qty });
     window.setTimeout(() => setAdded(false), 2000);
   };
 
@@ -128,13 +138,14 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
 
   const specs: [string, string][] = [[s.suppliedAs, v.len], [s.soldIn, v.packText]];
   if (v.dims) specs.push([s.size, `${v.dims[0]} × ${v.dims[1]} mm`]);
+  else if (product.sizeText) specs.push([s.size, product.sizeText]);
   if (v.label && product.variants.length > 1) specs.push([s.option, v.label]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
       <div className="lg:col-span-7">
         <div className="lg:sticky lg:top-24">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-line bg-surface-2">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-line bg-tile">
             {mode === "3d" && !ready && (
               // eslint-disable-next-line @next/next/no-img-element -- local pre-rendered placeholder
               <img src={product.poster} alt={product.name} className="absolute inset-0 h-full w-full object-contain p-6" />
@@ -291,6 +302,22 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           </p>
         )}
       </div>
+      {toast && (
+        <div
+          role="status"
+          className="fixed inset-x-4 bottom-[calc(8.5rem+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-md items-center justify-between gap-3 rounded-md bg-ink px-4 py-3 text-sm text-white shadow-lg sm:bottom-6"
+        >
+          <span className="flex items-center gap-2">
+            <Check size={16} />
+            <span>
+              {s.added}: <span dir="ltr">{toast.qty} × {toast.code}</span> {product.name}
+            </span>
+          </span>
+          <Link href={s.quoteHref} className="shrink-0 rounded bg-white/15 px-3 py-1.5 font-medium hover:bg-white/25">
+            {s.reviewQuote}
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

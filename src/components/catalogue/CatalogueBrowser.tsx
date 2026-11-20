@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, type ReactNode } from "react";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
+import { ScrollRow } from "@/components/ui/ScrollRow";
 
 export interface BrowserEntry {
   id: string;
@@ -92,7 +93,7 @@ export function CatalogueBrowser({ ranges, entries, cards, s }: Props) {
               </button>
             )}
           </label>
-          <div className="scroll-row -mx-4 flex min-w-0 gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0">
+          <ScrollRow className="-mx-4 px-4 lg:mx-0 lg:flex-1 lg:px-0" label={s.all}>
             <button type="button" className={chip(!rangeFilter && !tag)} onClick={() => router.replace(q ? `${pathname}?q=${encodeURIComponent(q)}` : pathname, { scroll: false })}>
               {s.all}
             </button>
@@ -104,7 +105,7 @@ export function CatalogueBrowser({ ranges, entries, cards, s }: Props) {
                 {r.name}
               </button>
             ))}
-          </div>
+          </ScrollRow>
         </div>
       </div>
 

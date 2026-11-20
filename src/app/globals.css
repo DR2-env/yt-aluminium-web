@@ -12,6 +12,8 @@
   --bg: #f6f7fb;
   --surface: #ffffff;
   --surface-2: #f0f2fa;
+  /* Soft grey behind product pictures so white and silver parts stay visible. */
+  --tile: #e4e7ef;
   --ink: #0b0d1a;
   --muted: #555b70;
   --line: #e4e6f0;
@@ -35,6 +37,7 @@
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-tile: var(--tile);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
@@ -129,11 +132,11 @@ body {
     radial-gradient(45% 55% at 95% 90%, var(--glow-aqua) 0%, transparent 70%);
 }
 
-/* Very large, very thin headings. */
+/* Large headings in a medium weight: clear for every reader and every script. */
 @utility display {
-  font-weight: 200;
-  letter-spacing: -0.045em;
-  line-height: 0.95;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
 }
 
 /* Small uppercase monospace labels. */
@@ -148,7 +151,7 @@ body {
 :lang(ar) .display,
 :lang(zh) .display,
 :lang(ko) .display {
-  font-weight: 300;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.2;
 }

@@ -47,7 +47,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
         </div>
         <div className="grid grid-cols-2 gap-3 self-start lg:col-span-6">
           {SHOWCASE.map((id) => PRODUCTS[id]).filter(Boolean).map((p) => (
-            <div key={p.id} className="aspect-[4/3] rounded-md border border-line bg-surface-2 p-3">
+            <div key={p.id} className="aspect-[4/3] rounded-md border border-line bg-tile p-3">
               <ProductVisual item={{ ...resolveItem(p), name: tc(lang, p.name) }} sizes="(min-width: 1024px) 24vw, 45vw" />
             </div>
           ))}
