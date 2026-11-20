@@ -7,7 +7,7 @@ import { useQuote } from "@/lib/quote-store";
 export function QuoteLink({ href, label }: { href: string; label: string }) {
   const lines = useQuote();
   return (
-    <Link href={href} className="inline-flex h-9 items-center gap-2 rounded bg-accent px-3 text-sm font-medium text-accent-ink hover:bg-accent-hover">
+    <Link href={href} className="inline-flex h-9 items-center gap-2 rounded bg-brand px-3 text-sm font-medium text-accent-ink hover:brightness-110">
       <ClipboardText size={16} aria-hidden />
       <span>{label}</span>
       <span className="min-w-5 rounded-sm bg-accent-ink/15 px-1 text-center font-mono text-xs leading-5 tabular-nums">{lines.length}</span>

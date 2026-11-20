@@ -145,7 +145,7 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref, wecha
               href={whatsappLink(q.photoMessage + " ")}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded bg-accent px-4 text-[15px] font-medium text-accent-ink hover:bg-accent-hover"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded bg-brand px-4 text-[15px] font-medium text-accent-ink hover:brightness-110"
             >
               <WhatsappLogo size={18} />
               {q.photoButton}
@@ -157,7 +157,7 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref, wecha
           <div className="rounded-md border border-line bg-surface-2 p-10 text-center">
             <p className="font-medium">{q.empty}</p>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted">{q.emptyText}</p>
-            <Link href={productsHref} className="mt-5 inline-flex h-10 items-center rounded bg-accent px-4 text-sm font-medium text-accent-ink hover:bg-accent-hover">
+            <Link href={productsHref} className="mt-5 inline-flex h-10 items-center rounded bg-brand px-4 text-sm font-medium text-accent-ink hover:brightness-110">
               {q.browse}
             </Link>
           </div>
@@ -282,7 +282,7 @@ export function QuoteBuilder({ codes, q, units, finishNames, productsHref, wecha
               target="_blank"
               rel="noopener noreferrer"
               aria-disabled={!lines.length}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded bg-accent text-sm font-medium text-accent-ink hover:bg-accent-hover aria-disabled:opacity-50"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded bg-brand text-sm font-medium text-accent-ink hover:brightness-110 aria-disabled:opacity-50"
             >
               <WhatsappLogo size={18} />
               {q.sendWhatsapp}

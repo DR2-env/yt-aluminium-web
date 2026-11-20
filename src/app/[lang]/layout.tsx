@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { Geist, Geist_Mono, Noto_Sans_Arabic, Noto_Sans_KR, Noto_Sans_SC } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Noto_Sans_Arabic, Noto_Sans_KR, Noto_Sans_SC } from "next/font/google";
 import "../globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -11,8 +11,8 @@ import { LOCALES, LOCALE_META, getDictionary, isLocale, localePath, type Locale 
 import { alternatesFor } from "@/i18n/metadata";
 import { SITE } from "@/lib/site";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const plexSans = IBM_Plex_Sans({ variable: "--font-plex-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500"] });
 // Script fonts are only applied (and so only downloaded) on their own language.
 const notoSC = Noto_Sans_SC({ variable: "--font-locale", weight: ["400", "500", "600", "700"], preload: false });
 const notoKR = Noto_Sans_KR({ variable: "--font-locale", weight: ["400", "500", "600", "700"], preload: false });
@@ -66,7 +66,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   };
 
   return (
-    <html lang={LOCALE_META[lang].htmlLang} dir={LOCALE_META[lang].dir} className={`${geistSans.variable} ${geistMono.variable} ${LOCALE_FONT[lang] ?? ""}`}>
+    <html lang={LOCALE_META[lang].htmlLang} dir={LOCALE_META[lang].dir} className={`${plexSans.variable} ${plexMono.variable} ${LOCALE_FONT[lang] ?? ""}`}>
       <body className="min-h-dvh antialiased">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded focus:bg-surface focus:px-4 focus:py-2">
           {d.nav.skip}

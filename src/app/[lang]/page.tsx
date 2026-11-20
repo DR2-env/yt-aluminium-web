@@ -30,17 +30,17 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-line">
-        <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-4 py-8 md:px-8 md:py-14 lg:grid-cols-12 lg:items-center lg:gap-14">
+      <section className="hero-fade border-b border-line-strong">
+        <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-4 py-8 md:px-8 md:py-20 lg:grid-cols-12 lg:items-center lg:gap-14">
           <div className="lg:col-span-6">
-            <h1 className="text-3xl font-semibold leading-tight text-balance md:text-[2.6rem]">{d.home.heroTitle}</h1>
+            <h1 className="text-fade text-3xl font-semibold leading-[1.08] tracking-tight text-balance md:text-5xl">{d.home.heroTitle}</h1>
             <p className="mt-4 max-w-[46ch] text-lg leading-relaxed text-muted">{d.home.heroText}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
                 href={whatsappLink(getDictionary("en").home.sendListMessage + " ")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded bg-accent px-5 text-base font-medium text-accent-ink hover:bg-accent-hover"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded bg-brand px-5 text-base font-medium text-accent-ink shadow-[0_10px_24px_-12px_rgb(20_66_122/0.7)] hover:brightness-110"
               >
                 <WhatsappLogo size={20} />
                 {d.home.sendList}
@@ -56,7 +56,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             </a>
             <ul className="mt-6 grid grid-cols-2 gap-2 [&>li]:min-w-0">
               {d.home.perks.map((perk) => (
-                <li key={perk} className="flex items-start gap-2 rounded border border-line bg-surface-2 px-3 py-2 text-sm font-medium">
+                <li key={perk} className="flex items-start gap-2 rounded border border-line-strong bg-surface/75 px-3 py-2 text-sm font-medium">
                   <CheckCircle size={18} weight="fill" className="mt-0.5 shrink-0 text-accent" />
                   {perk}
                 </li>

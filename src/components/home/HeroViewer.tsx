@@ -26,8 +26,8 @@ export function HeroViewer({ item, code, name, dims, finishes, href, caption, vi
   const [ready, setReady] = useState(false);
   const current = finishes.find((f) => f.code === finish)?.name ?? finish;
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-md border border-line">
-      <div className="relative aspect-[4/3] bg-surface-2">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-line-strong bg-surface p-3 shadow-[0_24px_50px_-28px_rgb(20_66_122/0.45)]">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-md bg-gradient-to-b from-surface-2 to-accent-soft">
         {!ready && (
           // eslint-disable-next-line @next/next/no-img-element -- local pre-rendered placeholder
           <img src={poster} alt={name} className="absolute inset-0 h-full w-full object-contain p-4" />
@@ -37,7 +37,7 @@ export function HeroViewer({ item, code, name, dims, finishes, href, caption, vi
           {code}
         </span>
       </div>
-      <div className="border-t border-line bg-surface p-4">
+      <div className="bg-surface px-1 pb-1 pt-4">
         <p className="text-sm font-medium">
           {name}
           {dims && (
