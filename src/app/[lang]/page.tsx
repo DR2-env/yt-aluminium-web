@@ -200,28 +200,28 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       </section>
 
       {/* Closing call to action on ink, flowing into the dark footer. */}
-      <section className="ink-glow">
+      <section className="ambient-end border-t border-line">
         <div className={`${wrap} pb-12 pt-20 md:pt-28`}>
-          <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="display inline-block text-balance text-5xl hover:text-[#aab4ff] md:text-8xl">
+          <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="display inline-block text-balance text-5xl hover:text-accent md:text-8xl">
             {d.home.requestQuote}
                 {lang === "en" ? "." : ""}
           </a>
-          <div className="mt-14 grid gap-8 border-t border-white/15 pt-8 text-sm sm:grid-cols-3">
+          <div className="mt-14 grid gap-8 border-t border-line-strong pt-8 text-sm sm:grid-cols-3">
             <div>
-              <p className="eyebrow text-white/50">{d.home.visitTitle}</p>
+              <p className="eyebrow text-muted">{d.home.visitTitle}</p>
               <p className="mt-2">{fullAddress}</p>
-              <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-white/70 hover:text-white">
+              <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-muted hover:text-ink">
                 <MapPin size={14} />
                 {d.home.directions}
               </a>
             </div>
             <div>
-              <p className="eyebrow text-white/50">{d.contactPage.hours}</p>
+              <p className="eyebrow text-muted">{d.contactPage.hours}</p>
               <p className="mt-2">{d.site.hours}</p>
             </div>
             <div>
-              <p className="eyebrow text-white/50">{d.contactPage.office}</p>
-              <a href={SITE.phoneHref} className="mt-2 block hover:text-[#aab4ff]" dir="ltr">
+              <p className="eyebrow text-muted">{d.contactPage.office}</p>
+              <a href={SITE.phoneHref} className="mt-2 block hover:text-accent" dir="ltr">
                 {SITE.phone}
               </a>
             </div>

@@ -119,13 +119,14 @@ body {
   color: var(--band-ink);
 }
 
-/* Dark closing section with a periwinkle glow. */
-@utility ink-glow {
-  background-color: #0b0d1a;
+/* Closing section: the hero glows mirrored, so the page ends as it starts. */
+@utility ambient-end {
+  background-color: var(--bg);
   background-image:
-    radial-gradient(55% 80% at 85% 0%, rgb(84 104 255 / 0.45) 0%, transparent 70%),
-    radial-gradient(45% 70% at 10% 100%, rgb(125 211 252 / 0.22) 0%, transparent 70%);
-  color: #ffffff;
+    radial-gradient(55% 70% at 85% 10%, var(--glow-periwinkle) 0%, transparent 70%),
+    radial-gradient(50% 60% at 15% 30%, var(--glow-baby) 0%, transparent 70%),
+    radial-gradient(50% 60% at 30% 100%, var(--glow-lilac) 0%, transparent 70%),
+    radial-gradient(45% 55% at 95% 90%, var(--glow-aqua) 0%, transparent 70%);
 }
 
 /* Very large, very thin headings. */
@@ -157,18 +158,4 @@ body {
   font-family: var(--font-sans);
   font-size: 0.8rem;
   letter-spacing: 0;
-}
-
-/* Dark band (footer): re-maps the tokens so every component inside reads light on ink. */
-.on-ink {
-  --bg: #0b0d1a;
-  --surface: #0b0d1a;
-  --surface-2: #0b0d1a;
-  --ink: #f5f6f8;
-  --muted: #9aa3b2;
-  --line: rgb(255 255 255 / 0.12);
-  --line-strong: rgb(255 255 255 / 0.2);
-  --accent: #aab4ff;
-  background-color: #0b0d1a;
-  color: var(--ink);
 }

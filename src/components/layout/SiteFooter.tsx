@@ -14,7 +14,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
     { href: "/quote", label: d.nav.quote },
   ];
   return (
-    <footer className="on-ink pb-20 sm:pb-0">
+    <footer className="border-t border-line bg-surface pb-20 sm:pb-0">
       <div className="mx-auto grid max-w-[1280px] gap-10 px-4 py-12 md:grid-cols-12 md:px-8">
         <div className="md:col-span-4">
           <Logo href={localePath(lang, "/")} />
@@ -22,7 +22,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
         </div>
         <div className="md:col-span-5">
           <h2 className="eyebrow text-muted">{d.footer.ranges}</h2>
-          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm text-ink/80">
+          <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm text-muted">
             {RANGES.map((r) => (
               <li key={r.id}>
                 <Link href={localePath(lang, rangeHref(r))} className="hover:text-ink">
