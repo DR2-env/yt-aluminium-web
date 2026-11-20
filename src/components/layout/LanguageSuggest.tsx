@@ -44,7 +44,9 @@ export function LanguageSuggest({ lang, texts }: { lang: Locale; texts: Record<L
   return (
     <div className="border-b border-line bg-accent-soft" lang={LOCALE_META[target].htmlLang} dir={LOCALE_META[target].dir}>
       <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-3 px-4 py-2.5 md:px-8">
-        <Link href={localePath(target, stripLocale(pathname))} className="text-[15px] font-medium text-accent underline underline-offset-4" onClick={dismiss}>
+        {/* No prefetch: each language has its own root layout, and prefetching a bare English path
+            from another language loops endlessly. Switching language is a full page load anyway. */}
+        <Link href={localePath(target, stripLocale(pathname))} prefetch={false} className="text-[15px] font-medium text-accent underline underline-offset-4" onClick={dismiss}>
           {texts[target]}
         </Link>
         <button type="button" onClick={dismiss} className="grid size-8 place-items-center rounded text-muted hover:text-ink" aria-label="Close">

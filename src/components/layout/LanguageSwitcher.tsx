@@ -52,6 +52,8 @@ export function LanguageSwitcher({ lang, label }: { lang: Locale; label: string 
             <li key={l}>
               <Link
                 href={localePath(l, base)}
+                // No prefetch: see LanguageSuggest. Prefetching across languages loops endlessly.
+                prefetch={false}
                 hrefLang={LOCALE_META[l].htmlLang}
                 lang={LOCALE_META[l].htmlLang}
                 onClick={() => {
