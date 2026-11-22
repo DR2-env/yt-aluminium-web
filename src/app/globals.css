@@ -9,14 +9,14 @@
   Shape rule: controls 4px corners, panels 6px.
 */
 :root {
-  --bg: #f6f7fb;
+  --bg: #f1f2fb;
   --surface: #ffffff;
   --surface-2: #f0f2fa;
   /* Soft grey behind product pictures so white and silver parts stay visible. */
-  --tile: #e4e7ef;
+  --tile: rgb(222 226 242 / 0.7);
   --ink: #0b0d1a;
   --muted: #555b70;
-  --line: #e4e6f0;
+  --line: rgb(11 13 26 / 0.09);
   --line-strong: #cdd1e2;
   --accent: #5468ff;
   --accent-hover: #3f51e6;
@@ -25,10 +25,15 @@
   --brand-bg: #0b0d1a;
   --brand-bg-hover: #23263a;
   --band-ink: #2f3aa8;
-  --glow-periwinkle: rgb(129 140 248 / 0.62);
-  --glow-baby: rgb(147 197 253 / 0.7);
-  --glow-lilac: rgb(196 181 253 / 0.6);
-  --glow-aqua: rgb(165 243 252 / 0.65);
+  /* Hero glows: deeper indigo, blue, violet and cyan. */
+  --glow-periwinkle: rgb(99 102 241 / 0.62);
+  --glow-baby: rgb(59 130 246 / 0.5);
+  --glow-lilac: rgb(139 92 246 / 0.48);
+  --glow-aqua: rgb(34 211 238 / 0.45);
+  /* The same colours, faint, washed over the whole page so sections blend into the hero. */
+  --wash-1: rgb(99 102 241 / 0.13);
+  --wash-2: rgb(59 130 246 / 0.1);
+  --wash-3: rgb(139 92 246 / 0.1);
   --shadow: 0 1px 2px rgb(11 13 26 / 0.06);
   color-scheme: light;
 }
@@ -58,7 +63,12 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(60% 50% at 0% 30%, var(--wash-1) 0%, transparent 70%),
+    radial-gradient(55% 50% at 100% 60%, var(--wash-3) 0%, transparent 70%),
+    radial-gradient(60% 45% at 40% 100%, var(--wash-2) 0%, transparent 70%);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -107,13 +117,34 @@ body {
 
 /* Home hero: large, saturated, blurred glows that bleed into each other (like a soft mesh). */
 @utility ambient {
-  background-color: var(--bg);
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 -12rem 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(60% 70% at 12% 18%, var(--glow-periwinkle) 0%, transparent 70%),
+      radial-gradient(50% 60% at 45% 0%, var(--glow-baby) 0%, transparent 70%),
+      radial-gradient(55% 65% at 92% 28%, var(--glow-lilac) 0%, transparent 70%),
+      radial-gradient(50% 55% at 75% 85%, var(--glow-aqua) 0%, transparent 70%),
+      radial-gradient(45% 50% at 22% 90%, var(--glow-baby) 0%, transparent 70%);
+    /* Fade out at the bottom so the hero melts into the page instead of ending on a hard edge. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  }
+}
+
+/* See-through drawing sheet: faint grid lines over the gradient, like a blueprint. */
+@utility blueprint {
+  background-color: rgb(255 255 255 / 0.12);
   background-image:
-    radial-gradient(60% 70% at 15% 15%, var(--glow-periwinkle) 0%, transparent 70%),
-    radial-gradient(50% 60% at 45% 0%, var(--glow-baby) 0%, transparent 70%),
-    radial-gradient(55% 65% at 90% 30%, var(--glow-lilac) 0%, transparent 70%),
-    radial-gradient(50% 60% at 75% 95%, var(--glow-aqua) 0%, transparent 70%),
-    radial-gradient(45% 50% at 20% 100%, var(--glow-baby) 0%, transparent 70%);
+    linear-gradient(rgb(11 13 26 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(11 13 26 / 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid rgb(11 13 26 / 0.14);
 }
 
 /* Soft gradient panel (facts band). */
@@ -124,7 +155,6 @@ body {
 
 /* Closing section: the hero glows mirrored, so the page ends as it starts. */
 @utility ambient-end {
-  background-color: var(--bg);
   background-image:
     radial-gradient(55% 70% at 85% 10%, var(--glow-periwinkle) 0%, transparent 70%),
     radial-gradient(50% 60% at 15% 30%, var(--glow-baby) 0%, transparent 70%),

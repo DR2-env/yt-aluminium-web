@@ -50,7 +50,7 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line bg-white/45 backdrop-blur-xl">
       <div className="mx-auto grid h-16 max-w-[1280px] grid-cols-[1fr_auto] items-center gap-6 px-4 md:px-8 xl:grid-cols-[1fr_auto_1fr]">
         <Logo href={s.home} />
 
