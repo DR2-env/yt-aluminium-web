@@ -16,7 +16,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
     { href: "/privacy", label: d.footer.privacy },
   ];
   return (
-    <footer className="border-t border-line bg-surface pb-20 sm:pb-0">
+    <footer className="border-t border-line bg-white/40 pb-20 backdrop-blur-sm sm:pb-0">
       <div className="mx-auto grid max-w-[1280px] gap-10 px-4 py-12 md:grid-cols-12 md:px-8">
         <div className="md:col-span-4">
           <Logo href={localePath(lang, "/")} />

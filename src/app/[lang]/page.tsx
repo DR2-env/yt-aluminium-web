@@ -52,11 +52,11 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   return (
     <>
       <section className="ambient">
-        <div className={`${wrap} grid grid-cols-1 items-center gap-14 pb-24 pt-16 md:pb-32 md:pt-28 lg:grid-cols-12 lg:gap-10`}>
+        <div className={`${wrap} grid grid-cols-1 items-center gap-12 pb-20 pt-10 md:pt-14 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-12 lg:gap-10 lg:py-10`}>
           <div className="lg:col-span-7">
-            <h1 className="display text-balance text-[2.5rem] sm:text-6xl lg:text-[4.25rem]">{d.home.heroTitle}</h1>
-            <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
-            <div className="mt-10 max-w-[560px]">
+            <h1 className="display text-balance text-[2.5rem] sm:text-6xl lg:text-[clamp(2.75rem,8vh,4.25rem)]">{d.home.heroTitle}</h1>
+            <p className="mt-5 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
+            <div className="mt-8 max-w-[560px]">
               <HeroRequest
                 quoteHref={p("/quote")}
                 label={d.home.askLabel}
@@ -74,8 +74,8 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </div>
 
           <Link href={p(productHref(hero))} className="group block lg:col-span-5" aria-label={`${hero.code} ${tc(lang, hero.name)}`}>
-            <div className="rounded-lg border border-line bg-surface/70 p-6 backdrop-blur-sm transition-colors group-hover:border-line-strong md:p-8">
-              <SectionDrawing section={heroSection} finish="MM" dims={hero.dims} showDims outline className="mx-auto aspect-[4/3] w-full max-w-[400px] text-ink" title={tc(lang, hero.name)} />
+            <div className="blueprint rounded-lg p-6 transition-colors group-hover:border-ink/30 md:p-8">
+              <SectionDrawing section={heroSection} finish="MM" dims={hero.dims} showDims outline className="mx-auto aspect-[4/3] w-full max-w-[400px] text-ink lg:max-h-[42vh]" title={tc(lang, hero.name)} />
               <p className="mt-4 flex items-center justify-between text-sm">
                 <span>
                   <span className="font-mono text-muted" dir="ltr">{hero.code}</span>
