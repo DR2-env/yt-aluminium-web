@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, WhatsappLogo } from "@phosphor-icons/react/ssr";
+import { ArrowRight, MagnifyingGlass, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { ProductVisual } from "@/components/catalogue/ProductVisual";
 import { SectionDrawing } from "@/components/catalogue/SectionDrawing";
 import { HeroRequest } from "@/components/quote/HeroRequest";
 import { PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
 import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
-import { whatsappLink } from "@/lib/site";
+import { SITE, fullAddress, whatsappLink } from "@/lib/site";
 import { finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
 
 function rangeCover(rangeId: string) {
@@ -18,8 +18,17 @@ function rangeCover(rangeId: string) {
 
 const wrap = "mx-auto max-w-[1280px] px-4 md:px-8";
 
-// Sparse on purpose: hero, ranges, why customers choose YT, colours, one closing call to action.
-// Detail (how to order, contact) lives on its own pages and in the footer.
+// The 17 ranges grouped into five plain categories, in the same order as d.home.groups.
+const GROUPS: string[][] = [
+  ["shopfront", "hinged-door", "bifold", "double-glaze", "partition", "angle"],
+  ["security", "door-window-acc", "flyscreen"],
+  ["mesh", "ss-mesh", "grill"],
+  ["hardware", "locks", "pile-wedge"],
+  ["blinds", "curtain"],
+];
+
+// Built for trade customers: visit or call first, then five plain categories, why YT, colours,
+// and the quote request at the end.
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -55,22 +64,48 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         <div className={`${wrap} grid grid-cols-1 items-center gap-12 pb-20 pt-10 md:pt-14 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-12 lg:gap-10 lg:py-10`}>
           <div className="lg:col-span-7">
             <h1 className="display text-balance text-[2.5rem] sm:text-6xl lg:text-[clamp(2.75rem,8vh,4.25rem)]">{d.home.heroTitle}</h1>
-            <p className="mt-5 max-w-[44ch] text-lg leading-relaxed text-muted md:text-xl">{d.home.heroText}</p>
-            <div className="mt-8 max-w-[560px]">
-              <HeroRequest
-                quoteHref={p("/quote")}
-                label={d.home.askLabel}
-                placeholder={d.home.askPlaceholder}
-                button={d.home.askButton}
-                photo={d.home.askPhoto}
-                photoHint={d.home.askPhotoHint}
-                photoTooBig={d.quote.photoTooBig}
-              />
-              <Link href={p("/products")} className="mt-5 inline-flex items-center gap-1.5 text-[15px] text-muted hover:text-ink">
-                {d.home.viewProducts}
-                <ArrowRight size={14} className="rtl:-scale-x-100" />
-              </Link>
+            <p className="mt-4 max-w-[36ch] text-xl leading-snug md:text-2xl">{d.home.heroSub}</p>
+            <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-muted md:text-base">{d.home.heroText}</p>
+
+            {/* Visit or call: the main thing this page is for. */}
+            <div className="mt-7 grid max-w-[620px] gap-5 border-t border-ink/15 pt-6 sm:grid-cols-2">
+              <div>
+                <p className="eyebrow text-muted">{d.home.visitTitle}</p>
+                <p className="mt-2 text-[15px]">{fullAddress}</p>
+                <p className="text-[15px] text-muted">{d.site.hours}</p>
+                <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-[15px] font-medium hover:text-accent">
+                  <MapPin size={16} />
+                  {d.home.directions}
+                </a>
+              </div>
+              <div>
+                <p className="eyebrow text-muted">{d.nav.call}</p>
+                <a href={SITE.phoneHref} className="mt-2 block text-2xl font-medium hover:text-accent" dir="ltr">
+                  {SITE.phone}
+                </a>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a href={SITE.phoneHref} className="inline-flex h-10 items-center gap-2 rounded-full bg-ink px-4 text-sm font-medium text-white hover:opacity-90">
+                    <Phone size={16} />
+                    {d.nav.call}
+                  </a>
+                  <a href={sendListHref} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full border border-ink/20 px-4 text-sm font-medium hover:border-ink">
+                    <WhatsappLogo size={16} />
+                    {d.nav.whatsapp}
+                  </a>
+                </div>
+              </div>
+              <p className="text-sm text-muted sm:col-span-2">{d.home.languages}</p>
             </div>
+
+            {/* Product search by code or name; the Products page reads ?q=. */}
+            <form action={p("/products")} method="get" role="search" className="mt-6 flex max-w-[620px] items-center gap-2 rounded-full border border-ink/15 bg-white/70 p-1.5 ps-4 backdrop-blur-sm">
+              <MagnifyingGlass size={18} className="shrink-0 text-muted" aria-hidden />
+              <label htmlFor="home-search" className="sr-only">{d.catalogue.searchLabel}</label>
+              <input id="home-search" name="q" type="search" placeholder={d.catalogue.searchPlaceholder} className="h-10 min-w-0 flex-1 bg-transparent text-[15px] placeholder:text-muted focus:outline-none" />
+              <button type="submit" className="h-10 shrink-0 rounded-full bg-ink px-5 text-sm font-medium text-white hover:opacity-90">
+                {d.home.searchButton}
+              </button>
+            </form>
           </div>
 
           <Link href={p(productHref(hero))} className="group block lg:col-span-5" aria-label={`${hero.code} ${tc(lang, hero.name)}`}>
@@ -88,25 +123,39 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
+      {/* Five plain categories; each lists its ranges. */}
       <section className={`${wrap} py-24 md:py-32`}>
         <div className="flex items-end justify-between gap-6">
-          <h2 className="display text-4xl md:text-6xl">{d.home.rangesTitle}</h2>
+          <h2 className="display text-4xl md:text-6xl">{d.home.groupsTitle}</h2>
           <Link href={p("/products")} className="mb-1 inline-flex shrink-0 items-center gap-1.5 text-[15px] text-muted hover:text-ink">
             {d.home.viewProducts}
             <ArrowRight size={14} className="rtl:-scale-x-100" />
           </Link>
         </div>
-        {/* 17 ranges plus an "all products" tile = 18, so rows are always full in 2 or 3 columns. */}
-        <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6">
-          {RANGES.map((r) => {
-            const cover = rangeCover(r.id);
+        <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {GROUPS.map((ids, i) => {
+            const ranges = ids.map((id) => RANGES.find((r) => r.id === id)).filter((r): r is (typeof RANGES)[number] => Boolean(r));
+            const cover = ranges[0] ? rangeCover(ranges[0].id) : null;
+            const group = d.home.groups[i];
             return (
-              <Link key={r.id} href={p(rangeHref(r))} className="group">
-                <div className="aspect-[4/3] rounded-md bg-tile p-5 transition-colors group-hover:bg-line">
-                  {cover && <ProductVisual item={{ ...cover, name: tc(lang, r.name) }} />}
-                </div>
-                <h3 className="mt-3 text-[15px] group-hover:text-accent">{tc(lang, r.name)}</h3>
-              </Link>
+              <div key={group.title}>
+                <Link href={p(rangeHref(ranges[0]))} className="group block">
+                  <div className="aspect-[4/3] rounded-md bg-tile p-5 transition-colors group-hover:bg-line">
+                    {cover && <ProductVisual item={{ ...cover, name: group.title }} />}
+                  </div>
+                  <h3 className="mt-4 text-xl font-medium group-hover:text-accent">{group.title}</h3>
+                </Link>
+                <p className="mt-2 leading-relaxed text-muted">{group.text}</p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {ranges.map((r) => (
+                    <li key={r.id}>
+                      <Link href={p(rangeHref(r))} className="inline-flex h-8 items-center rounded-full border border-ink/15 px-3 text-sm hover:border-ink">
+                        {tc(lang, r.name)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             );
           })}
           <Link href={p("/products")} className="group">
@@ -174,7 +223,18 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         <div className={`${wrap} py-24 md:py-32`}>
           <h2 className="display max-w-[16ch] text-balance text-4xl md:text-6xl">{d.home.requestQuote}</h2>
           <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-muted">{d.home.orderSteps[1].text}</p>
-          <div className="mt-10">{actions}</div>
+          <div className="mt-10 max-w-[560px]">
+            <HeroRequest
+              quoteHref={p("/quote")}
+              label={d.home.askLabel}
+              placeholder={d.home.askPlaceholder}
+              button={d.home.askButton}
+              photo={d.home.askPhoto}
+              photoHint={d.home.askPhotoHint}
+              photoTooBig={d.quote.photoTooBig}
+            />
+          </div>
+          <div className="mt-6">{actions}</div>
         </div>
       </section>
     </>
