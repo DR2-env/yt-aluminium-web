@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { useMemo, useSyncExternalStore, type ReactNode } from "react";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
 import { ScrollRow } from "@/components/ui/ScrollRow";
 
@@ -37,9 +37,26 @@ interface Props {
 
 const fill = (t: string, vars: Record<string, string | number>) => t.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
+// Filters live in the URL (?q=, ?tag=, ?range=) but are read in the browser only, so the server
+// sends the full product list. useSearchParams would make the list client-only and invisible to
+// search engines. Native history.replaceState stays in sync with the Next.js router.
+const URL_EVENT = "yt-catalogue-url";
+const subscribeUrl = (cb: () => void) => {
+  window.addEventListener("popstate", cb);
+  window.addEventListener(URL_EVENT, cb);
+  return () => {
+    window.removeEventListener("popstate", cb);
+    window.removeEventListener(URL_EVENT, cb);
+  };
+};
+const replaceUrl = (url: string) => {
+  window.history.replaceState(window.history.state, "", url);
+  window.dispatchEvent(new Event(URL_EVENT));
+};
+
 export function CatalogueBrowser({ ranges, entries, cards, s }: Props) {
-  const params = useSearchParams();
-  const router = useRouter();
+  const search = useSyncExternalStore(subscribeUrl, () => window.location.search, () => "");
+  const params = useMemo(() => new URLSearchParams(search), [search]);
   const pathname = usePathname();
   const q = params.get("q") ?? "";
   const tag = params.get("tag") ?? "";
@@ -50,7 +67,7 @@ export function CatalogueBrowser({ ranges, entries, cards, s }: Props) {
     if (value) next.set(key, value);
     else next.delete(key);
     const str = next.toString();
-    router.replace(str ? `${pathname}?${str}` : pathname, { scroll: false });
+    replaceUrl(str ? `${pathname}?${str}` : pathname);
   };
 
   const matches = useMemo(() => {
@@ -94,7 +111,7 @@ export function CatalogueBrowser({ ranges, entries, cards, s }: Props) {
             )}
           </label>
           <ScrollRow className="-mx-4 px-4 lg:mx-0 lg:flex-1 lg:px-0" label={s.all}>
-            <button type="button" className={chip(!rangeFilter && !tag)} onClick={() => router.replace(q ? `${pathname}?q=${encodeURIComponent(q)}` : pathname, { scroll: false })}>
+            <button type="button" className={chip(!rangeFilter && !tag)} onClick={() => replaceUrl(q ? `${pathname}?q=${encodeURIComponent(q)}` : pathname)}>
               {s.all}
             </button>
             <button type="button" className={chip(tag === "new")} onClick={() => setParam("tag", tag === "new" ? "" : "new")}>

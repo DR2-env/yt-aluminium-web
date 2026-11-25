@@ -11,6 +11,7 @@ import type { LayoutStrings } from "@/components/layout/types";
 import { LOCALES, LOCALE_META, getDictionary, isLocale, localePath, type Locale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
 import { SITE } from "@/lib/site";
+import { businessJsonLd, jsonLdString } from "@/lib/schema";
 
 const interTight = Inter_Tight({ variable: "--font-inter-tight", subsets: ["latin"], weight: ["200", "300", "400", "500", "600"] });
 const jetbrainsMono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"], weight: ["400", "500"] });
@@ -33,7 +34,13 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     title: { default: d.meta.title, template: "%s | YT Aluminium" },
     description: d.meta.description,
     alternates: alternatesFor(lang, "/"),
-    openGraph: { type: "website", siteName: SITE.name, locale: LOCALE_META[lang].ogLocale },
+    openGraph: { type: "website", siteName: SITE.name, locale: LOCALE_META[lang].ogLocale, images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE.name }] },
+    twitter: { card: "summary_large_image" },
+    // Search Console and Bing Webmaster Tools ownership checks; set the env vars in Vercel.
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } : undefined,
+    },
   };
 }
 
@@ -75,6 +82,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
         <LanguageSuggest lang={lang} texts={Object.fromEntries(LOCALES.map((l) => [l, getDictionary(l).suggest.text])) as Record<Locale, string>} />
         <ClosureNotice lang={lang} />
         <SiteHeader s={strings} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(businessJsonLd(d.meta.description)) }} />
         <main id="main">{children}</main>
         <SiteFooter lang={lang} />
         <MobileActionBar s={strings} />

@@ -14,6 +14,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
     { href: "/quote", label: d.nav.quote },
     { href: "/faq", label: d.footer.faq },
     { href: "/privacy", label: d.footer.privacy },
+    { href: "/cookies", label: d.footer.cookies },
   ];
   return (
     <footer className="border-t border-line bg-white/40 pb-20 backdrop-blur-sm sm:pb-0">

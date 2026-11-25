@@ -34,11 +34,12 @@ interface Props {
   /** Product code to name in the page language, for display only. */
   localNames: Record<string, string>;
   productsHref: string;
+  privacyHref: string;
 }
 
 // One simple flow: what you need (catalogue items, typed list or a photo), your details, Send.
 // The request is emailed to YT by /api/quote; WhatsApp is offered only if sending is unavailable.
-export function QuoteBuilder({ lang, q, units, finishNames, localNames, productsHref }: Props) {
+export function QuoteBuilder({ lang, q, units, finishNames, localNames, productsHref, privacyHref }: Props) {
   const lines = useQuote();
   // Rendered on the client only (see the page), so reading the hand-off from the home page here is safe.
   const [draft] = useState(takeDraft);
@@ -223,7 +224,7 @@ export function QuoteBuilder({ lang, q, units, finishNames, localNames, products
                 </span>
               </button>
             )}
-            <input ref={fileRef} type="file" accept="image/*,application/pdf" className="sr-only" tabIndex={-1} onChange={(e) => pickFile(e.target.files?.[0])} />
+            <input ref={fileRef} type="file" accept="image/*,application/pdf" className="sr-only" tabIndex={-1} aria-label={q.photoAdd} onChange={(e) => pickFile(e.target.files?.[0])} />
             {photoError && <p className="mt-2 text-sm text-red-700">{q.photoTooBig}</p>}
           </div>
 
@@ -305,7 +306,13 @@ export function QuoteBuilder({ lang, q, units, finishNames, localNames, products
             </div>
           )}
 
-          <p className="mt-4 text-xs leading-relaxed text-muted">{fill(q.footnote, { phone: SITE.phone })}</p>
+          <p className="mt-4 text-xs leading-relaxed text-muted">
+            {q.privacyNote}{" "}
+            <Link href={privacyHref} className="underline underline-offset-2 hover:text-ink">
+              {q.privacyLink}
+            </Link>
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-muted">{fill(q.footnote, { phone: SITE.phone })}</p>
         </section>
       </div>
     </form>

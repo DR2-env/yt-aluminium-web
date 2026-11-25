@@ -29,7 +29,7 @@ export default async function QuotePage({ params }: PageProps<"/[lang]/quote">) 
       <h1 className="text-3xl font-semibold md:text-4xl">{d.quote.title}</h1>
       <p className="mt-3 max-w-[62ch] text-muted">{d.quote.intro}</p>
       <div className="mt-8">
-        <QuoteBuilderClient lang={lang} q={d.quote} units={d.units as Record<string, string[]>} finishNames={finishNameMap(lang)} localNames={localNames} productsHref={localePath(lang, "/products")} />
+        <QuoteBuilderClient lang={lang} q={d.quote} units={d.units as Record<string, string[]>} finishNames={finishNameMap(lang)} localNames={localNames} productsHref={localePath(lang, "/products")} privacyHref={localePath(lang, "/privacy")} />
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { ArrowCounterClockwise, Check, Minus, Pause, Play, Plus, WhatsappLogo } from "@phosphor-icons/react";
 import { LazyViewer } from "@/components/three/LazyViewer";
 import { SectionDrawing } from "./SectionDrawing";
@@ -77,12 +76,21 @@ export interface ConfigStrings {
 }
 
 type Mode = "3d" | "section" | "photo";
+
+// The ?size= link option is read in the browser only. Reading it with useSearchParams would make
+// the whole panel (product name, sizes, finishes) render client-side, hiding it from search engines.
+// Notify once after mount so React swaps the server value (no size) for the real URL value.
+const subscribeOnce = (cb: () => void) => {
+  queueMicrotask(cb);
+  return () => {};
+};
+const sizeFromUrl = () => new URLSearchParams(window.location.search).get("size");
 const fill = (t: string, vars: Record<string, string | number>) => t.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
 export function ProductConfigurator({ product, s }: { product: ConfigProduct; s: ConfigStrings }) {
-  const params = useSearchParams();
-  const initialIndex = Math.max(0, product.variants.findIndex((v) => v.code === params.get("size")));
-  const [vi, setVi] = useState(initialIndex);
+  const urlSize = useSyncExternalStore(subscribeOnce, sizeFromUrl, () => null);
+  const [picked, setVi] = useState<number | null>(null);
+  const vi = picked ?? Math.max(0, product.variants.findIndex((x) => x.code === urlSize));
   const v = product.variants[vi] ?? product.variants[0];
   const [finish, setFinish] = useState(() => (v.fin.includes("MM") ? "MM" : v.fin[0]));
   const activeFinish = v.fin.includes(finish) ? finish : v.fin.includes("MM") ? "MM" : v.fin[0];

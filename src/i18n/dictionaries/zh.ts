@@ -16,6 +16,7 @@ const zh: Dictionary = {
     contactDescription: "YT Aluminium 门店地址、营业时间、电话、WhatsApp、微信和邮箱。",
     quoteTitle: "询价",
     quoteDescription: "把要的产品编号列成清单发给我们，拿报价。",
+    productDescription: "{code} {name}（{range}），YT Aluminium 悉尼 Milperra 门市供货，可自取或悉尼送货。在线询价。",
   },
   nav: {
     quoteCta: "获取报价",
@@ -209,6 +210,8 @@ const zh: Dictionary = {
     copy: "复制，发微信",
     copied: "已复制",
     footnote: "一般当个工作日就回复报价。急单请直接打 {phone}。",
+    privacyNote: "这些信息只用于回复您的询价。",
+    privacyLink: "隐私政策",
     clear: "清空清单",
     photoTitle: "手上是纸质单子？",
     photoText: "拍张照 WhatsApp 发给我们，我们看了给您报价。",
@@ -252,6 +255,8 @@ const zh: Dictionary = {
     address: "门店地址",
     hours: "营业时间",
     map: "{address} 地图",
+    mapLoad: "显示地图",
+    mapNote: "地图由 Google 地图提供，可能会设置 Cookie。",
   },
   footer: {
     about: "铝型材、纱网、五金和门锁，行内和家装都适用。",
@@ -259,6 +264,7 @@ const zh: Dictionary = {
     counter: "门店",
     faq: "常见问题",
     privacy: "隐私政策",
+    cookies: "Cookie 政策",
   },
   notFound: {
     title: "找不到这个页面",
@@ -288,6 +294,10 @@ const zh: Dictionary = {
   privacyPage: {
     title: "隐私政策",
     englishNote: "本隐私政策以英文提供。",
+  },
+  cookiesPage: {
+    title: "Cookie 政策",
+    englishNote: "本 Cookie 政策以英文提供。",
   },
   closure: {
     title: "圣诞假期停业",

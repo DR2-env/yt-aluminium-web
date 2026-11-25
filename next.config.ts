@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
       { source: "/our-products.html", destination: "/products", permanent: true },
       { source: "/new-stock.html", destination: "/products?tag=new", permanent: true },
       { source: "/index.html", destination: "/", permanent: true },
+      // Old Wix shop pages (still in Google's index).
+      { source: "/store/:path*", destination: "/products", permanent: true },
     ];
   },
   turbopack: {

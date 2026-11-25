@@ -1,7 +1,7 @@
 "use client";
 
 // Quote list kept in the browser (localStorage) so it survives page loads.
-// No accounts and no server: the list is sent to YT by WhatsApp, email or WeChat.
+// No accounts: the list is sent to YT from the quote page (or by WhatsApp, email or WeChat).
 import { useSyncExternalStore } from "react";
 import { unitLabel } from "./units";
 

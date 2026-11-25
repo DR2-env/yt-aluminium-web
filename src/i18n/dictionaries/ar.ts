@@ -18,6 +18,7 @@ const ar: Dictionary = {
     contactDescription: "عنوان محل YT Aluminium، أوقات الدوام، الهاتف، واتساب والإيميل.",
     quoteTitle: "طلب تسعيرة",
     quoteDescription: "اكتب أكواد المنتجات التي تحتاجها وأرسلها لنا لتصلك الأسعار.",
+    productDescription: "{code} {name} ({range}) من YT Aluminium في ميلبيرا، سيدني. استلام أو توصيل داخل سيدني. اطلب السعر عبر الموقع.",
   },
   nav: {
     quoteCta: "اطلب تسعيرة",
@@ -211,6 +212,8 @@ const ar: Dictionary = {
     copy: "نسخ لـ WeChat",
     copied: "تم النسخ",
     footnote: "نرسل الأسعار عادةً في نفس يوم العمل. للطلبات المستعجلة اتصل على {phone}.",
+    privacyNote: "نستخدم هذه المعلومات فقط للرد على طلبك.",
+    privacyLink: "سياسة الخصوصية",
     clear: "مسح القائمة",
     photoTitle: "قائمتك مكتوبة على ورقة؟",
     photoText: "صوّرها وأرسلها لنا على واتساب، نقرأها ونرسل لك الأسعار.",
@@ -254,6 +257,8 @@ const ar: Dictionary = {
     address: "عنوان المحل",
     hours: "أوقات الدوام",
     map: "خريطة {address}",
+    mapLoad: "اعرض الخريطة",
+    mapNote: "الخريطة من خرائط Google، وقد تستخدم ملفات تعريف الارتباط.",
   },
   footer: {
     about: "بروفيلات ألمنيوم، شبك ومناخل، إكسسوارات وأقفال لأصحاب المهنة والأفراد.",
@@ -261,6 +266,7 @@ const ar: Dictionary = {
     counter: "المحل",
     faq: "أسئلة شائعة",
     privacy: "الخصوصية",
+    cookies: "ملفات الارتباط",
   },
   notFound: {
     title: "الصفحة غير موجودة",
@@ -290,6 +296,10 @@ const ar: Dictionary = {
   privacyPage: {
     title: "سياسة الخصوصية",
     englishNote: "سياسة الخصوصية هذه متوفرة باللغة الإنجليزية.",
+  },
+  cookiesPage: {
+    title: "سياسة ملفات تعريف الارتباط",
+    englishNote: "سياسة ملفات تعريف الارتباط هذه متوفرة باللغة الإنجليزية.",
   },
   closure: {
     title: "إغلاق عطلة الأعياد",

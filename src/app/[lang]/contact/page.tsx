@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
+import { MapEmbed } from "@/components/layout/MapEmbed";
 import { SITE, fullAddress, whatsappDisplay, whatsappLink } from "@/lib/site";
 import { fmt, getDictionary, isLocale, localePath } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
@@ -29,25 +30,6 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
     { label: c.mobile, value: SITE.mobile, href: SITE.mobileHref },
   ];
 
-  const localBusiness = {
-    "@context": "https://schema.org",
-    "@type": "HomeAndConstructionBusiness",
-    name: SITE.legalName,
-    telephone: "+61287392494",
-    email: SITE.email,
-    url: SITE.url,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: SITE.address.street,
-      addressLocality: SITE.address.suburb,
-      addressRegion: SITE.address.state,
-      postalCode: SITE.address.postcode,
-      addressCountry: "AU",
-    },
-    openingHoursSpecification: [
-      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:30", closes: "16:30" },
-    ],
-  };
 
   // Three groups by what the visitor wants to do: get a price, call, or visit. Text labels only,
   // large tap targets, and every number or address is a link that does the obvious thing.
@@ -55,7 +37,6 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
   const label = "text-sm text-muted";
   return (
     <div className="mx-auto max-w-[1280px] px-4 pb-20 pt-12 md:px-8 md:pt-16">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
       <h1 className="display text-5xl md:text-7xl">{c.title}</h1>
       <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">{c.intro}</p>
 
@@ -117,7 +98,7 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
       </div>
 
       <div className="mt-16 overflow-hidden rounded-lg border border-line">
-        <iframe title={fmt(c.map, { address: fullAddress })} src={SITE.mapsEmbed} className="block h-[360px] w-full md:h-[440px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+        <MapEmbed src={SITE.mapsEmbed} title={fmt(c.map, { address: fullAddress })} address={fullAddress} loadLabel={c.mapLoad} note={c.mapNote} directionsHref={SITE.mapsUrl} />
       </div>
     </div>
   );

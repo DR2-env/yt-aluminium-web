@@ -18,8 +18,8 @@
   --muted: #555b70;
   --line: rgb(11 13 26 / 0.09);
   --line-strong: #cdd1e2;
-  --accent: #5468ff;
-  --accent-hover: #3f51e6;
+  --accent: #3f51e6; /* AA contrast with white and with --accent-soft */
+  --accent-hover: #3341c4;
   --accent-ink: #ffffff;
   --accent-soft: #eef0ff;
   --brand-bg: #0b0d1a;

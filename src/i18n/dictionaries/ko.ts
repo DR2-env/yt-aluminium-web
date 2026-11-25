@@ -16,6 +16,7 @@ const ko: Dictionary = {
     contactDescription: "YT Aluminium 매장 주소, 영업시간, 전화, WhatsApp, 이메일.",
     quoteTitle: "견적 요청",
     quoteDescription: "필요한 제품 코드를 목록으로 보내 주시면 견적을 드립니다.",
+    productDescription: "{code} {name} ({range}), 시드니 Milperra의 YT Aluminium. 픽업 또는 시드니 전역 배송. 온라인으로 견적을 요청하세요.",
   },
   nav: {
     quoteCta: "견적 받기",
@@ -209,6 +210,8 @@ const ko: Dictionary = {
     copy: "복사하기 (WeChat용)",
     copied: "복사했어요",
     footnote: "견적은 보통 당일(영업일)에 드려요. 급하시면 {phone}로 전화 주세요.",
+    privacyNote: "입력하신 정보는 견적 답변에만 사용해요.",
+    privacyLink: "개인정보 처리방침",
     clear: "목록 비우기",
     photoTitle: "종이에 적은 목록이 있으세요?",
     photoText: "사진 찍어서 WhatsApp으로 보내 주세요. 확인하고 견적 보내 드릴게요.",
@@ -252,6 +255,8 @@ const ko: Dictionary = {
     address: "매장 주소",
     hours: "영업시간",
     map: "{address} 지도",
+    mapLoad: "지도 보기",
+    mapNote: "지도는 Google 지도에서 제공하며 쿠키가 설정될 수 있어요.",
   },
   footer: {
     about: "업체와 개인 고객을 위한 알루미늄 샷시 자재, 방충망, 철물, 도어락.",
@@ -259,6 +264,7 @@ const ko: Dictionary = {
     counter: "매장",
     faq: "자주 묻는 질문",
     privacy: "개인정보 처리방침",
+    cookies: "쿠키 정책",
   },
   notFound: {
     title: "페이지를 찾을 수 없어요",
@@ -288,6 +294,10 @@ const ko: Dictionary = {
   privacyPage: {
     title: "개인정보 처리방침",
     englishNote: "이 개인정보 처리방침은 영어로 제공됩니다.",
+  },
+  cookiesPage: {
+    title: "쿠키 정책",
+    englishNote: "이 쿠키 정책은 영어로 제공됩니다.",
   },
   closure: {
     title: "연말 휴무 안내",

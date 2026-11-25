@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FaqList, type FaqCategory } from "@/components/faq/FaqList";
 import { SITE, fullAddress } from "@/lib/site";
+import { jsonLdString } from "@/lib/schema";
 import { fmt, getDictionary, isLocale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
 
@@ -31,7 +32,7 @@ export default async function FaqPage({ params }: PageProps<"/[lang]/faq">) {
   return (
     <>
       <div className="mx-auto max-w-[1280px] px-4 pb-20 pt-12 md:px-8 md:pt-16">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(schema) }} />
         <h1 className="display text-5xl md:text-7xl">{d.faqPage.title}</h1>
         <p className="mt-5 text-lg text-muted">
           {introBefore}

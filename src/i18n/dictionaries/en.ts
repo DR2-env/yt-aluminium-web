@@ -14,6 +14,7 @@ const en = {
     contactDescription: "Trade counter address, opening hours, phone, WhatsApp and email for YT Aluminium.",
     quoteTitle: "Quote request",
     quoteDescription: "Prepare a list of YT Aluminium product codes and send it for pricing.",
+    productDescription: "{code} {name} ({range}) from YT Aluminium in Milperra, Sydney. Pick up or delivery across Sydney. Request a price online.",
   },
   nav: {
     quoteCta: "Get a quote",
@@ -207,6 +208,8 @@ const en = {
     copy: "Copy for WeChat",
     copied: "Copied",
     footnote: "Pricing is usually returned the same business day. For urgent requests call {phone}.",
+    privacyNote: "We only use these details to reply to your request.",
+    privacyLink: "Privacy policy",
     clear: "Clear list",
     photoTitle: "Have a list on paper?",
     photoText: "Take a photo and send it to us on WhatsApp. We read it and send you prices.",
@@ -250,6 +253,8 @@ const en = {
     address: "Trade counter",
     hours: "Opening hours",
     map: "Map showing {address}",
+    mapLoad: "Show map",
+    mapNote: "The map is provided by Google Maps, which may set cookies.",
   },
   footer: {
     about: "Aluminium extrusions, mesh, hardware and locks for trade and home projects.",
@@ -257,6 +262,7 @@ const en = {
     counter: "Trade counter",
     faq: "FAQ",
     privacy: "Privacy",
+    cookies: "Cookies",
   },
   notFound: {
     title: "Page not found",
@@ -285,6 +291,10 @@ const en = {
   },
   privacyPage: {
     title: "Privacy policy",
+    englishNote: "",
+  },
+  cookiesPage: {
+    title: "Cookie policy",
     englishNote: "",
   },
   closure: {

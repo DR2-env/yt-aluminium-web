@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -24,6 +26,7 @@ import {
   type Section,
 } from "@/lib/catalogue";
 import { SITE } from "@/lib/site";
+import { BUSINESS_ID, breadcrumbJsonLd, jsonLdString } from "@/lib/schema";
 import { SIZES } from "@/data/sizes";
 import { finishNameMap, fmt, getDictionary, isLocale, localePath, packLabel, tc, type Locale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
@@ -43,10 +46,14 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/products/i
   const name = tc(lang, p.name);
   return {
     title: `${p.code} ${name}`,
-    description: [name, range ? tc(lang, range.name) : "", tc(lang, p.len)].filter(Boolean).join(" | "),
+    description: fmt(getDictionary(lang).meta.productDescription, { code: p.code, name, range: range ? tc(lang, range.name) : "" }),
     alternates: alternatesFor(lang, productHref(p)),
+    openGraph: hasRender(p) ? { images: [{ url: renderSrc(p) }] } : undefined,
   };
 }
+
+// Pre-rendered product images live in public/renders; not every product has one.
+const hasRender = (p: Product) => existsSync(path.join(process.cwd(), "public", renderSrc(p)));
 
 function toConfig(p: Product, lang: Locale): ConfigProduct {
   const d = getDictionary(lang);
@@ -99,18 +106,32 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/product
   const suits = p.suits ? PRODUCTS[p.suits] : undefined;
   const related = range ? productsInRange(range).filter((x) => x.id !== p.id).slice(0, 4) : [];
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: tc(lang, p.name),
-    sku: p.code,
-    category: range ? tc(lang, range.name) : undefined,
-    brand: { "@type": "Brand", name: SITE.name },
-  };
+  const url = `${SITE.url}${localePath(lang, productHref(p))}`;
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "@id": `${url}#product`,
+      name: `${p.code} ${tc(lang, p.name)}`,
+      sku: p.code,
+      url,
+      description: fmt(d.meta.productDescription, { code: p.code, name: tc(lang, p.name), range: range ? tc(lang, range.name) : "" }),
+      image: hasRender(p) ? `${SITE.url}${renderSrc(p)}` : undefined,
+      category: range ? tc(lang, range.name) : undefined,
+      material: "Aluminium",
+      brand: { "@type": "Brand", name: SITE.name },
+      seller: { "@id": BUSINESS_ID },
+    },
+    breadcrumbJsonLd([
+      { name: d.nav.products, url: `${SITE.url}${localePath(lang, "/products")}` },
+      ...(range ? [{ name: tc(lang, range.name), url: `${SITE.url}${localePath(lang, rangeHref(range))}` }] : []),
+      { name: p.code, url },
+    ]),
+  ];
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 pb-20 pt-8 md:px-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <nav aria-label={d.catalogue.breadcrumb} className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-muted">
         <Link href={localePath(lang, "/products")} className="hover:text-ink">{d.nav.products}</Link>
         {range && (

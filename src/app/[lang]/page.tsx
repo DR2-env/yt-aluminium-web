@@ -141,7 +141,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               <div key={group.title}>
                 <Link href={p(rangeHref(ranges[0]))} className="group block">
                   <div className="aspect-[4/3] rounded-md bg-tile p-5 transition-colors group-hover:bg-line">
-                    {cover && <ProductVisual item={{ ...cover, name: group.title }} />}
+                    {cover && <ProductVisual item={{ ...cover, name: group.title }} alt="" />}
                   </div>
                   <h3 className="mt-4 text-xl font-medium group-hover:text-accent">{group.title}</h3>
                 </Link>
