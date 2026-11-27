@@ -77,8 +77,8 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
           ))}
         </nav>
 
-        <div className="flex items-center justify-end gap-4">
-          <LanguageLinks lang={s.lang} label={s.menu.language} className="hidden xl:flex" />
+        <div className="flex items-center justify-end gap-2 sm:gap-4">
+          <LanguageLinks lang={s.lang} label={s.menu.language} compact />
           <div className="hidden sm:block">{ctaButton()}</div>
           <button
             type="button"
@@ -93,13 +93,9 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
         </div>
       </div>
 
-      {/* Below desktop width: languages stay visible in their own quiet row. */}
-      <div className="border-t border-line xl:hidden">
-        <LanguageLinks lang={s.lang} label={s.menu.language} className="mx-auto max-w-[1280px] justify-center px-4 py-2 md:px-8" />
-      </div>
 
       {open && (
-        <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-6.5rem)] overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-2 xl:hidden">
+        <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-4rem)] overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-2 xl:hidden">
           <nav className="flex flex-col" aria-label="Mobile">
             {[...s.nav, ...(s.quote ? [{ href: s.quote.href, label: s.quote.label, match: "/quote" }] : [])].map((n) => (
               <Link

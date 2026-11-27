@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { LOCALES, LOCALE_META, localePath, stripLocale, type Locale } from "@/i18n/config";
 
 /** The four languages as short, plain links (no dropdown), each in its own script. */
-export function LanguageLinks({ lang, label, className = "" }: { lang: Locale; label: string; className?: string }) {
+export function LanguageLinks({ lang, label, className = "", compact = false }: { lang: Locale; label: string; className?: string; compact?: boolean }) {
   const base = stripLocale(usePathname());
   const remember = () => {
     // A deliberate choice: stop suggesting another language.
@@ -27,7 +27,7 @@ export function LanguageLinks({ lang, label, className = "" }: { lang: Locale; l
           prefetch={false}
           onClick={remember}
           aria-current={l === lang ? "true" : undefined}
-          className={`px-2 text-[13px] transition-colors ${i > 0 ? "border-s border-line-strong" : ""} ${l === lang ? "font-semibold text-ink" : "text-muted hover:text-ink"}`}
+          className={`${compact ? "px-1 text-[12px] sm:px-2 sm:text-[13px]" : "px-2 text-[13px]"} transition-colors ${i > 0 && !compact ? "border-s border-line-strong" : ""} ${l === lang ? "font-semibold text-ink" : "text-muted hover:text-ink"}`}
         >
           {LOCALE_META[l].short}
         </Link>
