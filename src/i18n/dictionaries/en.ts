@@ -41,7 +41,7 @@ const en = {
     heroTitle: "Sydney's aluminium trade counter.",
     heroSub: "Profiles, mesh and hardware, in stock in Milperra.",
     heroText: "Walk in, call or send us your list. We reply with prices, usually the same day.",
-    languages: "We speak English, French, Mandarin and Cantonese.",
+    languages: "We speak English · Français · 普通话 · 粤语",
     searchButton: "Search",
     groupsTitle: "Browse by category",
     latestTitle: "Our latest catalogue",

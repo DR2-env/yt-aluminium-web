@@ -21,7 +21,8 @@ export default async function FaqPage({ params }: PageProps<"/[lang]/faq">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const d = getDictionary(lang);
-  const vars = { address: fullAddress, hours: d.site.hours, phone: SITE.phone };
+  // Customers mostly call the mobile, so it comes first wherever a number is given.
+  const vars = { address: fullAddress, hours: d.site.hours, phone: `${SITE.mobile} / ${SITE.phone}` };
   // The first answer explains how to get a price; it only mentions the online form when that is switched on.
   const items = d.faqPage.items.map((i, n) => ({ q: i.q, a: fmt(n === 0 && !QUOTE_ENABLED ? d.faqPage.priceAnswerNoForm : i.a, vars), cat: CATEGORIES[n] ?? "order" }));
   const [introBefore, introAfter = ""] = d.faqPage.intro.split("{phone}");
@@ -38,8 +39,8 @@ export default async function FaqPage({ params }: PageProps<"/[lang]/faq">) {
         <h1 className="display text-5xl md:text-7xl">{d.faqPage.title}</h1>
         <p className="mt-5 text-lg text-muted">
           {introBefore}
-          <a href={SITE.phoneHref} className="text-ink hover:text-accent" dir="ltr">
-            {SITE.phone}
+          <a href={SITE.mobileHref} className="text-ink hover:text-accent" dir="ltr">
+            {SITE.mobile}
           </a>
           {introAfter}
         </p>

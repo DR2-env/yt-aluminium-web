@@ -8,7 +8,7 @@ import { SectionDrawing } from "./SectionDrawing";
 import { finishOf, swatchBackground } from "@/lib/finishes";
 import { quote, useQuote } from "@/lib/quote-store";
 import { whatsappLink } from "@/lib/site";
-import type { Section } from "@/lib/catalogue";
+import { isLightHex, type Section } from "@/lib/catalogue";
 
 export interface ConfigVariant {
   code: string;
@@ -38,6 +38,8 @@ export interface ConfigProduct {
   sizeText?: string;
   /** Pre-rendered picture shown until the live 3D model is ready. */
   poster: string;
+  /** The part is light in its standard finish (white nylon, mill aluminium). */
+  lightPart: boolean;
   note: "section" | "standin" | "model";
   variants: ConfigVariant[];
   sections: Record<string, Section>;
@@ -119,6 +121,8 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
     () => ({ id: product.id, kind: product.kind, rubber: product.rubber, spool: product.spool, mesh: product.mesh, w: v.w, h: v.h, t: v.t, section }),
     [product.id, product.kind, product.rubber, product.spool, product.mesh, v.w, v.h, v.t, section],
   );
+  // Light colours (and light standard parts) are shown on a dark stage so the colour reads clearly.
+  const darkStage = activeFinish && activeFinish !== "NA" && activeFinish !== "RB" ? isLightHex(finishOf(activeFinish).hex) : product.lightPart;
   const showFinishPicker = !(v.fin.length === 1 && (v.fin[0] === "NA" || v.fin[0] === "RB"));
   const inQuote = lines.filter((l) => l.code === v.code).reduce((n, l) => n + l.qty, 0);
   const views: { id: Mode; label: string }[] = [
@@ -156,7 +160,7 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
     <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
       <div className="lg:col-span-7">
         <div className="lg:sticky lg:top-24">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-line bg-tile">
+          <div className={`relative aspect-[4/3] overflow-hidden rounded-md border border-line transition-colors ${darkStage ? "bg-tile-dark" : "bg-tile"}`}>
             {mode === "3d" && !ready && (
               // eslint-disable-next-line @next/next/no-img-element -- local pre-rendered placeholder
               <img src={product.poster} alt={product.name} className="absolute inset-0 h-full w-full object-contain p-6" />

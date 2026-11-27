@@ -1,5 +1,6 @@
 import raw from "@/data/catalogue.json";
 import { HAND_BUILT_MODELS, SECTION_STANDINS } from "./models-index";
+import tones from "@/data/render-tones.json";
 
 export type Kind = "profile" | "cap" | "flat" | "photo" | "none" | "spool" | "packer" | "roll" | "sheet";
 export type Point = [number, number];
@@ -172,3 +173,17 @@ export const CATEGORIES: { id: string; ranges: string[] }[] = [
 
 /** Products marked NEW in the current price list, in catalogue order. */
 export const NEW_PRODUCTS: Product[] = Object.values(PRODUCTS).filter((p) => p.tag === "New");
+
+/**
+ * True when a product's catalogue picture shows a light part (white nylon, mill aluminium, pale
+ * powder coat). Light parts sit on a dark tile so the colour reads clearly. Values come from
+ * scripts/render-tones.mjs (average brightness of the part in its render).
+ */
+export const isLightRender = (p: Pick<Product, "id">) => ((tones as Record<string, number>)[productSlug(p)] ?? 0) >= 0.62;
+
+/** True for a pale finish colour (relative luminance of its swatch). */
+export function isLightHex(hex: string) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const lin = (c: number) => { const v = c / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255) > 0.35;
+}

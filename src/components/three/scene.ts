@@ -170,7 +170,8 @@ function mesh(geo: THREE.BufferGeometry, mat: THREE.Material, shadow = true) {
 }
 
 export function buildObject(c: ViewItem, fin: string): THREE.Group {
-  if (!c.section && c.id) {
+  // A hand-built model (matched to photos) wins over a traced sketch section.
+  if (c.id) {
     const hw = buildHardware(c.id, fin);
     if (hw) return hw;
   }
@@ -255,7 +256,9 @@ export function buildObject(c: ViewItem, fin: string): THREE.Group {
     view([0.35, 0.22, 1]);
   } else if (c.kind === "packer") {
     const t = (c.t || 3) / 100;
-    const mat = new THREE.MeshPhysicalMaterial({ color: "#3a3f46", roughness: 0.5, clearcoat: 0.3 });
+    // Colour-coded by thickness as stocked: 1.0 beige, 1.5 blue, 3.0 green. 5 and 10 mm: colour to confirm.
+    const PACKER_COLOURS: Record<number, string> = { 1: "#d6c4a3", 1.5: "#2f78c8", 3: "#9fd6b1" };
+    const mat = new THREE.MeshPhysicalMaterial({ color: PACKER_COLOURS[c.t ?? 0] ?? "#3a3f46", roughness: 0.5, clearcoat: 0.3 });
     for (let i = 0; i < 6; i++) {
       const b = mesh(new THREE.BoxGeometry(0.75, t, 0.28), mat);
       b.position.set(i * 0.03, t / 2 + i * t * 1.02, i * 0.02);

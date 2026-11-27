@@ -51,9 +51,9 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
       )}
     </Link>
     ) : (
-      <a href={SITE.phoneHref} className={`inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-white transition-opacity hover:opacity-90 ${extra}`}>
+      <a href={SITE.mobileHref} className={`inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-white transition-opacity hover:opacity-90 ${extra}`}>
         <Phone size={16} aria-hidden />
-        <span dir="ltr">{SITE.phone}</span>
+        <span dir="ltr">{SITE.mobile}</span>
       </a>
     );
 

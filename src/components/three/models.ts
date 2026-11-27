@@ -187,25 +187,6 @@ function lCorner(leg: number, w: number, h: number, mat: Mat, ribs = true) {
   return g;
 }
 
-/** Die-cast corner stake: a solid L with tapered, toothed legs (HD security door/window corners). */
-function cornerStake(leg: number, w: number, h: number) {
-  const m = MATS.zinc();
-  const g = new THREE.Group();
-  g.add(rbox(w + 2, h + 1, w + 2, 1.5, m));
-  for (const dir of [0, 1]) {
-    const arm = new THREE.Group();
-    arm.add(at(rbox(leg, h * 0.8, w * 0.8, 0.8, m), leg / 2 + w / 2, 0, 0));
-    for (let i = 0; i < 4; i++) {
-      const tooth = rbox(1, h * 0.8 + 1.2, w * 0.8 + 1.2, 0.3, m);
-      tooth.position.set(w / 2 + leg * 0.3 + i * (leg * 0.16), 0, 0);
-      arm.add(tooth);
-    }
-    arm.rotation.y = dir ? -Math.PI / 2 : 0;
-    g.add(arm);
-  }
-  return g;
-}
-
 /** Coiled strip (pile, gasket tape, carrier tape) with visible winding rings. */
 function coil(outerR: number, innerR: number, width: number, mat: Mat, ridges = 10) {
   const g = new THREE.Group();
@@ -329,19 +310,225 @@ function semicircle(r: number, depth: number, mat: Mat) {
   return shapeSolid(s, depth, mat, 1.2);
 }
 
+
+// ---------- shapes matched to YT's showroom photos (Nov 2026) ----------
+const alu = () => physical("#c9cdd2", 0.34, 1);
+
+const polyShape = (pts: [number, number][]) => {
+  const s = new THREE.Shape();
+  s.moveTo(pts[0][0], pts[0][1]);
+  pts.slice(1).forEach(([x, y]) => s.lineTo(x, y));
+  s.closePath();
+  return s;
+};
+
+/** A bar from x=0 to len (width w) with barbed teeth on one edge: side +1 = +y edge, -1 = -y edge. */
+function serratedShape(len: number, w: number, teeth: number, th: number, side: 1 | -1, plainFrom = 0.18) {
+  const pts: [number, number][] = [[0, -side * w / 2], [len, -side * w / 2], [len, side * w / 2]];
+  const p = (len * (1 - plainFrom)) / teeth;
+  for (let k = 0; k < teeth; k++) {
+    const xa = len - k * p;
+    pts.push([xa, side * w / 2], [xa - p, side * (w / 2 + th)], [xa - p, side * w / 2]);
+  }
+  pts.push([0, side * w / 2]);
+  return polyShape(pts);
+}
+
+/** Straight bar between two points in the XY plane, depth along Z. */
+function bar(x1: number, y1: number, x2: number, y2: number, t: number, depth: number, mat: Mat) {
+  const len = Math.hypot(x2 - x1, y2 - y1);
+  return at(rbox(len + t * 0.6, t, depth, Math.min(0.5, t / 4), mat), (x1 + x2) / 2, (y1 + y2) / 2, 0, 0, 0, Math.atan2(y2 - y1, x2 - x1));
+}
+
+/**
+ * Arrow-shaped corner cleat cut from an extrusion (AU010 HD, AU077 LD security door corners):
+ * two arms at 90° forming a roof, a central stem, and a serrated forked tail.
+ */
+function arrowCorner(arm: number, armT: number, stem: number, leg: number, legW: number, depth: number, mat: Mat) {
+  const g = new THREE.Group();
+  const d = arm * Math.SQRT1_2;
+  for (const s of [-1, 1]) {
+    g.add(bar(0, 0, s * d, -d, armT, depth, mat));
+    g.add(bar(s * d, -d, s * d, -d - armT * 1.4, armT * 0.9, depth, mat)); // small lip at the tip
+  }
+  g.add(bar(0, -armT * 0.3, 0, -stem, armT * 1.3, depth, mat));
+  g.add(at(rbox(armT * 2.8, armT * 1.6, depth, 0.6, mat), 0, -stem * 0.55, 0));
+  for (const s of [-1, 1] as const) {
+    const legMesh = shapeSolid(serratedShape(leg, legW, 4, legW * 0.45, s === 1 ? -1 : 1, 0.12), depth, mat, 0.3);
+    legMesh.position.set(0, -stem, 0);
+    legMesh.rotation.z = s === 1 ? -Math.PI / 4 : (-3 * Math.PI) / 4;
+    g.add(legMesh);
+  }
+  g.position.y = stem * 0.6;
+  return g;
+}
+
+/** Solid L corner key with barbed teeth on the inner (or outer) edges: AU078, AU098. */
+function barbedL(leg: number, w: number, depth: number, mat: Mat, outer: boolean, teeth = 4, th = 0.45, plainFrom = 0.18) {
+  const g = new THREE.Group();
+  const h = shapeSolid(serratedShape(leg, w, teeth, w * th, outer ? 1 : -1, plainFrom), depth, mat, 0.3);
+  h.position.x = -w / 2;
+  g.add(h);
+  const v = shapeSolid(serratedShape(leg, w, teeth, w * th, outer ? -1 : 1, plainFrom), depth, mat, 0.3);
+  v.rotation.z = -Math.PI / 2;
+  v.position.y = w / 2;
+  g.add(v);
+  g.add(at(rbox(w, w, depth, 0.8, mat), 0, 0, 0));
+  g.position.set(-leg * 0.35, leg * 0.35, 0);
+  return g;
+}
+
+/** Flat moulded L corner with rounded ends (PC01, PC02 plastic corners). */
+function flatL(leg: number, w: number, t: number, mat: Mat, groove = false) {
+  const g = new THREE.Group();
+  for (const vertical of [false, true]) {
+    const arm = new THREE.Group();
+    arm.add(at(rbox(leg - w / 2, w, t, 0.8, mat), (leg - w / 2) / 2, 0, 0));
+    arm.add(at(cyl(w / 2, t, mat, 40), leg - w / 2, 0, 0, Math.PI / 2, 0, 0));
+    if (groove) arm.add(at(rbox(leg - w * 1.2, w * 0.12, 0.6, 0.1, MATS.rubber()), (leg - w) / 2 + w * 0.2, -w * 0.18, t / 2));
+    if (vertical) arm.rotation.z = -Math.PI / 2;
+    g.add(arm);
+  }
+  g.add(at(rbox(w, w, t, 0.8, mat), 0, 0, 0));
+  g.position.set(-leg * 0.4, leg * 0.4, 0);
+  return g;
+}
+
+/** Short length of aluminium angle (a Γ section) seen end-on, with optional holes. */
+function angleCleat(a: number, b: number, t: number, depth: number, mat: Mat, holes = 0) {
+  const g = new THREE.Group();
+  const sec = shapeSolid(polyShape([[0, 0], [a, 0], [a, -t], [t, -t], [t, -b], [0, -b]]), depth, mat, 0.3);
+  g.add(sec);
+  for (let i = 0; i < holes; i++) g.add(at(cyl(1.8, t + 0.6, MATS.rubber(), 20), t / 2, -b * (0.45 + i * 0.3), 0, 0, 0, Math.PI / 2));
+  g.position.set(-a / 2, b / 2, 0);
+  return g;
+}
+
+/** Flush ("flag") hinge: U-shaped outer leaf, inner leaf nesting in its cut-out, barrel on top. */
+function flushHinge(W: number, H: number, t: number, R: number, mat: Mat) {
+  const g = new THREE.Group();
+  const c = W * 0.5; // centre knuckle (inner leaf)
+  const wx = c / 2 + 1.5, barH = H * 0.24, top = -R * 0.5;
+  const outer = polyShape([[-W / 2, top], [-W / 2, -H], [W / 2, -H], [W / 2, top], [wx, top], [wx, -H + barH], [-wx, -H + barH], [-wx, top]]);
+  const ex = (W / 2 + wx) / 2;
+  for (const s of [-1, 1]) for (const y of [-H * 0.38, -H * 0.82]) outer.holes.push(circlePath(s * ex, y, 2.6));
+  g.add(shapeSolid(outer, t, mat, Math.min(0.5, t / 4)));
+  // Barrel: two short outer knuckles on the outer leaf, one long centre knuckle on the inner leaf.
+  const kOuter = (W - c) / 2 - 1.5;
+  for (const s of [-1, 1]) g.add(at(cyl(R, kOuter, mat, 32), s * (c / 2 + 1 + kOuter / 2), 0, 0, 0, 0, Math.PI / 2));
+  g.add(at(cyl(R, c, mat, 32), 0, 0, 0, 0, 0, Math.PI / 2));
+  for (const s of [-1, 1]) g.add(at(cyl(R * 0.55, 1.2, MATS.steel(), 24), s * (W / 2 - 0.2), 0, 0, 0, 0, Math.PI / 2));
+  // Inner leaf swung out towards the viewer.
+  const ih = H - barH - 5, iw = 2 * wx - 4;
+  const inner = polyShape([[-iw / 2, 0], [iw / 2, 0], [iw / 2, -ih], [-iw / 2, -ih]]);
+  inner.holes.push(circlePath(-iw * 0.3, -ih * 0.3, 2.4), circlePath(iw * 0.3, -ih * 0.3, 2.4), circlePath(0, -ih * 0.72, 2.4));
+  const pivot = new THREE.Group();
+  const leaf = shapeSolid(inner, t, mat, Math.min(0.5, t / 4));
+  leaf.position.y = top;
+  pivot.add(leaf);
+  pivot.rotation.x = -0.75;
+  g.add(pivot);
+  g.position.y = H / 2;
+  return g;
+}
+
+/** Screen door butt hinge laid open flat: five knuckles, three holes in one leaf, a slot in the other. */
+function screenHinge(mat: Mat) {
+  const g = new THREE.Group();
+  const W = 76, L = 22, t = 1.6, R = 3.4;
+  const topLeaf = roundedRectShape(W, L, 1.2, 0, L / 2 + R * 0.6);
+  [-26, 0, 26].forEach((x) => topLeaf.holes.push(circlePath(x, L / 2 + R * 0.6 + 2, 2.6)));
+  g.add(shapeSolid(topLeaf, t, mat, 0.4));
+  const bottom = roundedRectShape(W - 6, L, 1.2, 0, -L / 2 - R * 0.6);
+  bottom.holes.push(slotPath(0, -L / 2 - R * 0.6 - 3, 50, 2.2, false), circlePath(0, -L / 2 - R * 0.6 + 5, 1.8));
+  g.add(shapeSolid(bottom, t, mat, 0.4));
+  for (let i = 0; i < 5; i++) g.add(at(cyl(R, W / 5 - 0.8, mat, 32), -W / 2 + (W / 5) * (i + 0.5), 0, 0, 0, 0, Math.PI / 2));
+  g.add(at(cyl(R * 0.45, W + 2, MATS.steel()), 0, 0, 0, 0, 0, Math.PI / 2));
+  return g;
+}
+
+/** Window roller housing (WR01 with its wheel, WR02 without): stepped tab one end, hook lip the other. */
+function windowRoller(withWheel: boolean) {
+  const g = new THREE.Group();
+  const m = MATS.nylonBlack();
+  g.add(at(rbox(54, 9, 12, 1, m), 0, 0, 0));
+  g.add(at(rbox(12, 3, 12, 0.6, m), -32, -3, 0));
+  g.add(at(rbox(3, 11, 12, 0.6, m), 27.5, 4.5, 0));
+  g.add(at(rbox(8, 2.5, 12, 0.6, m), 31, 9, 0));
+  if (withWheel) {
+    g.add(at(wheel(6.5, 6, MATS.nylonWhite(), MATS.steel()), -6, -6.5, 0));
+  }
+  return g;
+}
+
+/** Sliding door double roller (RL02): long black housing, two white wheels, adjuster at one end. */
+function doubleRoller() {
+  const g = roller(112, 20, 16, 2, 11, MATS.nylonBlack(), MATS.nylonWhite(), true);
+  g.add(at(rbox(16, 3, 16, 0.6, MATS.nylonBlack()), -62, 8.5, 0));
+  g.add(at(rbox(22, 2.2, 0.8, 0.3, physical("#0d0e10", 0.8)), -22, 2, 8.2, 0, 0, 0.6));
+  g.add(at(cyl(2.4, 10, MATS.steel(), 20), 61, 0, 0, 0, 0, Math.PI / 2));
+  return g;
+}
+
+/** Security door roller (RL01): black block with an adjusting screw, a flange plate and the wheel below. */
+function blockRoller() {
+  const g = new THREE.Group();
+  const m = MATS.nylonBlack();
+  const body = polyShape([[-19, 0], [19, 0], [19, 26], [12, 34], [-19, 34]]);
+  g.add(shapeSolid(body, 22, m, 0.8));
+  g.add(at(screwHead(3, MATS.brass()), 2, 29, 11, Math.PI / 2, 0, 0));
+  g.add(at(rbox(20, 1.6, 0.8, 0.3, physical("#0d0e10", 0.8)), 0, 22, 11.2));
+  g.add(at(rbox(58, 4, 24, 1.5, m), 0, -2, 0));
+  g.add(at(wheel(10, 8, MATS.nylonGrey(), MATS.steel()), 0, -9, 0));
+  g.position.y = -12;
+  return g;
+}
+
+/** Glass balustrade spigot body: grooved aluminium block; with an M12 bolt, nut and washer on top. */
+function spigotBlock(withBolt: boolean) {
+  const g = new THREE.Group();
+  const m = alu();
+  // Side profile (depth x height), extruded across the width.
+  const prof = polyShape([
+    [0, 0], [26, 0], [26, 6], [29, 9], [29, 15], [26, 18], [26, 36], [24.5, 37.5], [26, 39], [26, 44], [24.5, 45.5], [26, 47],
+    [26, 52], [withBolt ? 0 : -3, 52], [withBolt ? 0 : -3, 50], [0, 50],
+  ]);
+  const body = shapeSolid(prof, 46, m, 0.5);
+  body.rotation.y = -Math.PI / 2;
+  body.position.set(0, -26, -13);
+  g.add(body);
+  if (withBolt) {
+    g.add(at(cyl(11, 2, MATS.zinc(), 40), 0, 27, 0));
+    g.add(at(cyl(9.5, 8, MATS.zinc(), 6), 0, 32, 0));
+    const thread = cyl(5.5, 26, MATS.zinc(), 24);
+    g.add(at(thread, 0, 40, 0));
+    for (let i = 0; i < 12; i++) {
+      const ring = mesh(new THREE.TorusGeometry(5.6, 0.45, 6, 24), MATS.steel());
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 37 + i * 1.6;
+      g.add(ring);
+    }
+  }
+  return g;
+}
+
 // ---------- catalogue of models by product id ----------
 type Builder = (fin: string) => THREE.Group;
 
 const MODELS: Record<string, Builder> = {
   // Toothed die-cast corner key that joins shopfront door stiles and rails.
-  SPIGOT: () => spigot(MATS.diecastBlack()),
-  "SPIGOT-NEW": () => spigot(MATS.zinc()),
+  SPIGOT: () => spigotBlock(true),
+  "SPIGOT-NEW": () => spigotBlock(false),
 
-  AU010: () => cornerStake(46, 12, 22),
-  AU078: () => cornerStake(32, 11, 16),
+  AU010: () => arrowCorner(54, 4, 30, 30, 7, 10, alu()),
+  AU077: (fin) => arrowCorner(50, 2.6, 26, 22, 6, 8, finishMat(fin, alu)),
+  AU078: () => barbedL(38, 10, 10, alu(), false, 3, 0.3, 0.4),
+  AU098: (fin) => barbedL(44, 8, 10, finishMat(fin, alu), true, 6),
+  "AU601/1": (fin) => angleCleat(50, 48, 2.6, 34, finishMat(fin, alu), 2),
+  "AU605/1": (fin) => angleCleat(50, 54, 5, 36, finishMat(fin, alu)),
   "AU005/2": () => lCorner(36, 9, 26, MATS.nylonBlack(), false),
-  PC01: () => lCorner(22, 7.5, 13.5, MATS.nylonBlue()),
-  PC02: () => lCorner(26, 10.3, 16, MATS.nylonBlack()),
+  PC01: () => flatL(46, 13.5, 7.5, MATS.nylonBlue()),
+  PC02: () => flatL(54, 16, 10.3, MATS.nylonBlack(), true),
 
   // Flat D-loop pull tab that sits under the flyscreen spline.
   PC03: () => {
@@ -478,10 +665,10 @@ const MODELS: Record<string, Builder> = {
   "BS-FRINGE": () => coil(50, 18, 5, MATS.pileBlue(), 12),
   GK45: () => coil(48, 24, 22, MATS.foam(), 12),
 
-  HG01: (fin) => hinge(20, 76, 2, 3.4, finishMat(fin, MATS.zinc), 3, 5),
-  HG02: () => hinge(38, 75, 2, 3.8, MATS.stainless(), 3, 3, 170),
+  HG01: (fin) => screenHinge(finishMat(fin, MATS.beige)),
+  HG02: () => flushHinge(100, 64, 2.5, 5, MATS.stainless()),
   HG03: (fin) => hinge(30, 90, 3, 4.4, finishMat(fin, MATS.zinc), 3, 3, 165, true),
-  HG04: (fin) => hinge(34, 100, 4, 5.5, finishMat(fin, MATS.zinc), 4, 3, 165, true),
+  HG04: (fin) => flushHinge(100, 64, 2.5, 5, finishMat(fin, MATS.diecastBlack)),
   "HG/Packers": () => {
     const g = new THREE.Group();
     for (let i = 0; i < 3; i++) {
@@ -538,9 +725,9 @@ const MODELS: Record<string, Builder> = {
     }
     return g;
   },
-  WR01: () => roller(46, 14, 12, 1, 9, MATS.nylonBlack(), MATS.nylonWhite()),
-  WR02: () => roller(46, 14, 12, 0, 9, MATS.nylonBlack(), MATS.nylonWhite()),
-  RL01: () => roller(56, 28, 16, 1, 12, MATS.nylonBlack(), MATS.nylonWhite(), true),
+  WR01: () => windowRoller(true),
+  WR02: () => windowRoller(false),
+  RL01: () => blockRoller(),
   "RL01/1": () => {
     const g = new THREE.Group();
     g.add(rbox(30, 14, 12, 2, MATS.nylonBlack()));
@@ -548,7 +735,7 @@ const MODELS: Record<string, Builder> = {
     return g;
   },
   // Tandem door roller: zinc U-carriage with two wheels and an adjuster.
-  RL02: () => roller(90, 18, 16, 2, 11, MATS.zinc(), MATS.brass(), true),
+  RL02: () => doubleRoller(),
   // Flat steel strap bracket with slots and holes.
   AU060: () => group(plate(26, 120, 3, MATS.zinc(), [[0, 45, 3], [0, -45, 3]], 3, [
     [0, 18, 16, 3, true],
@@ -588,23 +775,6 @@ const MODELS: Record<string, Builder> = {
   "KL16/1": () => euroCylinder(45, true),
 };
 
-function spigot(mat: Mat) {
-  // Outline from the price list photo: a spine with two locating pins on the left, and two
-  // serrated arms running right that curl into round hooks.
-  const g = new THREE.Group();
-  const T = 10;
-  g.add(at(rbox(8, 40, T, 1, mat), 4, 0, 0));
-  for (const y of [-16, 16]) {
-    g.add(at(rbox(34, 7, T, 1, mat), 21, y, 0));
-    for (let i = 0; i < 4; i++) g.add(at(rbox(2, 2.4, T, 0.4, mat), 12 + i * 6, y + Math.sign(y) * 4, 0));
-    const hook = mesh(new THREE.TorusGeometry(5, 2.6, 16, 32, Math.PI * 1.5), mat);
-    hook.scale.z = T / 5.2;
-    g.add(at(hook, 41, y - Math.sign(y) * 3.5, 0, 0, 0, y > 0 ? -Math.PI * 0.25 : Math.PI * 0.75));
-    g.add(at(cyl(2.2, 12, MATS.steel(), 20), -6, y * 0.55, 0, 0, 0, Math.PI / 2));
-  }
-  return g;
-}
-
 function swivelClip(len: number, offset: number) {
   const g = new THREE.Group();
   const m = MATS.clear();
@@ -641,8 +811,10 @@ function clutch(housing: Mat) {
   return g;
 }
 
+const FACE_ON = new Set(["AU010", "AU077", "AU078", "AU098", "PC01", "PC02", "AU601/1", "AU605/1"]);
+
 // Long, upright parts read better lying across the frame.
-const LIE_FLAT = new Set(["KL10", "KL11", "HG01", "HG02", "HG03", "HG04", "AU060"]);
+const LIE_FLAT = new Set(["KL10", "KL11", "HG03", "AU060"]);
 
 /** Build the representative 3D model for a product, or null if it has no hand-built model. */
 export function buildHardware(id: string, finish: string): THREE.Group | null {
@@ -653,7 +825,8 @@ export function buildHardware(id: string, finish: string): THREE.Group | null {
   const outer = new THREE.Group();
   inner.scale.multiplyScalar(0.01);
   outer.add(inner);
-  outer.userData.view = [1.25, 0.75, 1.15];
+  // Flat cut pieces (corner cleats, angles, plastic corners) read best face-on, as they hang on the display board.
+  outer.userData.view = FACE_ON.has(id) ? [0.38, 0.32, 1.2] : [1.25, 0.75, 1.15];
   return outer;
 }
 

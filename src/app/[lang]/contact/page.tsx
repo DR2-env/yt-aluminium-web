@@ -27,8 +27,8 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
     { label: c.email, value: SITE.email, href: `mailto:${SITE.email}`, ltr: true },
   ];
   const phones = [
-    { label: c.office, value: SITE.phone, href: SITE.phoneHref },
     { label: c.mobile, value: SITE.mobile, href: SITE.mobileHref },
+    { label: c.office, value: SITE.phone, href: SITE.phoneHref },
   ];
 
 
@@ -51,8 +51,8 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
             <ArrowRight size={16} className="rtl:-scale-x-100" />
             </Link>
           ) : (
-            <a href={SITE.phoneHref} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
-              {d.nav.call} <span dir="ltr">{SITE.phone}</span>
+            <a href={SITE.mobileHref} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+              {d.nav.call} <span dir="ltr">{SITE.mobile}</span>
             </a>
           )}
           <p className={`${label} mt-8`}>{c.messageLabel}</p>

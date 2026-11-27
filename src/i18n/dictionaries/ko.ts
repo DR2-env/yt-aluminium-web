@@ -43,7 +43,7 @@ const ko: Dictionary = {
     heroTitle: "시드니 알루미늄 자재 매장.",
     heroSub: "프로파일, 방충망, 철물까지 Milperra 매장에 재고가 있습니다.",
     heroText: "매장 방문, 전화, 또는 목록을 보내 주세요. 보통 당일에 견적 드려요.",
-    languages: "영어, 프랑스어, 만다린, 광둥어로 상담 가능합니다.",
+    languages: "상담 언어: English · Français · 普通话 · 粤语",
     searchButton: "검색",
     groupsTitle: "카테고리별 보기",
     latestTitle: "최신 카탈로그",

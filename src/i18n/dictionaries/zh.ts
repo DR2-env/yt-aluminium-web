@@ -43,7 +43,7 @@ const zh: Dictionary = {
     heroTitle: "悉尼铝材批发门店。",
     heroSub: "型材、纱网、五金，Milperra 门店现货供应。",
     heroText: "可以到店、打电话，或者把清单发给我们，一般当天报价。",
-    languages: "我们讲英语、法语、普通话和粤语。",
+    languages: "我们讲 English · Français · 普通话 · 粤语",
     searchButton: "搜索",
     groupsTitle: "按类别浏览",
     latestTitle: "最新产品目录",

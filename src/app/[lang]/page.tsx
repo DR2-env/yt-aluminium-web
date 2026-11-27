@@ -6,7 +6,7 @@ import { SectionDrawing } from "@/components/catalogue/SectionDrawing";
 import { HeroRequest } from "@/components/quote/HeroRequest";
 import { ProductCard } from "@/components/catalogue/ProductCard";
 import { QUOTE_ENABLED } from "@/lib/features";
-import { CATEGORIES, NEW_PRODUCTS, PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
+import { CATEGORIES, NEW_PRODUCTS, isLightRender, PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
 import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
 import { SITE, fullAddress, whatsappLink } from "@/lib/site";
 import { finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
@@ -44,9 +44,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           <ArrowRight size={16} className="rtl:-scale-x-100" />
         </Link>
       ) : (
-        <a href={SITE.phoneHref} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+        <a href={SITE.mobileHref} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
           <Phone size={18} />
-          {d.nav.call} <span dir="ltr">{SITE.phone}</span>
+          {d.nav.call} <span dir="ltr">{SITE.mobile}</span>
         </a>
       )}
       <a
@@ -83,11 +83,15 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               </div>
               <div>
                 <p className="eyebrow text-muted">{d.nav.call}</p>
-                <a href={SITE.phoneHref} className="mt-1 block text-xl font-medium hover:text-accent sm:mt-2 sm:text-2xl" dir="ltr">
+                {/* Mobile first: it is the number customers actually call. */}
+                <a href={SITE.mobileHref} className="mt-1 block text-xl font-medium hover:text-accent sm:mt-2 sm:text-2xl" dir="ltr">
+                  {SITE.mobile}
+                </a>
+                <a href={SITE.phoneHref} className="block text-[15px] text-muted hover:text-ink" dir="ltr">
                   {SITE.phone}
                 </a>
                 <div className="mt-3 hidden flex-wrap gap-2 sm:flex">
-                  <a href={SITE.phoneHref} className="inline-flex h-10 items-center gap-2 rounded-full bg-ink px-4 text-sm font-medium text-white hover:opacity-90">
+                  <a href={SITE.mobileHref} className="inline-flex h-10 items-center gap-2 rounded-full bg-ink px-4 text-sm font-medium text-white hover:opacity-90">
                     <Phone size={16} />
                     {d.nav.call}
                   </a>
@@ -143,7 +147,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             return (
               <div key={group.title} className="flex gap-4 sm:block">
                 <Link href={p(rangeHref(ranges[0]))} className="group shrink-0 sm:block" tabIndex={-1} aria-hidden>
-                  <div className="size-20 rounded-xl bg-tile p-2 transition-colors group-hover:bg-line sm:aspect-[4/3] sm:size-auto sm:rounded-md sm:p-5">
+                  <div className={`size-20 rounded-xl p-2 transition-colors sm:aspect-[4/3] sm:size-auto sm:rounded-md sm:p-5 ${cover && isLightRender(cover) ? "bg-tile-dark" : "bg-tile group-hover:bg-line"}`}>
                     {cover && <ProductVisual item={{ ...cover, name: group.title }} alt="" />}
                   </div>
                 </Link>

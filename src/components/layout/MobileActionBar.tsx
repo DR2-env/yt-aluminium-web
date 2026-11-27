@@ -12,7 +12,7 @@ export function MobileActionBar({ s }: { s: LayoutStrings }) {
   const item = "flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-medium";
   return (
     <nav aria-label="Quick actions" className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] sm:hidden">
-      <a href={SITE.phoneHref} className={item}>
+      <a href={SITE.mobileHref} className={item}>
         <Phone size={20} aria-hidden />
         {s.call}
       </a>

@@ -16,8 +16,8 @@ function header(): string {
 
 - Trade counter: ${fullAddress}, Australia
 - Opening hours: ${SITE.hours} (Sydney time)
-- Phone: ${SITE.phone} (international +61 2 8739 2494)
-- Mobile: ${SITE.mobile}
+- Mobile (main number): ${SITE.mobile} (international +61 451 569 228)
+- Office: ${SITE.phone} (international +61 2 8739 2494)
 - Email: ${SITE.email}
 - Catalogue: ${CODE_COUNT} product codes from the price list dated ${SITE.priceListDate}
 - Prices are not published online. See "How to get a price" below.
@@ -26,7 +26,7 @@ function header(): string {
 ## How to get a price
 
 ${QUOTE_ENABLED ? `- Quote request form: ${abs("/quote")}. Fields: product list (free text, product codes preferred), optional photo or PDF of the list, name, phone, company (optional), delivery suburb or pick-up, notes. Staff reply by phone or email, usually the same business day.
-- Or call ${SITE.phone} during opening hours, or email ${SITE.email}.` : `- Call ${SITE.phone} during opening hours, email ${SITE.email} with a list of product codes and quantities, or visit the trade counter. Staff usually reply with prices the same business day.`}
+- Or call ${SITE.mobile} or ${SITE.phone} during opening hours, or email ${SITE.email}.` : `- Call ${SITE.mobile} (mobile) or ${SITE.phone} during opening hours, email ${SITE.email} with a list of product codes and quantities, or visit the trade counter. Staff usually reply with prices the same business day.`}
 - Nothing is ordered until the price is agreed with the customer.
 `;
 }

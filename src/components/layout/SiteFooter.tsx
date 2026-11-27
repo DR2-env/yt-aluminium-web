@@ -48,8 +48,8 @@ export function SiteFooter({ lang }: { lang: Locale }) {
             </address>
           </div>
           <div className="space-y-1 text-sm" dir="ltr">
-            <a href={SITE.phoneHref} className="block hover:text-accent">{SITE.phone}</a>
             <a href={SITE.mobileHref} className="block hover:text-accent">{SITE.mobile}</a>
+            <a href={SITE.phoneHref} className="block hover:text-accent">{SITE.phone}</a>
             <a href={`mailto:${SITE.email}`} className="block hover:text-accent">{SITE.email}</a>
           </div>
         </div>

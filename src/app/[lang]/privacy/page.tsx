@@ -25,7 +25,7 @@ export default async function PrivacyPage({ params }: PageProps<"/[lang]/privacy
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const d = getDictionary(lang);
-  const contact = `${SITE.phone} or ${SITE.email}`;
+  const contact = `${SITE.mobile}, ${SITE.phone} or ${SITE.email}`;
 
   const sections: LegalSection[] = [
     [

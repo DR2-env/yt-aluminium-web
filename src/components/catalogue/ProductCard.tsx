@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { productHref, resolveItem, type Product } from "@/lib/catalogue";
+import { isLightRender, productHref, resolveItem, type Product } from "@/lib/catalogue";
 import { fmt, getDictionary, localePath, packLabel, tc, type Locale } from "@/i18n";
 import { SIZES } from "@/data/sizes";
 import { ProductVisual } from "./ProductVisual";
@@ -15,7 +15,7 @@ export function ProductCard({ product, lang }: { product: Product; lang: Locale 
       href={localePath(lang, productHref(product))}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-colors hover:border-line-strong"
     >
-      <div className="relative aspect-[4/3] bg-tile p-3">
+      <div className={`relative aspect-[4/3] p-3 ${isLightRender(product) ? "bg-tile-dark" : "bg-tile"}`}>
         <ProductVisual item={{ ...item, name: tc(lang, item.name) }} />
         {tag && <span className="absolute start-2 top-2 rounded-sm bg-accent px-1.5 py-0.5 text-[11px] font-medium text-accent-ink">{tag}</span>}
       </div>

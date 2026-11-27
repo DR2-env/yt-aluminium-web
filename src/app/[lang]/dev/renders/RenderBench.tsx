@@ -16,7 +16,9 @@ export interface BenchItem {
 export function RenderBench({ items: all }: { items: BenchItem[] }) {
   // ?review shows only hand-built models, each next to its price list photo.
   const review = typeof window !== "undefined" && window.location.search.includes("review");
-  const items = review ? all.filter((i) => i.handBuilt) : all;
+  // ?only=hg04,rl02 limits the bench to those slugs, for quick re-renders after a model change.
+  const only = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("only")?.split(",") : undefined;
+  const items = only ? all.filter((i) => only.includes(i.slug)) : review ? all.filter((i) => i.handBuilt) : all;
   const [images, setImages] = useState<Record<string, string>>({});
   const [status, setStatus] = useState("idle");
 
