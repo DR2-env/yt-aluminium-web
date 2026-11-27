@@ -11,7 +11,9 @@ export interface LayoutStrings {
   lang: Locale;
   home: string;
   nav: NavLink[];
-  quote: { href: string; label: string };
+  /** null while online quotes are switched off (see lib/features.ts). */
+  quote: { href: string; label: string } | null;
+  directions: string;
   menu: { open: string; close: string; language: string };
   call: string;
   whatsapp: string;

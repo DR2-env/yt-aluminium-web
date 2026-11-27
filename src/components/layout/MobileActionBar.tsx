@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ClipboardText, Phone, WhatsappLogo } from "@phosphor-icons/react";
+import { ClipboardText, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react";
 import { useQuote } from "@/lib/quote-store";
 import { SITE, whatsappLink } from "@/lib/site";
 import type { LayoutStrings } from "./types";
 
-// Call, WhatsApp and quote within thumb reach on phones.
+// Call, WhatsApp and quote (or directions while quotes are off) within thumb reach on phones.
 export function MobileActionBar({ s }: { s: LayoutStrings }) {
   const lines = useQuote();
   const item = "flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-medium";
@@ -20,6 +20,7 @@ export function MobileActionBar({ s }: { s: LayoutStrings }) {
         <WhatsappLogo size={20} aria-hidden />
         {s.whatsapp}
       </a>
+      {s.quote ? (
       <Link href={s.quote.href} className={`${item} text-accent`}>
         <span className="relative">
           <ClipboardText size={20} aria-hidden />
@@ -29,6 +30,12 @@ export function MobileActionBar({ s }: { s: LayoutStrings }) {
         </span>
         {s.quote.label}
       </Link>
+      ) : (
+        <a href={SITE.mapsUrl} className={item} target="_blank" rel="noopener noreferrer">
+          <MapPin size={20} aria-hidden />
+          {s.directions}
+        </a>
+      )}
     </nav>
   );
 }

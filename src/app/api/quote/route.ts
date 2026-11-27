@@ -4,12 +4,14 @@
 //   QUOTE_TO_EMAIL      where requests go (defaults to the business email)
 //   QUOTE_FROM_EMAIL    sender, e.g. "YT Aluminium website <quotes@ytaluminium.com>" once the domain is verified
 import { SITE } from "@/lib/site";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { MAX_PHOTO_BYTES, type QuoteRequest } from "@/lib/quote-request";
 
 const LANGS: Record<string, string> = { en: "English", zh: "Chinese", ko: "Korean", ar: "Arabic" };
 const clip = (s: unknown, max: number) => (typeof s === "string" ? s.trim().slice(0, max) : "");
 
 export async function POST(request: Request) {
+  if (!QUOTE_ENABLED) return Response.json({ error: "not_found" }, { status: 404 });
   let body: QuoteRequest;
   try {
     body = (await request.json()) as QuoteRequest;

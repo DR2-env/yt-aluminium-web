@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { List, X } from "@phosphor-icons/react";
+import { List, Phone, X } from "@phosphor-icons/react";
+import { SITE } from "@/lib/site";
 import { Logo } from "./Logo";
 import { LanguageLinks } from "./LanguageLinks";
 import { useQuote } from "@/lib/quote-store";
@@ -34,7 +35,9 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
   const isActive = (match: string) => (match === "/" ? current === "/" : current === match || current.startsWith(`${match}/`));
   const quoteActive = isActive("/quote");
 
-  const quoteButton = (extra = "") => (
+  // Solid call-to-action on the right: the quote list when online quotes are on, otherwise a call button.
+  const ctaButton = (extra = "") =>
+    s.quote ? (
     <Link
       href={s.quote.href}
       aria-current={quoteActive ? "page" : undefined}
@@ -47,7 +50,12 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
         </span>
       )}
     </Link>
-  );
+    ) : (
+      <a href={SITE.phoneHref} className={`inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-white transition-opacity hover:opacity-90 ${extra}`}>
+        <Phone size={16} aria-hidden />
+        <span dir="ltr">{SITE.phone}</span>
+      </a>
+    );
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white/45 backdrop-blur-xl">
@@ -71,7 +79,7 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
 
         <div className="flex items-center justify-end gap-4">
           <LanguageLinks lang={s.lang} label={s.menu.language} className="hidden xl:flex" />
-          <div className="hidden sm:block">{quoteButton()}</div>
+          <div className="hidden sm:block">{ctaButton()}</div>
           <button
             type="button"
             className="relative grid size-10 place-items-center rounded-full border border-line-strong xl:hidden"
@@ -93,7 +101,7 @@ export function SiteHeader({ s }: { s: LayoutStrings }) {
       {open && (
         <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-6.5rem)] overflow-y-auto border-t border-line bg-bg px-4 pb-28 pt-2 xl:hidden">
           <nav className="flex flex-col" aria-label="Mobile">
-            {[...s.nav, { href: s.quote.href, label: s.quote.label, match: "/quote" }].map((n) => (
+            {[...s.nav, ...(s.quote ? [{ href: s.quote.href, label: s.quote.label, match: "/quote" }] : [])].map((n) => (
               <Link
                 key={n.href}
                 href={n.href}

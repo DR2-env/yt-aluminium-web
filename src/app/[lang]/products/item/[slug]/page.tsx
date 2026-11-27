@@ -26,6 +26,7 @@ import {
   type Section,
 } from "@/lib/catalogue";
 import { SITE } from "@/lib/site";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { BUSINESS_ID, breadcrumbJsonLd, jsonLdString } from "@/lib/schema";
 import { SIZES } from "@/data/sizes";
 import { finishNameMap, fmt, getDictionary, isLocale, localePath, packLabel, tc, type Locale } from "@/i18n";
@@ -155,6 +156,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/product
             units: d.units as Record<string, string[]>,
             finishNames: finishNameMap(lang),
             quoteHref: localePath(lang, "/quote"),
+            quoteEnabled: QUOTE_ENABLED,
           }}
         />
       </Suspense>

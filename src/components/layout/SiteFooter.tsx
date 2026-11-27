@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 import { RANGES, rangeHref } from "@/lib/catalogue";
 import { SITE } from "@/lib/site";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { getDictionary, localePath, tc, type Locale } from "@/i18n";
 
 export function SiteFooter({ lang }: { lang: Locale }) {
@@ -11,7 +12,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
     { href: "/finishes", label: d.nav.finishes },
     { href: "/about", label: d.nav.about },
     { href: "/contact", label: d.nav.contact },
-    { href: "/quote", label: d.nav.quote },
+    ...(QUOTE_ENABLED ? [{ href: "/quote", label: d.nav.quote }] : []),
     { href: "/faq", label: d.footer.faq },
     { href: "/privacy", label: d.footer.privacy },
     { href: "/cookies", label: d.footer.cookies },

@@ -157,3 +157,18 @@ export const isStandinSection = (c: Pick<Item, "id" | "sec">) => !c.sec && Boole
 export const hasHandBuiltModel = (id: string) => HAND_BUILT_MODELS.has(id);
 
 export const renderSrc = (p: Pick<Product, "id">) => `/renders/${productSlug(p)}.webp`;
+
+/**
+ * The 17 ranges grouped into five plain categories. Order matches d.home.groups (titles and
+ * blurbs are translated there). Used on the home page and to organise the products page.
+ */
+export const CATEGORIES: { id: string; ranges: string[] }[] = [
+  { id: "doors-windows", ranges: ["shopfront", "hinged-door", "bifold", "double-glaze", "partition", "angle"] },
+  { id: "security-flyscreen", ranges: ["security", "door-window-acc", "flyscreen"] },
+  { id: "mesh", ranges: ["mesh", "ss-mesh", "grill"] },
+  { id: "hardware", ranges: ["hardware", "locks", "pile-wedge"] },
+  { id: "blinds-curtains", ranges: ["blinds", "curtain"] },
+];
+
+/** Products marked NEW in the current price list, in catalogue order. */
+export const NEW_PRODUCTS: Product[] = Object.values(PRODUCTS).filter((p) => p.tag === "New");

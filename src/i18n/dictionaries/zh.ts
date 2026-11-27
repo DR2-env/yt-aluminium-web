@@ -46,6 +46,9 @@ const zh: Dictionary = {
     languages: "我们讲英语、法语、普通话和粤语。",
     searchButton: "搜索",
     groupsTitle: "按类别浏览",
+    latestTitle: "最新产品目录",
+    latestText: "最新价目表（{date}）中的新产品。",
+    latestLink: "查看全部新品",
     groups: [
       { title: "门窗及商铺门面", text: "商铺门面、平开门、上悬窗、折叠门、双层玻璃和隔断型材，还有铝角材。" },
       { title: "防盗门及纱窗", text: "防盗门窗框、纱窗框、轨道、角码和弹簧。" },
@@ -94,6 +97,7 @@ const zh: Dictionary = {
   },
   catalogue: {
     intro: "共 {codes} 个产品编号，按 {date} 价目表。加到询价单里，我们给您报价。",
+    introNoQuote: "共 {codes} 个产品编号，按 {date} 价目表。要报价请打电话、WhatsApp 联系我们，或直接来门市。",
     searchLabel: "搜编号或名称",
     searchPlaceholder: "搜编号或名称，比如 AU014",
     clearSearch: "清除",
@@ -142,6 +146,7 @@ const zh: Dictionary = {
     ask: "问一下这个产品",
     askMessage: "您好 YT Aluminium，想问一下 {code} {name}。",
     price: "价格请问我们。加入询价单或者 WhatsApp 发消息，一般当天回复。",
+    priceNoQuote: "价格请咨询。打电话或 WhatsApp 联系我们，一般当天回复。",
   },
   units: {
     length: ["支", "支"],
@@ -272,6 +277,7 @@ const zh: Dictionary = {
     search: "搜产品",
   },
   faqPage: {
+    priceAnswerNoForm: "打 {phone}，或通过 WhatsApp、微信、邮件把清单发给我们，也可以直接拿到门市。一般当天回复报价。",
     filters: {
       all: "全部",
       order: "价格和下单",

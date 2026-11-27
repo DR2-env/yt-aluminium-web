@@ -69,10 +69,13 @@ export interface ConfigStrings {
   ask: string;
   askMessage: string;
   price: string;
+  priceNoQuote: string;
   tag?: string;
   units: Record<string, string[]>;
   finishNames: Record<string, string>;
   quoteHref: string;
+  /** Online quotes switched on (lib/features.ts). When off, the page offers call and WhatsApp only. */
+  quoteEnabled: boolean;
 }
 
 type Mode = "3d" | "section" | "photo";
@@ -217,7 +220,7 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           ))}
         </dl>
 
-        <p className="mt-4 rounded border border-line bg-surface-2 p-3 text-sm leading-relaxed">{s.price}</p>
+        <p className="mt-4 rounded border border-line bg-surface-2 p-3 text-sm leading-relaxed">{s.quoteEnabled ? s.price : s.priceNoQuote}</p>
         <a
           href={whatsappLink(fill(s.askMessage, { code: v.code, name: product.nameEn }))}
           target="_blank"
@@ -272,6 +275,8 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
           </fieldset>
         )}
 
+        {s.quoteEnabled && (
+          <>
         <div className="sticky bottom-[calc(3.6rem+env(safe-area-inset-bottom))] z-10 -mx-4 mt-8 flex flex-wrap items-center gap-3 border-t border-line bg-bg px-4 py-3 sm:static sm:mx-0 sm:border-0 sm:p-0">
           <div className="flex h-11 items-center rounded border border-line-strong">
             <button type="button" className="grid h-full w-10 place-items-center text-muted hover:text-ink" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label={s.fewer}>
@@ -309,8 +314,10 @@ export function ProductConfigurator({ product, s }: { product: ConfigProduct; s:
             </Link>
           </p>
         )}
+          </>
+        )}
       </div>
-      {toast && (
+      {s.quoteEnabled && toast && (
         <div
           role="status"
           className="fixed inset-x-4 bottom-[calc(8.5rem+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-md items-center justify-between gap-3 rounded-md bg-ink px-4 py-3 text-sm text-white shadow-lg sm:bottom-6"

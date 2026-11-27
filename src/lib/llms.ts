@@ -3,6 +3,7 @@
 import { CODE_COUNT, PRODUCTS, RANGES, productHref, productsInRange, rangeHref, resolveItem, type Product } from "./catalogue";
 import { COLOUR_CODES, finishOf } from "./finishes";
 import { SITE, fullAddress } from "./site";
+import { QUOTE_ENABLED } from "./features";
 
 const abs = (path: string) => `${SITE.url}${path === "/" ? "" : path}`;
 
@@ -19,13 +20,13 @@ function header(): string {
 - Mobile: ${SITE.mobile}
 - Email: ${SITE.email}
 - Catalogue: ${CODE_COUNT} product codes from the price list dated ${SITE.priceListDate}
-- Prices are not published online. To get prices, send a quote request (below) or call.
+- Prices are not published online. See "How to get a price" below.
 - Website languages: English, Simplified Chinese (/zh), Korean (/ko), Arabic (/ar)
 
 ## How to get a price
 
-- Quote request form: ${abs("/quote")}. Fields: product list (free text, product codes preferred), optional photo or PDF of the list, name, phone, company (optional), delivery suburb or pick-up, notes. Staff reply by phone or email, usually the same business day.
-- Or call ${SITE.phone} during opening hours, or email ${SITE.email}.
+${QUOTE_ENABLED ? `- Quote request form: ${abs("/quote")}. Fields: product list (free text, product codes preferred), optional photo or PDF of the list, name, phone, company (optional), delivery suburb or pick-up, notes. Staff reply by phone or email, usually the same business day.
+- Or call ${SITE.phone} during opening hours, or email ${SITE.email}.` : `- Call ${SITE.phone} during opening hours, email ${SITE.email} with a list of product codes and quantities, or visit the trade counter. Staff usually reply with prices the same business day.`}
 - Nothing is ordered until the price is agreed with the customer.
 `;
 }
@@ -36,7 +37,7 @@ export function llmsTxt(): string {
     ["Finishes", "/finishes", "Powder coat, anodised, mill and timber look colours"],
     ["About", "/about", "Who YT Aluminium is and who it supplies"],
     ["Contact", "/contact", "Address, hours, phone, email and map"],
-    ["Quote request", "/quote", "Send a list for pricing"],
+    ...(QUOTE_ENABLED ? [["Quote request", "/quote", "Send a list for pricing"]] : []),
     ["FAQ", "/faq", "Ordering, delivery and product questions"],
     ["Privacy policy", "/privacy", ""],
     ["Cookie policy", "/cookies", ""],

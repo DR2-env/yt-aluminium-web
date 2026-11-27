@@ -11,6 +11,7 @@ import type { LayoutStrings } from "@/components/layout/types";
 import { LOCALES, LOCALE_META, getDictionary, isLocale, localePath, type Locale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
 import { SITE } from "@/lib/site";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { businessJsonLd, jsonLdString } from "@/lib/schema";
 
 const interTight = Inter_Tight({ variable: "--font-inter-tight", subsets: ["latin"], weight: ["200", "300", "400", "500", "600"] });
@@ -65,7 +66,8 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       { href: p("/faq"), label: d.footer.faq, match: "/faq" },
       { href: p("/contact"), label: d.nav.contact, match: "/contact" },
     ],
-    quote: { href: p("/quote"), label: d.nav.quoteCta },
+    quote: QUOTE_ENABLED ? { href: p("/quote"), label: d.nav.quoteCta } : null,
+    directions: d.home.directions,
     menu: { open: d.nav.openMenu, close: d.nav.closeMenu, language: d.nav.language },
     call: d.nav.call,
     whatsapp: d.nav.whatsapp,

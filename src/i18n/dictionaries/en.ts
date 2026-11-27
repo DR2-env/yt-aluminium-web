@@ -44,6 +44,9 @@ const en = {
     languages: "We speak English, French, Mandarin and Cantonese.",
     searchButton: "Search",
     groupsTitle: "Browse by category",
+    latestTitle: "Our latest catalogue",
+    latestText: "New products in our current price list, dated {date}.",
+    latestLink: "See all new products",
     groups: [
       { title: "Doors, windows and shopfronts", text: "Shopfront, hinged door, awning, bifold, double glazed and partition sections, plus angles." },
       { title: "Security doors and flyscreens", text: "Security door and window frames, flyscreen frames, tracks, corners and springs." },
@@ -92,6 +95,7 @@ const en = {
   },
   catalogue: {
     intro: "{codes} product codes from the price list dated {date}. Add items to a quote request to get pricing.",
+    introNoQuote: "{codes} product codes from the price list dated {date}. For prices, call us, message us on WhatsApp or visit the trade counter.",
     searchLabel: "Search by code or name",
     searchPlaceholder: "Search by code or name, for example AU014",
     clearSearch: "Clear search",
@@ -140,6 +144,7 @@ const en = {
     ask: "Ask about this product",
     askMessage: "Hi YT Aluminium, I have a question about {code} {name}.",
     price: "Price: ask us. Add it to your quote or message us on WhatsApp. We usually reply the same day.",
+    priceNoQuote: "Price: ask us. Call or message us on WhatsApp. We usually reply the same day.",
   },
   units: {
     length: ["length", "lengths"],
@@ -270,6 +275,7 @@ const en = {
     search: "Search products",
   },
   faqPage: {
+    priceAnswerNoForm: "Call us on {phone}, send your list by WhatsApp, WeChat or email, or bring it to the trade counter. We usually reply with prices the same day.",
     filters: {
       all: "All",
       order: "Prices and ordering",

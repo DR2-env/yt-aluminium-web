@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { QuoteBuilderClient } from "@/components/quote/QuoteBuilderClient";
 import { PRODUCTS, resolveItem } from "@/lib/catalogue";
 import { finishNameMap, getDictionary, isLocale, localePath, tc } from "@/i18n";
@@ -14,7 +15,8 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/quote">): 
 
 export default async function QuotePage({ params }: PageProps<"/[lang]/quote">) {
   const { lang } = await params;
-  if (!isLocale(lang)) notFound();
+  // Hidden on the live site until online quotes are switched on (lib/features.ts).
+  if (!isLocale(lang) || !QUOTE_ENABLED) notFound();
   const d = getDictionary(lang);
   // Product names in the page language, for display only. The email to YT stays in English.
   const localNames = Object.fromEntries(

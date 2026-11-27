@@ -4,7 +4,9 @@ import { ArrowRight, MagnifyingGlass, MapPin, Phone, WhatsappLogo } from "@phosp
 import { ProductVisual } from "@/components/catalogue/ProductVisual";
 import { SectionDrawing } from "@/components/catalogue/SectionDrawing";
 import { HeroRequest } from "@/components/quote/HeroRequest";
-import { PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
+import { ProductCard } from "@/components/catalogue/ProductCard";
+import { QUOTE_ENABLED } from "@/lib/features";
+import { CATEGORIES, NEW_PRODUCTS, PRODUCTS, RANGES, SECTIONS, productHref, productsInRange, rangeHref, resolveItem } from "@/lib/catalogue";
 import { COLOUR_CODES, swatchBackground } from "@/lib/finishes";
 import { SITE, fullAddress, whatsappLink } from "@/lib/site";
 import { finishName, fmt, getDictionary, isLocale, localePath, tc } from "@/i18n";
@@ -19,13 +21,7 @@ function rangeCover(rangeId: string) {
 const wrap = "mx-auto max-w-[1280px] px-4 md:px-8";
 
 // The 17 ranges grouped into five plain categories, in the same order as d.home.groups.
-const GROUPS: string[][] = [
-  ["shopfront", "hinged-door", "bifold", "double-glaze", "partition", "angle"],
-  ["security", "door-window-acc", "flyscreen"],
-  ["mesh", "ss-mesh", "grill"],
-  ["hardware", "locks", "pile-wedge"],
-  ["blinds", "curtain"],
-];
+const GROUPS: string[][] = CATEGORIES.map((c) => c.ranges);
 
 // Built for trade customers: visit or call first, then five plain categories, why YT, colours,
 // and the quote request at the end.
@@ -42,10 +38,17 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   // Closing call to action: the quote form first, WhatsApp for people who prefer it.
   const actions = (
     <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-      <Link href={p("/quote")} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
-        {d.nav.quoteCta}
-        <ArrowRight size={16} className="rtl:-scale-x-100" />
-      </Link>
+      {QUOTE_ENABLED ? (
+        <Link href={p("/quote")} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+          {d.nav.quoteCta}
+          <ArrowRight size={16} className="rtl:-scale-x-100" />
+        </Link>
+      ) : (
+        <a href={SITE.phoneHref} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+          <Phone size={18} />
+          {d.nav.call} <span dir="ltr">{SITE.phone}</span>
+        </a>
+      )}
       <a
         href={sendListHref}
         target="_blank"
@@ -169,6 +172,29 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
+      {/* Our latest catalogue: products marked NEW in the current price list. */}
+      {NEW_PRODUCTS.length > 0 && (
+        <section className="border-t border-line">
+          <div className={`${wrap} py-24 md:py-32`}>
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <h2 className="display text-4xl md:text-6xl">{d.home.latestTitle}</h2>
+                <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">{fmt(d.home.latestText, { date: lang === "en" ? SITE.priceListDate : "16/02/2026" })}</p>
+              </div>
+              <Link href={`${p("/products")}?tag=new`} className="mb-1 inline-flex shrink-0 items-center gap-1.5 text-[15px] text-muted hover:text-ink">
+                {d.home.latestLink}
+                <ArrowRight size={14} className="rtl:-scale-x-100" />
+              </Link>
+            </div>
+            <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+              {NEW_PRODUCTS.map((np) => (
+                <ProductCard key={np.id} product={np} lang={lang} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Why customers choose YT: four plain promises and a short line of facts. */}
       <section className="border-t border-line">
         <div className={`${wrap} py-24 md:py-32`}>
@@ -221,8 +247,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       <section className="ambient-end">
         <div className={`${wrap} py-24 md:py-32`}>
-          <h2 className="display max-w-[16ch] text-balance text-4xl md:text-6xl">{d.home.requestQuote}</h2>
-          <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-muted">{d.home.orderSteps[1].text}</p>
+          <h2 className="display max-w-[16ch] text-balance text-4xl md:text-6xl">{QUOTE_ENABLED ? d.home.requestQuote : d.contactPage.priceTitle}</h2>
+          <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-muted">{QUOTE_ENABLED ? d.home.orderSteps[1].text : d.contactPage.priceText}</p>
+          {QUOTE_ENABLED && (
           <div className="mt-10 max-w-[560px]">
             <HeroRequest
               quoteHref={p("/quote")}
@@ -234,6 +261,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               photoTooBig={d.quote.photoTooBig}
             />
           </div>
+          )}
           <div className="mt-6">{actions}</div>
         </div>
       </section>

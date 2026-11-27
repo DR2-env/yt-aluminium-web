@@ -46,6 +46,9 @@ const ko: Dictionary = {
     languages: "영어, 프랑스어, 만다린, 광둥어로 상담 가능합니다.",
     searchButton: "검색",
     groupsTitle: "카테고리별 보기",
+    latestTitle: "최신 카탈로그",
+    latestText: "{date} 가격표에 새로 들어온 제품이에요.",
+    latestLink: "신제품 모두 보기",
     groups: [
       { title: "도어·창호·상가 샷시", text: "상가 샷시, 여닫이 도어, 어닝창, 폴딩 도어, 복층 유리, 파티션 프로파일과 앵글." },
       { title: "방범문·방충망", text: "방범 도어·창호 프레임, 방충망 프레임, 레일, 코너, 스프링." },
@@ -94,6 +97,7 @@ const ko: Dictionary = {
   },
   catalogue: {
     intro: "{date} 가격표 기준 제품 코드 {codes}개. 견적 목록에 담아 보내 주시면 가격을 알려 드려요.",
+    introNoQuote: "{date} 가격표 기준 제품 코드 {codes}개. 가격은 전화, WhatsApp 또는 매장 방문으로 문의해 주세요.",
     searchLabel: "코드나 제품명으로 검색",
     searchPlaceholder: "코드나 제품명 검색 (예: AU014)",
     clearSearch: "검색어 지우기",
@@ -142,6 +146,7 @@ const ko: Dictionary = {
     ask: "이 제품 문의하기",
     askMessage: "안녕하세요 YT Aluminium, {code} {name} 문의드립니다.",
     price: "가격은 문의 주세요. 견적 목록에 담거나 WhatsApp으로 메시지 주시면 보통 당일에 답변드려요.",
+    priceNoQuote: "가격은 문의해 주세요. 전화나 WhatsApp으로 연락 주시면 보통 당일에 답변드려요.",
   },
   units: {
     length: ["본", "본"],
@@ -272,6 +277,7 @@ const ko: Dictionary = {
     search: "제품 검색",
   },
   faqPage: {
+    priceAnswerNoForm: "{phone}로 전화하시거나 WhatsApp, WeChat, 이메일로 목록을 보내 주세요. 매장에 직접 가져오셔도 돼요. 보통 당일에 견적 드려요.",
     filters: {
       all: "전체",
       order: "가격과 주문",

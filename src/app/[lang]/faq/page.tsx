@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { FaqList, type FaqCategory } from "@/components/faq/FaqList";
 import { SITE, fullAddress } from "@/lib/site";
 import { jsonLdString } from "@/lib/schema";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { fmt, getDictionary, isLocale } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
 
@@ -21,7 +22,8 @@ export default async function FaqPage({ params }: PageProps<"/[lang]/faq">) {
   if (!isLocale(lang)) notFound();
   const d = getDictionary(lang);
   const vars = { address: fullAddress, hours: d.site.hours, phone: SITE.phone };
-  const items = d.faqPage.items.map((i, n) => ({ q: i.q, a: fmt(i.a, vars), cat: CATEGORIES[n] ?? "order" }));
+  // The first answer explains how to get a price; it only mentions the online form when that is switched on.
+  const items = d.faqPage.items.map((i, n) => ({ q: i.q, a: fmt(n === 0 && !QUOTE_ENABLED ? d.faqPage.priceAnswerNoForm : i.a, vars), cat: CATEGORIES[n] ?? "order" }));
   const [introBefore, introAfter = ""] = d.faqPage.intro.split("{phone}");
   const schema = {
     "@context": "https://schema.org",

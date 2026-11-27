@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { MapEmbed } from "@/components/layout/MapEmbed";
+import { QUOTE_ENABLED } from "@/lib/features";
 import { SITE, fullAddress, whatsappDisplay, whatsappLink } from "@/lib/site";
 import { fmt, getDictionary, isLocale, localePath } from "@/i18n";
 import { alternatesFor } from "@/i18n/metadata";
@@ -44,10 +45,16 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
         <section className={group} aria-labelledby="c-price">
           <h2 id="c-price" className="text-xl font-medium">{c.priceTitle}</h2>
           <p className="mt-3 leading-relaxed text-muted">{c.priceText}</p>
-          <Link href={localePath(lang, "/quote")} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+          {QUOTE_ENABLED ? (
+            <Link href={localePath(lang, "/quote")} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
             {d.nav.quoteCta}
             <ArrowRight size={16} className="rtl:-scale-x-100" />
-          </Link>
+            </Link>
+          ) : (
+            <a href={SITE.phoneHref} className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white hover:opacity-90">
+              {d.nav.call} <span dir="ltr">{SITE.phone}</span>
+            </a>
+          )}
           <p className={`${label} mt-8`}>{c.messageLabel}</p>
           <dl className="mt-2 divide-y divide-line border-y border-line">
             {messages.map((m) => (
